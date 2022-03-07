@@ -1,0 +1,13 @@
+# All environment variables are defined in the file `.env`
+
+version: "3.1"
+services:
+  database:
+    image: mariadb:10.5
+    volumes:
+      - ./mysql/db/entrypoint:/docker-entrypoint-initdb.d/
+      - ./mysql/db/config.cnf:/etc/mysql/conf.d/config.cnf
+    ports:
+      - "23306:3306"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=geheim"
