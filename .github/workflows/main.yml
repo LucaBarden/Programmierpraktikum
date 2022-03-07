@@ -17,6 +17,9 @@ jobs:
       uses: gradle/gradle-build-action@v2
       with:
         gradle-version: current
+        
+    - name: Make Gradlew executeable
+      run: chmod +ux ./gradlew
     
     - name: Execute Gradle build
       run: ./gradlew build
