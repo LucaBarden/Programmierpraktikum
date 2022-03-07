@@ -1,0 +1,76 @@
+Objekte:
+
+    -Klausur(Name, LsfID, Datum, Beginn, Schluss, istPräsenz)
+    -Urlaub (Datum, Beginn, Schluss)
+    -Student (Handle, Resturlaub)
+    -AuditLog (Bearbeiter, Änderung, Timestamp)
+
+
+Funktion:
+
+	Student:
+		Startseite:
+			-Lade gebuchte Klausuren
+			-Lade gebuchte Urlaubszeiten
+			-Storniere Urlaub
+			-Storniere Klausur
+
+		Klausuranmeldung:
+			-Lade alle Klausuren
+			-Buche Klausur
+
+		Klausuranlage:
+			-Klausur speichern
+
+		Urlaubsanmeldung:
+			-Urlaub speichern
+
+
+
+
+Tools:
+
+    -Flyway
+    -Thymeleaf
+    -Mariadb Driver
+    -Spring Boot Dev Tools
+    -Spring Web
+    -JDBC DATA
+    -JDBC API
+    -Spring MVC
+
+    -Bootstrap
+
+
+Inhalte:
+
+    -ArchUnit
+    -Unit Tests
+    -Integration Tests
+    -Systemtests (Github Actions)
+
+	-Thymeleaf
+	-Spring MVC
+	-Datenbank(Docker)
+	-JDBC
+	-Transaction
+
+	-Zustand im Web
+	-Security (oAuth2, Rollenzugriff, CSRF)
+	-Accessibility
+	-HTMLUnit
+	-Dokumentation
+
+Fragen:
+
+    -Was sollen wir in Bezug auf Tutor:Innen und Organisator:Innen implementierenn?
+    -Sollen wir in irgendeiner hinsicht in Betracht ziehen, dass es Gruppen gibt?
+    -Lsf-Veranstaltungs ID überprüfen?
+
+
+
+
+
+
+
+
