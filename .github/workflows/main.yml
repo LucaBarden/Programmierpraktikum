@@ -3,13 +3,13 @@ on: [push, pull_request]
 
 jobs:
     build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-        name: Git Checkout
-      - name: Java installieren
-        uses: actions/setup-java@v1
-        with:
-          java-version: 17
-      - name: Run Gradle
-        run: ./gradlew check
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v1
+              name: Git Checkout
+            - name: Java installieren
+              uses: actions/setup-java@v1
+              with:
+                java-version: 17
+            - name: Run Gradle
+              run: ./gradlew check
