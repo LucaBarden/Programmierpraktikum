@@ -4,3 +4,4 @@ Tables
     -Student (Handle, Resturlaub)
     -KlausurStudent (LsfID, Handle)
     -Urlaub (Beginn, Schluss, Handle)
+    -AuditLog(Handle, message, Timestamp)
