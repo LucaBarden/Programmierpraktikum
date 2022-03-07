@@ -19,7 +19,7 @@ jobs:
         gradle-version: current
         
     - name: Make Gradlew executeable
-      run: chmod +ux ./gradlew
+      run: chmod +x ./gradlew
     
     - name: Execute Gradle build
       run: ./gradlew build
