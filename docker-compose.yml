@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # All environment variables are defined in the file `.env`
 
 version: "3.1"
@@ -11,3 +12,13 @@ services:
       - "23306:3306"
     environment:
       - "MYSQL_ROOT_PASSWORD=DIESESPASSWORTISTNICHTECHT"
+=======
+version: "3.1"
+services:
+  database:
+    image: mariadb:10.5
+    ports:
+      - "3307:3306"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=DIESISTKEINECHTESPASSWORT"
+>>>>>>> mob/main
