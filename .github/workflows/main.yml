@@ -12,4 +12,4 @@ jobs:
               with:
                 java-version: 17
             - name: Run Gradle
-              run: gradle build
+              run: gradle check
