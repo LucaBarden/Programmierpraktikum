@@ -10,4 +10,4 @@ services:
     ports:
       - "23306:3306"
     environment:
-      - "MYSQL_ROOT_PASSWORD=geheim"
+      - "MYSQL_ROOT_PASSWORD=DIESESPASSWORTISTNICHTECHT"
