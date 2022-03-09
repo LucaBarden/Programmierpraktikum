@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PP2 Urlaub Übersicht</title>
+    <link rel="stylesheet" type="text/css"
+          href="/css/bootstrap.css">
+</head>
+<body>
+<div class="container">
+    <h1>Anmeldung zu einer Klausur</h1>
+
+
+    <p class="alert">
+
+    <div class="formular mtb-3">
+        <strong>Wenn die Klausur noch nicht vorhanden ist, können sie sie hier anlegen</strong>
+        </p>
+        <form action="/klausuranlage">
+            <input type="submit" class="btn btn-info" value="Neue Klausur anlegen"/>
+        </form>
+    </div>
+    <div class="formular mtb-3">
+        <form name="klausur_anmelden" method="post" action="/klausuranmeldung">
+            <select class="form-control" name="klausur" id="klausur-select" required>
+            </select>
+
+            <p class="p-3"><strong>
+                Sie bestätigen hiermit, dass Sie für die oben ausgewählte
+                Klausur angemeldet sind.
+            </strong>
+                <br> Bis zum Tag vor der Klausur können Sie Ihre Teilnahme selber hier stornieren. Sollten Sie sich
+                am Klausurtag entscheiden doch nicht mitzuschreiben, müssen Sie am Morgen der
+                zuständigen Tutor:in Bescheid geben und das zusätzlich
+                in einer Mail an <a href="mailto:propra@cs.hhu.de">propra@cs.hhu.de</a> mitteilen.
+                <strong>Natürlich müssen Sie dann auch am Praktikum teilnehmen.</strong> <br>
+                Ggf. überprüfen wir die Teilnahme an der Klausur über die entsprechenden Teilnehmerlisten
+                <br>
+                <button name="klausuranmeldung_abschicken" type="submit" class="btn btn-primary mt-2">Eintragen</button>
+        </form>
+        </p>
+    </div>
+
+</div>
+
+<script src="/js/bootstrap.bundle.js"></script>
+
+
+</body>
+</html>
