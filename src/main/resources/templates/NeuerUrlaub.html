@@ -16,7 +16,7 @@
                 <div class="form-group mb-3">
                     <label for="tag" class="form-label">Datum (dd.mm.yyyy)</label>
                     <input type="date" class="form-control" id="tag"
-                           placeholder=" " name="datum" value="" th:field="*{tag}">
+                           placeholder=" " name="datum" value="" th:field="*{tag}" required>
                 </div>
             </div>
 
@@ -24,7 +24,7 @@
                 <div class="form-group mb-3">
                     <label for="von">Start (hh:mm)</label>
                     <input type="time" class="form-control" id="von" placeholder=" " name="von" value=""
-                           th:field="*{von}">
+                           th:field="*{von}" required>
                     <div class="form-text">Tragen Sie hier die Uhrzeit ein, wann Sie Ihren Urlaub beginnen wollen.</a>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
                 <div class="form-group mb-3">
                     <label for="bis" class="form-label">Ende (hh:mm)</label>
                     <input type="time" class="form-control" id="bis" placeholder=" " name="bis" value=""
-                           th:field="*{bis}">
+                           th:field="*{bis}" required>
                 </div>
             </div>
 

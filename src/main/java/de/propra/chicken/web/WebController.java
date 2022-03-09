@@ -14,19 +14,19 @@ public class WebController {
 
     @GetMapping("/")
     public String index() {
-        return "Student.html";
+        return "Student";
     }
 
     @GetMapping("/student")
     public String student() {
-        return "Student.html";
+        return "Student";
     }
 
 
     @GetMapping("/urlaubanlage")
     public String urlaubanlage(Model model) {
         model.addAttribute("urlaub", new Urlaub(null, null, null));
-        return "NeuerUrlaub.html";
+        return "NeuerUrlaub";
     }
 
     @PostMapping("/urlaubanlegen")
@@ -46,7 +46,7 @@ public class WebController {
     @GetMapping("/klausuranlage")
     public String klausuranlage(Model model) {
         model.addAttribute("klausur", new Klausur(null, 0, false, null, null, null));
-        return "NeueKlausur.html";
+        return "NeueKlausur";
     }
 
     @PostMapping("/klausuranlegen")
@@ -67,10 +67,10 @@ public class WebController {
 
     @GetMapping("/klausuranmeldung")
     public String klausurAnmeldung() {
-        return "KlausurAnmeldung.html";
+        return "KlausurAnmeldung";
     }
 
-    @PostMapping("/klausuranmeldung")
+    @PostMapping("/klausuranmelden")
     public String klausurAnmelden() {
         return "redirect:/";
     }
