@@ -29,7 +29,7 @@ public class WebController {
         return "NeuerUrlaub";
     }
 
-    @PostMapping("/urlaubanlegen")
+    @PostMapping("/urlauberstellen")
     public String urlaubAnlegen(@ModelAttribute Urlaub urlaub, Model model) {
         model.addAttribute("urlaub", urlaub);
 
@@ -49,7 +49,7 @@ public class WebController {
         return "NeueKlausur";
     }
 
-    @PostMapping("/klausuranlegen")
+    @PostMapping("/klausurerstellen")
     public String klausurAnlegen(@ModelAttribute Klausur klausur, Model model) {
         model.addAttribute("klausur", klausur);
 
@@ -72,6 +72,6 @@ public class WebController {
 
     @PostMapping("/klausuranmelden")
     public String klausurAnmelden() {
-        return "redirect:/";
+        return "redirect:/student";
     }
 }

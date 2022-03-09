@@ -1,18 +1,14 @@
 package de.propra.chicken.controller;
 
-import de.propra.chicken.domain.model.Urlaub;
+
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -56,20 +52,30 @@ public class ControllerTest {
     }
 
     @Test
-    @DisplayName("Button auf /urlaubanlage leitet auf /student weiter")
+    @DisplayName("Button auf /urlauberstellen leitet auf /student weiter")
     void urlaubPost() throws Exception{
-        mockMvc.perform(post("/urlaubanlegen"))
+        mockMvc.perform(post("/urlauberstellen"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/student"));
     }
 
     @Test
-    @DisplayName("Button auf /klausuranlage leitet auf /klausuranmeldung weiter")
-    void addroomPost() throws Exception{
-        mockMvc.perform(post("/klausuranlegen"))
+    @Disabled
+    @DisplayName("Button auf /klausurerstellen leitet auf /klausuranmeldung")
+    void klausuranlegen() throws Exception {
+        mockMvc.perform(post("/klausurerstellen"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/klasuranmeldung"));
+                .andExpect(redirectedUrl("/klausuranmeldung"));
     }
+
+    @Test
+    @DisplayName("Button auf /klausuranmelden leitet auf /student weiter")
+    void klausuranmelden() throws  Exception {
+        mockMvc.perform(post("/klausuranmelden"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/student"));
+    }
+
 
 
 }
