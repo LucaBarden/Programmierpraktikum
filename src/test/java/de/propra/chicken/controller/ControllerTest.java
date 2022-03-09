@@ -28,7 +28,7 @@ public class ControllerTest {
     }
 
     @Test
-    @DisplayName("Prüft ob NeuerUrlaub.html auf /urlaubanlage angezeigt wird")
+    @DisplayName("Prüft ob Urlaub.html auf /urlaubanlage angezeigt wird")
     void urlaub() throws Exception {
         mockMvc.perform(get("/urlaubanlage"))
                 .andExpect(status().isOk())
@@ -36,7 +36,7 @@ public class ControllerTest {
     }
 
     @Test
-    @DisplayName("Prüft ob KlausurAnmeldung.html auf /klausuranmeldung angezeigt wird")
+    @DisplayName("Prüft ob Klausur.html auf /klausuranmeldung angezeigt wird")
     void klausuranmeldung() throws Exception {
         mockMvc.perform(get("/klausuranmeldung"))
                 .andExpect(status().isOk())

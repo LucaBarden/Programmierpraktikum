@@ -23,16 +23,14 @@ public class WebController {
     }
 
 
-    @GetMapping("/urlaubanlage")
-    public String urlaubanlage(Model model) {
-        model.addAttribute("urlaub", new Urlaub(null, null, null));
-        return "NeuerUrlaub";
+    @GetMapping("/urlaub")
+    public String urlaub(@ModelAttribute Urlaub urlaub, Model model) {
+        //model.addAttribute("urlaub", new Urlaub(null, null, null));
+        return "Urlaub";
     }
 
-    @PostMapping("/urlauberstellen")
-    public String urlaubAnlegen(@ModelAttribute Urlaub urlaub, Model model) {
-        model.addAttribute("urlaub", urlaub);
-
+    @PostMapping("/urlaubErstellen")
+    public String urlaubErstellen(@ModelAttribute Urlaub urlaub, Model model) {
         // TO-DO Anlegen des Urlaubs
 
         System.out.println(urlaub.getTag());
@@ -43,34 +41,32 @@ public class WebController {
     }
 
 
-    @GetMapping("/klausuranlage")
-    public String klausuranlage(Model model) {
+    @GetMapping("/klausurAnlegen")
+    public String klausurAnlegen(Model model) {
         model.addAttribute("klausur", new Klausur(null, 0, false, null, null, null));
         return "NeueKlausur";
     }
 
-    @PostMapping("/klausurerstellen")
-    public String klausurAnlegen(@ModelAttribute Klausur klausur, Model model) {
-        model.addAttribute("klausur", klausur);
-
+    @PostMapping("/klausurErstellen")
+    public String klausurErstellen(@ModelAttribute Klausur klausur, Model model) {
         // TO-DO Anlegen der Klausur
 
         System.out.println(klausur.getVeranstaltung());
+        System.out.println(klausur.getLsfid());
+        System.out.println(klausur.isPraesenz());
+        System.out.println(klausur.getDate());
         System.out.println(klausur.getBeginn());
         System.out.println(klausur.getEnd());
-        System.out.println(klausur.getLsfid());
-        System.out.println(klausur.getDate());
-        System.out.println(klausur.isPraesenz());
 
-        return "redirect:/klausuranmeldung";
+        return "redirect:/klausur";
     }
 
-    @GetMapping("/klausuranmeldung")
-    public String klausurAnmeldung() {
-        return "KlausurAnmeldung";
+    @GetMapping("/klausur")
+    public String klausur() {
+        return "Klausur";
     }
 
-    @PostMapping("/klausuranmelden")
+    @PostMapping("/klausurAnmelden")
     public String klausurAnmelden() {
         return "redirect:/student";
     }
