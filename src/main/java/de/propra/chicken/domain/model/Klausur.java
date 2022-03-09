@@ -1,26 +1,31 @@
 package de.propra.chicken.domain.model;
 
+
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+
 public class Klausur {
     private String veranstaltung;
-    private int lsfid;
+    private LsfID lsfid;
     private boolean praesenz;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate date;
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime beginn;
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime end;
 
-    public Klausur(String veranstaltung, int lsfid, boolean praesenz, LocalDate date, LocalTime beginn, LocalTime end) {
+    public Klausur(String veranstaltung,int lsfid, boolean praesenz, LocalDate date, LocalTime beginn, LocalTime end) {
         this.veranstaltung = veranstaltung;
-        this.lsfid = lsfid;
+        this.lsfid = new LsfID(lsfid);
         this.praesenz = praesenz;
         this.date = date;
         this.beginn = beginn;
         this.end = end;
-    }
-
-    public Klausur() {
     }
 
     public String getVeranstaltung() {
@@ -28,7 +33,7 @@ public class Klausur {
     }
 
     public int getLsfid() {
-        return lsfid;
+        return this.lsfid.getId();
     }
 
     public boolean isPraesenz() {
@@ -46,4 +51,5 @@ public class Klausur {
     public LocalTime getEnd() {
         return end;
     }
+
 }

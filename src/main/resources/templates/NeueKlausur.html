@@ -8,13 +8,12 @@
 </head>
 <body>
 <div class="container">
-
     <h1>Neue Klausur eintragen</h1>
 
-    <form name="klausurform" method="post" action="/anlegen" th:object="${formular}">
+    <form name="klausurform" method="post" th:action="@{/anlegen}" th:object="${klausur}">
 
-        <div class="form-floating mb-4">
-            <div class="form-group mb-4">
+        <div class="form-floating mb-3 form-control-lg">
+            <div class="form-group mb-3">
                 <label for="veranstaltung">Name der Veranstaltung</label>
                 <input type="text" class="form-control" id="veranstaltung" th:field="*{veranstaltung}"
                        placeholder="Rechnerarchitektur" name="veranstaltung" value="">
@@ -22,10 +21,10 @@
         </div>
 
 
-        <div class="form-floating mb-4">
-            <div class="form-group mb-4">
+        <div class="form-floating mb-3 form-control-lg">
+            <div class="form-group mb-3">
                 <label for="lsfId" class="form-label">ID der Veranstaltung im LSF</label>
-                <input type="text" class="form-control" id="lsfId" th:field="*{lsfid}" placeholder="123456" name="lsfid"
+                <input type="number" class="form-control" id="lsfId" th:field="*{lsfid}" placeholder="123456" name="lsfid"
                        value="">
             </div>
 
@@ -38,21 +37,21 @@
             </label>
         </div>
 
-        <div class="form-floating mb-4">
-            <div class="form-group mb-4">
+        <div class="form-floating mb-3 form-control-lg">
+            <div class="form-group mb-3">
                 <label for="tag" class="form-label">Datum der Klausur (dd.mm.yyyy)</label>
-                <input type="text" class="form-control" id="tag" placeholder="01.01.1990" th:field="*{date}"
+                <input type="date" class="form-control" id="tag" placeholder="" th:field="*{date}"
                        name="datum" value="">
             </div>
 
         </div>
 
-        <div class="form-floating mb-4">
-            <div class="form-group mb-4">
+        <div class="form-floating mb-3 form-control-lg">
+            <div class="form-group mb-3">
                 <label for="von">Klausurbeginn (hh:mm)</label>
-                <input type="text" class="form-control" id="von" th:field="*{beginn}" placeholder="10:00" name="von"
+                <input type="time" class="form-control" id="von" th:field="*{beginn}" placeholder="10:00" name="von"
                        value="">
-                <div class="form-text">Runden Sie die Startzeit auf die nächste vorgegebene Zeit ab. Falls die Klausur
+                <div class="form-text">Runden Sie die Startzeit auf die nächste viertel Stunde ab. Falls die Klausur
                     vor
                     08:30 Uhr beginnt, tragen Sie bitte 08:30 Uhr ein.
                 </div>
@@ -60,17 +59,18 @@
 
         </div>
 
-        <div class="form-floating mb-4">
-            <div class="form-group mb-4">
+        <div class="form-floating mb-3 form-control-lg">
+            <div class="form-group mb-3">
                 <label for="bis" class="form-label">Klausurende (hh:mm)</label>
-                <input type="text" class="form-control" id="bis" placeholder="12:00" th:field="*{end}" name="bis" value="">
-                <div class="form-text">Runden Sie die Zeit auf die nächste vorgegebene Zeit auf. Falls die Klausur nach
+                <input type="time" class="form-control" id="bis" placeholder="12:00" th:field="*{end}" name="bis" value="">
+                <div class="form-text">Runden Sie die Zeit auf die nächste viertel Stunde auf. Falls die Klausur nach
                     13:30 Uhr endet, tragen Sie bitte 13:30 Uhr ein.
                 </div>
-                <div class="form-group mb-4">
+                <div class="form-group mb-3">
                 </div>
-
-                <button name="submitbtn" class="btn btn-primary" type="submit">Eintragen</button>
+            </div>
+            <button name="submitbtn" class="btn btn-primary btn-lg btn-block" type="submit">Eintragen</button>
+        </div>
     </form>
 
 
