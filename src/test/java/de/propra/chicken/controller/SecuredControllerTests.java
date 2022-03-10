@@ -3,7 +3,6 @@ package de.propra.chicken.controller;
 
 import de.propra.chicken.configuration.MethodSecurityConfiguration;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -90,25 +90,34 @@ public class SecuredControllerTests {
     }
 
     @Test
-    @DisplayName("Button auf /urlaub leitet auf /Student weiter")
+    @DisplayName("Button auf /urlaub leitet auf /student weiter")
     void urlaubPost() throws Exception {
-        mockMvc.perform(post("/urlaub").session(session))
+        mockMvc.perform(post("/urlaubErstellen").session(session)
+                        .param("tag", "2022-02-01")
+                        .param("von", "10:30")
+                        .param("bis", "12:00")
+                        .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/student"));
     }
 
     @Test
-    @DisplayName("Button auf /klausurErstellen leitet auf /klausur")
+    @DisplayName("Button auf der Seite /klausurAnlegen leitet auf /klausur weiter")
     void klausuranlegen() throws Exception {
-        mockMvc.perform(post("/klausurErstellen").session(session))
+        mockMvc.perform(post("/klausurErstellen").session(session)
+                        .param("_praesenz", "on")
+                        .param("lsfid", "12345")
+                        .with(csrf()))
+
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/klausur"));
     }
 
     @Test
-    @DisplayName("Button auf /klausur leitet auf /Student weiter")
+    @DisplayName("Button auf der Seite /klausur leitet auf /student weiter")
     void klausuranmelden() throws Exception {
-        mockMvc.perform(post("/klausur").session(session))
+        mockMvc.perform(post("/klausurAnmelden").session(session)
+                        .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/student"));
     }

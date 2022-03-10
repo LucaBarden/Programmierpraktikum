@@ -53,7 +53,7 @@ public class WebController {
         System.out.println(urlaub.getVon());
         System.out.println(urlaub.getBis());
 
-        return "redirect:/Student";
+        return "redirect:/student";
     }
 
     @Secured("ROLE_USER")
@@ -67,7 +67,6 @@ public class WebController {
     @PostMapping("/klausurErstellen")
     public String klausurErstellen(@ModelAttribute Klausur klausur, Model model) {
         // TO-DO Anlegen der Klausur
-
         System.out.println(klausur.getVeranstaltung());
         System.out.println(klausur.getLsfid());
         System.out.println(klausur.isPraesenz());
@@ -87,7 +86,7 @@ public class WebController {
     @Secured("ROLE_USER")
     @PostMapping("/klausurAnmelden")
     public String klausurAnmelden() {
-        return "redirect:/Student";
+        return "redirect:/student";
     }
 
 
@@ -105,9 +104,9 @@ public class WebController {
     }
 
 
-    @RequestMapping("/login")
+    /*@RequestMapping("/login")
     public String login(){
         return "redirect:/oauth2/authorization/github";
-    }
+    }*/
 
 }

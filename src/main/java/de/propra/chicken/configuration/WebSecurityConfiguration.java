@@ -31,8 +31,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .antMatchers("/*", "/error", "/css/**", "/img/**", "/js/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .logout(l -> l.logoutSuccessUrl("/").permitAll())
+                .logout()
+                .logoutSuccessUrl("/login")
+                .permitAll()
+                .deleteCookies("JSESSIONID")
+                .clearAuthentication(true)
+                .invalidateHttpSession(true)
+                .and()
                 .oauth2Login();
+
+
+
     }
 
     @Bean
