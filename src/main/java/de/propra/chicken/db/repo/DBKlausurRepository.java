@@ -8,6 +8,6 @@ import java.util.List;
 public interface DBKlausurRepository extends CrudRepository<Klausur, Long> {
     List<Klausur> findAll();
 
-    void saveKlausurStudent();
+    //void saveKlausurStudent();
 
 }
