@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 
 import java.util.HashSet;
@@ -22,8 +23,8 @@ import java.util.Set;
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Value("${Chicken.rollen.admin}")
-    private Set<String> admins;
+    @Value("${Chicken.rollen.orga}")
+    private Set<String> orga;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -31,14 +32,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .antMatchers("/*", "/error", "/css/**", "/img/**", "/js/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .logout()
-                .logoutSuccessUrl("/login")
-                .permitAll()
-                .deleteCookies("JSESSIONID")
-                .clearAuthentication(true)
-                .invalidateHttpSession(true)
+                .logout().logoutSuccessUrl("/login").permitAll()
+                .deleteCookies("JSESSIONID").clearAuthentication(true).invalidateHttpSession(true)
                 .and()
-                .oauth2Login();
+                .oauth2Login()
+                .and()
+                .csrf(c -> c.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
 
 
 
@@ -58,11 +57,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             String login = attributes.get("login").toString();
             System.out.printf("USER LOGIN: %s%n", login);
 
-            if (admins.contains(login)) {
-                System.out.printf("GRANTING ADMIN PRIVILEGES TO USER %s%n", login);
-                authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            if (orga.contains(login)) {
+                System.out.printf("Orga User %s%n", login);
+                authorities.add(new SimpleGrantedAuthority("ROLE_ORGA"));
             } else {
-                System.out.printf("DENYING ADMIN PRIVILEGES TO USER %s%n", login);
+                System.out.printf("Nicht Orga User %s%n", login);
             }
 
             return new DefaultOAuth2User(authorities, attributes, "login");

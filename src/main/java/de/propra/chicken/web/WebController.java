@@ -108,5 +108,10 @@ public class WebController {
         return "Orga";
     }
 
+    @GetMapping("/tutor")
+    public String tutor(){
+        return "Tutor";
+    }
+
 
 }
