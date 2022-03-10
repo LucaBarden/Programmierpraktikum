@@ -10,18 +10,26 @@ import static com.tngtech.archunit.library.Architectures.onionArchitecture;
 @AnalyzeClasses(packages = "de.propra.chicken")
 public class OnionTest {
 
-    @Disabled
     @ArchTest
+    static final ArchRule onionTest = onionArchitecture()
+                .domainModels("..domain.model..")
+                .domainServices("..domain.service..")
+                .applicationServices("..application.service..")
+
+                .adapter("web", "..web..")
+                .adapter("db", "..db..");
+
+    //@Disabled
+    /*@ArchTest
     public ArchRule onionTest() {
         ArchRule onionTest = onionArchitecture()
                 .domainModels("..domain.model..")
-                .domainServices("..domain.service..")
-                .applicationServices("..service..")
+                //.domainServices("..domain.service..")
+                .applicationServices("..application.service..")
 
                 .adapter("web", "..web..")
-                .adapter("db", "..repository..");
+                .adapter("db", "..db..");
         return onionTest;
-    }
-
+    }*/
 
 }
