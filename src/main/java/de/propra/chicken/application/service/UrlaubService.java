@@ -1,14 +1,20 @@
 package de.propra.chicken.application.service;
 
 import de.propra.chicken.application.service.repository.UrlaubRepository;
+import de.propra.chicken.domain.model.Student;
 import de.propra.chicken.domain.model.Urlaub;
 import de.propra.chicken.domain.service.UrlaubDomainService;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 public class UrlaubService {
 
-    @Autowired
-    UrlaubRepository urlaubRepository;
+
+    private UrlaubRepository urlaubRepository;
+
+    public UrlaubService(UrlaubRepository urlaubRepository) {
+        this.urlaubRepository = urlaubRepository;
+    }
 
     public void save(Urlaub urlaub) {
         validiereUrlaub(urlaub);
@@ -22,6 +28,11 @@ public class UrlaubService {
         } catch (Exception e) {
             //TODO behandleException urlaub invalide
         }
+    }
+
+    public List<Urlaub> findUrlaube(Student student) {
+
+        return urlaubRepository.findAllByID(student);
     }
 }
 

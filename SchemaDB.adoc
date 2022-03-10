@@ -1,7 +1,7 @@
 Tables
 
-    -Klausur (name, LsfID, Beginn, Schluss, isPräsenz)
+    -Klausur (name, LsfID, Datum, Beginn, Schluss, isPräsenz)
     -Student (Handle, Resturlaub)
     -KlausurStudent (LsfID, Handle)
-    -Urlaub (Beginn, Schluss, Handle)
+    -Urlaub (Datum, Beginn, Schluss, Handle)
     -AuditLog(Handle, message, Timestamp)

@@ -3,6 +3,7 @@ package de.propra.chicken.db;
 import de.propra.chicken.application.service.repository.KlausurRepository;
 import de.propra.chicken.db.repo.DBKlausurRepository;
 import de.propra.chicken.domain.model.Klausur;
+import de.propra.chicken.domain.model.Student;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,4 +26,22 @@ public class KlausurRepositoryImpl implements KlausurRepository {
     public List<Klausur> findAll() {
        return repository.findAll();
     }
+
+    @Override
+    public void saveKlausurAnmeldung(Klausur klausur, Student student) {
+        //TODO speicher Klausuranmeldung
+    }
+
+    @Override
+    public List<Klausur> findAngemeldeteKlausuren(Student student) {
+        //TODO lade alle Klausuranmeldungen
+        return null;
+    }
+
+    @Override
+    public void storniereKlausur(Student student, Klausur klausur) {
+        //TODO storniere Klausuranmeldung
+    }
+
+
 }

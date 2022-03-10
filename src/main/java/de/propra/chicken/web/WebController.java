@@ -47,7 +47,7 @@ public class WebController {
     @Secured("ROLE_USER")
     @PostMapping("/urlaubErstellen")
     public String urlaubErstellen(@ModelAttribute Urlaub urlaub, Model model) {
-        // TO-DO Anlegen des Urlaubs
+        // TODO Anlegen des Urlaubs
 
         System.out.println(urlaub.getTag());
         System.out.println(urlaub.getVon());
@@ -66,7 +66,7 @@ public class WebController {
     @Secured("ROLE_USER")
     @PostMapping("/klausurErstellen")
     public String klausurErstellen(@ModelAttribute Klausur klausur, Model model) {
-        // TO-DO Anlegen der Klausur
+        // TODO Anlegen der Klausur
         System.out.println(klausur.getVeranstaltung());
         System.out.println(klausur.getLsfid());
         System.out.println(klausur.isPraesenz());
