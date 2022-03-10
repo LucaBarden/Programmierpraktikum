@@ -103,10 +103,10 @@ public class WebController {
         return Map.of("token", gitHubAccessToken);
     }
 
+    @GetMapping("/orga")
+    public String orga(){
+        return "Orga";
+    }
 
-    /*@RequestMapping("/login")
-    public String login(){
-        return "redirect:/oauth2/authorization/github";
-    }*/
 
 }
