@@ -18,6 +18,8 @@ import java.util.Map;
 @Controller
 public class WebController {
 
+    //TODO Security richtig einstellen
+
     @Secured("ROLE_USER")
     @GetMapping("/")
     public String index(Model model, @AuthenticationPrincipal OAuth2User principal) {
@@ -102,16 +104,19 @@ public class WebController {
         OAuth2AccessToken gitHubAccessToken = authorizedClient.getAccessToken();
         return Map.of("token", gitHubAccessToken);
     }
-    //TODO Am Ende die drei Mappings wieder löschen
+
+    //TODO Am Ende die zwei Mappings wieder löschen
+
+    @Secured("ROLE_ORGA")
     @GetMapping("/orga")
     public String orga() {
         return "Orga";
     }
 
+    @Secured("ROLE_TUTOR")
     @GetMapping("/tutor")
     public String tutor() {
         return "Tutor";
     }
-
 
 }

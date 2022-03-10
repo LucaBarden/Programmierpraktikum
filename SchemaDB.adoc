@@ -1,7 +1,7 @@
 Tables
 
     -Klausur (name, LsfID, Datum, Beginn, Schluss, isPräsenz)
-    -Student (Handle, Resturlaub)
+    -Student (Handle, Resturlaub) (Jeder Git User eine unique ID)
     -KlausurStudent (LsfID, Handle)
     -Urlaub (Datum, Beginn, Schluss, Handle)
     -AuditLog(Handle, message, Timestamp)
