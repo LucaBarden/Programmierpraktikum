@@ -26,6 +26,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${Chicken.rollen.orga}")
     private Set<String> orga;
 
+    @Value("${Chicken.rollen.tutor")
+    private Set<String> tutoren;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests(a -> a
@@ -60,9 +63,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             if (orga.contains(login)) {
                 System.out.printf("Orga User %s%n", login);
                 authorities.add(new SimpleGrantedAuthority("ROLE_ORGA"));
+            } else if(tutoren.contains(login)){
+                System.out.printf("Tutor User %s%n", login);
+                authorities.add(new SimpleGrantedAuthority("ROLE_TUTOR"));
             } else {
-                System.out.printf("Nicht Orga User %s%n", login);
+                System.out.printf("Nicht Team User %s%n", login);
             }
+            //TODO User Organizations auf propra checken
 
             return new DefaultOAuth2User(authorities, attributes, "login");
         };

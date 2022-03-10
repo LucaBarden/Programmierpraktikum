@@ -29,7 +29,7 @@ public class WebController {
 
     @Secured("ROLE_USER")
     @GetMapping("/student")
-    public String student(Model model, @AuthenticationPrincipal OAuth2User principal ) {
+    public String student(Model model, @AuthenticationPrincipal OAuth2User principal) {
         model.addAttribute("user",
                 principal != null ? principal.getAttribute("login") : null
         );
@@ -102,14 +102,14 @@ public class WebController {
         OAuth2AccessToken gitHubAccessToken = authorizedClient.getAccessToken();
         return Map.of("token", gitHubAccessToken);
     }
-
+    //TODO Am Ende die drei Mappings wieder löschen
     @GetMapping("/orga")
-    public String orga(){
+    public String orga() {
         return "Orga";
     }
 
     @GetMapping("/tutor")
-    public String tutor(){
+    public String tutor() {
         return "Tutor";
     }
 
