@@ -4,7 +4,7 @@ public class LsfID {
 
     private int id;
 
-    public LsfID(int id) {
+    public LsfID(int id){
         if (check(id)) this.id = id;
         else this.id = -1;
 

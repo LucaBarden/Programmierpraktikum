@@ -19,7 +19,7 @@ public class Klausur {
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime end;
 
-    public Klausur(String veranstaltung,int lsfid, boolean praesenz, LocalDate date, LocalTime beginn, LocalTime end) {
+    public Klausur(String veranstaltung, int lsfid, boolean praesenz, LocalDate date, LocalTime beginn, LocalTime end) {
         this.veranstaltung = veranstaltung;
         this.lsfid = new LsfID(lsfid);
         this.praesenz = praesenz;

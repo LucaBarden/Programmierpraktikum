@@ -16,12 +16,12 @@
     <div class="formular mtb-3">
         <strong>Wenn die Klausur noch nicht vorhanden ist, können sie sie hier anlegen</strong>
         </p>
-        <form action="/klausurAnlegen">
+        <form th:action="@{/klausurAnlegen}">
             <input type="submit" class="btn btn-info" value="Neue Klausur anlegen"/>
         </form>
     </div>
     <div class="formular mtb-3">
-        <form name="klausur_anmelden" method="post" action="/klausurAnmelden">
+        <form name="klausur_anmelden" method="post" th:action="@{/klausurAnmelden}" th:object="${klausur}">
             <select class="form-control" name="klausur" id="klausur-select">
             </select>
 

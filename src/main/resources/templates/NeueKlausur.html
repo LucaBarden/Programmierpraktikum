@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Neue Klausur eintragen</title>
@@ -21,14 +21,14 @@
         </div>
 
 
-        <div class="form-floating mb-3 form-control-lg">
+        <!--<div class="form-floating mb-3 form-control-lg">
             <div class="form-group mb-3">
                 <label for="lsfId" class="form-label">ID der Veranstaltung im LSF</label>
                 <input type="number" class="form-control" id="lsfId" th:field="*{lsfid}" placeholder="123456" name="lsfid"
                        value="">
             </div>
 
-        </div>
+        </div>-->
         <div class="form-check">
             <input class="form-check-input" type="checkbox" id="präsenz" th:field="*{praesenz}" name="vor_ort"
                    value="true" checked="checked">
