@@ -5,6 +5,8 @@ import de.propra.chicken.db.repo.DBKlausurRepository;
 import de.propra.chicken.domain.model.Klausur;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class KlausurRepositoryImpl implements KlausurRepository {
     private DBKlausurRepository repository;
@@ -13,8 +15,14 @@ public class KlausurRepositoryImpl implements KlausurRepository {
         this.repository = repository;
     }
 
+
     @Override
     public void save(Klausur klausur) {
         repository.save(klausur);
+    }
+
+    @Override
+    public List<Klausur> findAll() {
+       return repository.findAll();
     }
 }
