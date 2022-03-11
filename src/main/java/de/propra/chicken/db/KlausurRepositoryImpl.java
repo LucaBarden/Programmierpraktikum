@@ -40,7 +40,7 @@ public class KlausurRepositoryImpl implements KlausurRepository {
     }
 
     @Override
-    public void storniereKlausur(Student student, Klausur klausur) {
+    public void storniereKlausur(Klausur klausur, Student student) {
         //TODO storniere Klausuranmeldung
     }
 

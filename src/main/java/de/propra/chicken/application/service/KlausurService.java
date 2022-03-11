@@ -17,7 +17,7 @@ public class KlausurService {
 
     public void anmelden(Klausur klausur, Student student) throws Exception {
         try {
-            validiereKlausurAnmeldung(klausur, student);
+            KlausurDomainService.validiereKlausurAnmeldung(klausur, student);
             klausurRepository.saveKlausurAnmeldung(klausur, student);
         }
         catch (Exception ex) {
@@ -29,7 +29,7 @@ public class KlausurService {
 
     public void save(Klausur klausur) throws Exception{
         try {
-            validiereKlausur(klausur);
+            KlausurDomainService.validiereKlausur(klausur);
             klausurRepository.save(klausur);
         }
         catch(Exception ex) {
@@ -39,44 +39,17 @@ public class KlausurService {
     }
 
     public List<Klausur> findAll(){
-        return klausurRepository.findAll();
+        List<Klausur> alleKlausuren = klausurRepository.findAll();
+        return KlausurDomainService.validiereAlleKlausuren(alleKlausuren);
     }
 
     public List<Klausur> findAngemeldeteKlausuren(Student student) {
         return klausurRepository.findAngemeldeteKlausuren(student);
     }
 
-    public void storniereKlausur(Student student, Klausur klausur) throws Exception {
-        validiereKlausurStornierung(student, klausur);
-        klausurRepository.storniereKlausur(student, klausur);
+    public void storniereKlausur(Klausur klausur, Student student) throws Exception {
+        KlausurDomainService.validiereKlausurStornierung(klausur, student);
+        klausurRepository.storniereKlausur(klausur, student);
     }
 
-    private void validiereKlausurStornierung(Student student, Klausur klausur) throws Exception {
-        try {
-            KlausurDomainService.validiereKlausurStornierung();
-        }
-        catch (Exception ex) {
-            throw ex;
-        }
-    }
-
-
-    private void validiereKlausurAnmeldung(Klausur klausur, Student student) throws Exception {
-        try {
-            KlausurDomainService.validiereKlausurAnmeldung();
-        }
-        catch(Exception ex) {
-            throw ex;
-        }
-    }
-
-
-
-    private void validiereKlausur(Klausur klausur) {
-        try{
-            KlausurDomainService.validiereKlausur(klausur);
-        } catch (Exception e) {
-            //TODO behandleException klausurinvalide
-        }
-    }
 }
