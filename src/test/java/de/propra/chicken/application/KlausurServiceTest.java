@@ -11,7 +11,7 @@ import static org.mockito.Mockito.*;
 
 public class KlausurServiceTest {
 
-    
+
     @Test
     @DisplayName("Testet ob eine ungueltige LSF ID einen Fehler wirft")
     public void validLSFID(){
