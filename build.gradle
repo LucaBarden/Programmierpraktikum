@@ -30,8 +30,7 @@ dependencies {
     testImplementation 'com.tngtech.archunit:archunit-junit5-engine:0.22.0'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.6.4'
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.3'
-
-
+    implementation 'com.github.spotbugs:spotbugs:4.6.0'
 }
 
 tasks.named('test') {
