@@ -5,7 +5,9 @@ import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.Student;
 import de.propra.chicken.domain.service.KlausurDomainService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class KlausurService {
 
@@ -43,12 +45,12 @@ public class KlausurService {
         return KlausurDomainService.validiereAlleKlausuren(alleKlausuren);
     }
 
-    public List<Klausur> findAngemeldeteKlausuren(Student student) {
-        return klausurRepository.findAngemeldeteKlausuren(student);
+    public Map<Klausur, Boolean> findAngemeldeteKlausuren(Student student) {
+        List<Klausur> klausuren = klausurRepository.findAngemeldeteKlausuren(student);
+        return KlausurDomainService.stornierbareKlausuren(klausuren);
     }
 
-    public void storniereKlausur(Klausur klausur, Student student) throws Exception {
-        KlausurDomainService.validiereKlausurStornierung(klausur, student);
+    public void storniereKlausur(Klausur klausur, Student student) {
         klausurRepository.storniereKlausur(klausur, student);
     }
 

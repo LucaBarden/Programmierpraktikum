@@ -109,13 +109,13 @@ public class WebController {
 
     //TODO Am Ende die zwei Mappings wieder löschen
 
-    @Secured("ROLE_ORGA")
+    @Secured("ROLE_USER")
     @GetMapping("/orga")
     public String orga() {
         return "Orga";
     }
 
-    @Secured("ROLE_TUTOR")
+    @Secured("ROLE_USER")
     @GetMapping("/tutor")
     public String tutor() {
         return "Tutor";

@@ -4,9 +4,7 @@ import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.Student;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class KlausurDomainService {
 
@@ -18,11 +16,6 @@ public class KlausurDomainService {
     public static void validiereKlausurAnmeldung(Klausur klausur, Student student) throws Exception {
         //TODO validiere Anmeldung
         throw new Exception("klausuranmeldung ist nicht valide");
-    }
-
-    public static void validiereKlausurStornierung(Klausur klausur, Student student) throws Exception {
-        //TODO validiere Stornierung
-        throw new Exception("klausurstornierung");
     }
 
 
@@ -37,5 +30,18 @@ public class KlausurDomainService {
         return gueltigeKlausuren;
 
 
+    }
+
+    public static Map<Klausur, Boolean> stornierbareKlausuren(List<Klausur> klausuren) {
+        Map<Klausur, Boolean> stornierbar = new HashMap<>();
+        for(Klausur klausur : klausuren) {
+            if(klausur.getDate().isAfter(LocalDate.now())) {
+                stornierbar.put(klausur, true);
+            }
+            else {
+                stornierbar.put(klausur, false);
+            }
+        }
+        return stornierbar;
     }
 }
