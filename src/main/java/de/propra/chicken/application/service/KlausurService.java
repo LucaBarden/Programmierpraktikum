@@ -4,14 +4,15 @@ import de.propra.chicken.application.service.repository.KlausurRepository;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.Student;
 import de.propra.chicken.domain.service.KlausurDomainService;
+import org.jsoup.Jsoup;
 
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 public class KlausurService {
 
-    private KlausurRepository klausurRepository;
+    private final KlausurRepository klausurRepository;
 
     public KlausurService(KlausurRepository klausurRepository) {
         this.klausurRepository = klausurRepository;
@@ -19,28 +20,35 @@ public class KlausurService {
 
     public void anmelden(Klausur klausur, Student student) throws Exception {
         try {
-            KlausurDomainService.validiereKlausurAnmeldung(klausur, student);
+            klausurRepository.validiereKlausurAnmeldung(klausur, student);
             klausurRepository.saveKlausurAnmeldung(klausur, student);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw ex;
         }
-
-
     }
 
-    public void save(Klausur klausur) throws Exception{
+
+    public void save(Klausur klausur) throws Exception {
         try {
-            KlausurDomainService.validiereKlausur(klausur);
+            validiereKlausur(klausur);
             klausurRepository.save(klausur);
-        }
-        catch(Exception ex) {
+        } catch (Exception ex) {
             throw ex;
         }
 
     }
 
-    public List<Klausur> findAll(){
+    private void validiereKlausur(Klausur klausur) throws Exception {
+        //TODO Auf Namen der Klausur prüfen
+        String webContent = Jsoup.connect(String.format("https://lsf.hhu.de/qisserver/rds?state=verpublish" +
+                "&status=init&vmfile=no&publishid=%d&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung", klausur.getLsfid())).get().text();
+        //String.valueOf(klausur.getLsfid())
+        if(!(webContent.contains("VeranstaltungsID"))){
+            throw new IllegalArgumentException("Invalide LSF ID");
+        }
+    }
+
+    public List<Klausur> findAll() {
         List<Klausur> alleKlausuren = klausurRepository.findAll();
         return KlausurDomainService.validiereAlleKlausuren(alleKlausuren);
     }

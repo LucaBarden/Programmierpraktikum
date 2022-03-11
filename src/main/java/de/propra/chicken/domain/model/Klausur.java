@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class Klausur {
     private String veranstaltung;
-    private LsfID lsfid;
+    private int lsfid;
     private boolean praesenz;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate date;
@@ -22,7 +22,7 @@ public class Klausur {
 
     public Klausur(String veranstaltung, int lsfid, boolean praesenz, LocalDate date, LocalTime beginn, LocalTime end) {
         this.veranstaltung = veranstaltung;
-        this.lsfid = new LsfID(lsfid);
+        this.lsfid = lsfid;
         this.praesenz = praesenz;
         this.date = date;
         this.beginn = beginn;
@@ -34,7 +34,7 @@ public class Klausur {
     }
 
     public int getLsfid() {
-        return this.lsfid.getId();
+        return this.lsfid;
     }
 
     public boolean isPraesenz() {

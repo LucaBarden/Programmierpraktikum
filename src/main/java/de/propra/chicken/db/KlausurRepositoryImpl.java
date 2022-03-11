@@ -44,6 +44,11 @@ public class KlausurRepositoryImpl implements KlausurRepository {
         //TODO storniere Klausuranmeldung
     }
 
+    public boolean validiereKlausurAnmeldung(Klausur klausur, Student student){
+        //TODO validiere Anmeldung
+        return false;
+    }
+
 
 
 }

@@ -16,4 +16,6 @@ public interface KlausurRepository {
 
     void storniereKlausur(Klausur klausur, Student student);
 
+    boolean validiereKlausurAnmeldung(Klausur klausur, Student student);
+
 }

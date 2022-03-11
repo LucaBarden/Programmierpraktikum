@@ -8,19 +8,9 @@ import java.util.*;
 
 public class KlausurDomainService {
 
-    public static void validiereKlausur(Klausur klausur) throws Exception {
-        //TODO validiereKlausur()
-        throw new Exception("Klausur ist nicht valide");
-    }
-
-    public static void validiereKlausurAnmeldung(Klausur klausur, Student student) throws Exception {
-        //TODO validiere Anmeldung
-        throw new Exception("klausuranmeldung ist nicht valide");
-    }
-
 
     public static List<Klausur> validiereAlleKlausuren(List<Klausur> alleKlausuren) {
-        //TODO richtige Überprüfung? Ein Tag vor Klausur Tag
+        //TODO So gemacht damit wir weniger Testfälle haben
         List<Klausur> gueltigeKlausuren = new LinkedList<>();
         for(Klausur klausur : alleKlausuren) {
             if(klausur.getDate().isAfter(LocalDate.now())) {
