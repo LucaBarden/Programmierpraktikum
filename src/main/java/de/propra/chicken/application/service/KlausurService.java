@@ -4,7 +4,6 @@ import de.propra.chicken.application.service.repository.KlausurRepository;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.Student;
 import de.propra.chicken.domain.service.KlausurDomainService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -39,8 +38,8 @@ public class KlausurService {
 
     }
 
-    public void findAll(){
-        klausurRepository.findAll();
+    public List<Klausur> findAll(){
+        return klausurRepository.findAll();
     }
 
     public List<Klausur> findAngemeldeteKlausuren(Student student) {

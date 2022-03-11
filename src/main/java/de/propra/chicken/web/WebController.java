@@ -2,6 +2,7 @@ package de.propra.chicken.web;
 
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.Urlaub;
+import de.propra.chicken.domain.service.KlausurDomainService;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -68,7 +69,8 @@ public class WebController {
     @Secured("ROLE_USER")
     @PostMapping("/klausurErstellen")
     public String klausurErstellen(@ModelAttribute Klausur klausur, Model model) {
-        // TODO Anlegen der Klausur
+
+
         System.out.println(klausur.getVeranstaltung());
         System.out.println(klausur.getLsfid());
         System.out.println(klausur.isPraesenz());

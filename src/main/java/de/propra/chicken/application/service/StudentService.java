@@ -2,7 +2,6 @@ package de.propra.chicken.application.service;
 
 import de.propra.chicken.application.service.repository.StudentRepository;
 import de.propra.chicken.domain.model.Student;
-import de.propra.chicken.domain.model.Urlaub;
 
 public class StudentService {
 

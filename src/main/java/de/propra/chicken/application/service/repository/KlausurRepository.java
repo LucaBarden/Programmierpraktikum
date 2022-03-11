@@ -15,4 +15,5 @@ public interface KlausurRepository {
     List<Klausur> findAngemeldeteKlausuren(Student student);
 
     void storniereKlausur(Student student, Klausur klausur);
+
 }

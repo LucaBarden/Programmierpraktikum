@@ -24,6 +24,7 @@ public class KlausurRepositoryImpl implements KlausurRepository {
 
     @Override
     public List<Klausur> findAll() {
+
        return repository.findAll();
     }
 
@@ -42,6 +43,7 @@ public class KlausurRepositoryImpl implements KlausurRepository {
     public void storniereKlausur(Student student, Klausur klausur) {
         //TODO storniere Klausuranmeldung
     }
+
 
 
 }
