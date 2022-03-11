@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 
 public class Klausur {
@@ -52,4 +53,16 @@ public class Klausur {
         return end;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Klausur klausur = (Klausur) o;
+        return Objects.equals(lsfid, klausur.lsfid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lsfid);
+    }
 }
