@@ -1,14 +1,13 @@
 package de.propra.chicken.domain.model;
 
-
-
+import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
-
+@Table("klausuren")
 public class Klausur {
     private String veranstaltung;
     private int lsfid;

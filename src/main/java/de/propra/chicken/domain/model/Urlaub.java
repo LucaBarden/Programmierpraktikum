@@ -1,10 +1,12 @@
 package de.propra.chicken.domain.model;
 
+import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Table("urlaube")
 public class Urlaub {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

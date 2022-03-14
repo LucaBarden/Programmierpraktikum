@@ -40,11 +40,28 @@ public class KlausurService {
 
     private void validiereKlausur(Klausur klausur) throws Exception {
         //TODO Auf Namen der Klausur prüfen
+        if(!validiereLsfIdDB(klausur)) {
+            try {
+                validiereLsfIdInternet(klausur);
+            } catch(Exception ex) {
+                throw ex;
+            }
+        }
+    }
+
+    private boolean validiereLsfIdDB(Klausur klausur) {
+        //TODO: aus DB validieren
+        return false;
+    }
+
+    private void validiereLsfIdInternet(Klausur klausur) throws Exception {
         String webContent = Jsoup.connect(String.format("https://lsf.hhu.de/qisserver/rds?state=verpublish" +
                 "&status=init&vmfile=no&publishid=%d&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung", klausur.getLsfid())).get().text();
-        //String.valueOf(klausur.getLsfid())
         if(!(webContent.contains("VeranstaltungsID"))){
             throw new IllegalArgumentException("Invalide LSF ID");
+        }
+        if(!(webContent.contains(klausur.getVeranstaltung()))){
+            throw new IllegalArgumentException("Invalider Klausurname");
         }
     }
 
