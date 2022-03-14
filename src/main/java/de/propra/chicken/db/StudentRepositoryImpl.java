@@ -5,7 +5,7 @@ import de.propra.chicken.db.repo.DBStudentRepository;
 import de.propra.chicken.domain.model.Student;
 import org.springframework.stereotype.Repository;
 
-@Repository
+
 public class StudentRepositoryImpl implements StudentRepository {
 
     DBStudentRepository studentRepository;

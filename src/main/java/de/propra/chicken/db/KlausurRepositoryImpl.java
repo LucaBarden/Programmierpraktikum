@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+
 public class KlausurRepositoryImpl implements KlausurRepository {
     private DBKlausurRepository repository;
 

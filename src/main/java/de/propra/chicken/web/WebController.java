@@ -1,5 +1,6 @@
 package de.propra.chicken.web;
 
+import de.propra.chicken.application.service.KlausurService;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.Urlaub;
 import de.propra.chicken.domain.service.KlausurDomainService;
@@ -69,14 +70,6 @@ public class WebController {
     @Secured("ROLE_USER")
     @PostMapping("/klausurErstellen")
     public String klausurErstellen(@ModelAttribute Klausur klausur, Model model) {
-
-
-        System.out.println(klausur.getVeranstaltung());
-        System.out.println(klausur.getLsfid());
-        System.out.println(klausur.isPraesenz());
-        System.out.println(klausur.getDate());
-        System.out.println(klausur.getBeginn());
-        System.out.println(klausur.getEnd());
 
         return "redirect:/klausur";
     }

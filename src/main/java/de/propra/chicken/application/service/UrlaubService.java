@@ -2,6 +2,8 @@ package de.propra.chicken.application.service;
 
 import de.propra.chicken.application.service.repository.KlausurRepository;
 import de.propra.chicken.application.service.repository.UrlaubRepository;
+import de.propra.chicken.application.service.repository.UtilRepository;
+import de.propra.chicken.db.UtilRepositoryImpl;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.Student;
 import de.propra.chicken.domain.model.Urlaub;
@@ -12,11 +14,11 @@ public class UrlaubService {
 
 
     private UrlaubRepository urlaubRepository;
-    private KlausurRepository klausurRepository;
 
-    public UrlaubService(UrlaubRepository urlaubRepository, KlausurRepository klausurRepository) {
+
+
+    public UrlaubService(UrlaubRepository urlaubRepository) {
         this.urlaubRepository = urlaubRepository;
-        this.klausurRepository = klausurRepository;
     }
 
     public void save(Student student, Urlaub urlaub ) {
@@ -28,7 +30,7 @@ public class UrlaubService {
 
     private void validiereUrlaub(Student student, Urlaub urlaub) {
         List<Urlaub> urlaube = findUrlaube(student);
-        List<Klausur> klausuren = findeKlausuren(student);
+
 
         //TODO validiereUrlaub
         /*
@@ -48,9 +50,6 @@ public class UrlaubService {
         return urlaubRepository.findAllByID(student.getGithubID());
     }
 
-    private List<Klausur> findeKlausuren(Student student){
-        //urlaubRepository.findKlausurenByStudent(student.getGithubID());
-        return null;
-    }
+
 }
 

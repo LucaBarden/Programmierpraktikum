@@ -6,12 +6,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Table("urlaube")
+
 public class Urlaub {
 
     private long githubID;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) //TODO eigentlich weg
     private LocalDate tag;
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime von;
@@ -36,11 +36,4 @@ public class Urlaub {
         return bis;
     }
 
-    public long getGithubID() {
-        return githubID;
-    }
-
-    public void setGithubID(long githubID) {
-        this.githubID = githubID;
-    }
 }
