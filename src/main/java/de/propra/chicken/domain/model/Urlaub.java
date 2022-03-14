@@ -9,6 +9,8 @@ import java.time.LocalTime;
 @Table("urlaube")
 public class Urlaub {
 
+    private long githubID;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate tag;
     @DateTimeFormat(pattern = "HH:mm")
@@ -32,5 +34,13 @@ public class Urlaub {
 
     public LocalTime getBis() {
         return bis;
+    }
+
+    public long getGithubID() {
+        return githubID;
+    }
+
+    public void setGithubID(long githubID) {
+        this.githubID = githubID;
     }
 }

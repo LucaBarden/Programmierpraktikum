@@ -7,6 +7,15 @@ public class Student{
 
     //private String handle;
     private int restUrlaub;
+
+    public int getRestUrlaub() {
+        return restUrlaub;
+    }
+
+    public long getGithubID() {
+        return githubID;
+    }
+
     private long githubID;
 
     public Student(int restUrlaub, long githubID) {
