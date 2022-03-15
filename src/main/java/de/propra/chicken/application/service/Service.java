@@ -75,9 +75,10 @@ public class Service {
         student = repo.speicherStudent(student);
     }
 
-    public void speicherUrlaub(Urlaub urlaub) {
+    public void speicherUrlaub(Urlaub urlaub) throws Exception {
         try {
-            student.validiereUrlaub(urlaub);
+            Urlaub zuErstattenderUrlaub = student.validiereUrlaub(urlaub);
+            //TODO: urlaub mit zuErstattenderUrlaub verrechnen
             student.addUrlaub(urlaub);
             student = repo.speicherStudent(student);
         } catch (Exception ex) {
