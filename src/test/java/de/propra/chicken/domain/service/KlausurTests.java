@@ -1,4 +1,3 @@
-/*
 package de.propra.chicken.domain.service;
 
 import de.propra.chicken.domain.model.Klausur;
@@ -11,11 +10,11 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class KlausurDomainServiceTests {
+public class KlausurTests {
 
 
-    List<Klausur> arrange(){
-        List<Klausur> alleKlausuren = new LinkedList<>();
+    Set<Klausur> arrange(){
+        Set<Klausur> alleKlausuren = new HashSet<>();
         //gueltig
         alleKlausuren.add(new Klausur("Rechnerarchitektur", 12, true, LocalDate.now().plusDays(1), null, null));
         alleKlausuren.add(new Klausur("Progra", 34, false, LocalDate.now().plusDays(3), null, null));
@@ -31,18 +30,18 @@ public class KlausurDomainServiceTests {
     @DisplayName("Testet, dass nur Klausuren in der Zukunft geladen werden")
     void klausurenUngueltig() {
         //arrange
-        List<Klausur> alleKlausuren = arrange();
+        Set<Klausur> alleKlausuren = arrange();
         //act
-        Set<Klausur> gueltigeKlausuren = Validierung.validiereAlleKlausuren(alleKlausuren.);
-        Set<Integer> lsfIDs = new HashSet<>();
+        Set<Klausur> gueltigeKlausuren = Validierung.validiereAlleKlausuren(alleKlausuren);
+        Set<Integer> lsfIDs = new TreeSet<>();
         for(Klausur klausur : gueltigeKlausuren) {
             lsfIDs.add(klausur.getLsfid());
         }
         //assert
         assertThat(gueltigeKlausuren).hasSize(2);
 
-        assertThat(lsfIDs.contains(12));
-        assertThat(lsfIDs.contains(34));
+        assertThat(lsfIDs).contains(12);
+        assertThat(lsfIDs).contains(34);
     }
 
 
@@ -54,11 +53,17 @@ public class KlausurDomainServiceTests {
         //act
         Map<Klausur, Boolean> stornierbareKlausuren = Validierung.stornierbareKlausuren(alleKlausuren);
 
+        //assert
         assertThat(stornierbareKlausuren).hasSize(4);
-        assertThat(stornierbareKlausuren.get(alleKlausuren.get(0))).isEqualTo(true);
-        assertThat(stornierbareKlausuren.get(alleKlausuren.get(1))).isEqualTo(true);
-        assertThat(stornierbareKlausuren.get(alleKlausuren.get(2))).isEqualTo(false);
-        assertThat(stornierbareKlausuren.get(alleKlausuren.get(3))).isEqualTo(false);
+
+        for(Klausur klausur : stornierbareKlausuren.keySet()) {
+            if(klausur.getLsfid() == 12 || klausur.getLsfid() == 34) {
+                assertThat(stornierbareKlausuren.get(klausur)).isEqualTo(true);
+            }
+            else if (klausur.getLsfid() == 56 || klausur.getLsfid() == 78) {
+                assertThat(stornierbareKlausuren.get(klausur)).isEqualTo(false);
+            }
+        }
 
     }
 
@@ -69,4 +74,4 @@ public class KlausurDomainServiceTests {
 
 }
 
-*/
+

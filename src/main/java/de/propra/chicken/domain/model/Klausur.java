@@ -1,6 +1,5 @@
 package de.propra.chicken.domain.model;
 
-import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;

@@ -19,7 +19,7 @@ public class Service {
     }
 
 
-    public void klausurAnmelden(Klausur klausur) {
+    public void klausurAnmelden(Klausur klausur) throws Exception {
         student.setKlausuren(repo.getKlausurenVonStudent(student));
         student.setUrlaube(repo.getUrlaubeVonStudent(student));
         try {
@@ -58,9 +58,6 @@ public class Service {
                 "&status=init&vmfile=no&publishid=%d&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung", klausur.getLsfid())).get().text();
         if(!(webContent.contains("VeranstaltungsID"))){
             throw new IllegalArgumentException("Invalide LSF ID");
-        }
-        if(!(webContent.contains(klausur.getVeranstaltung()))){
-            throw new IllegalArgumentException("Invalider Klausurname");
         }
     }
 

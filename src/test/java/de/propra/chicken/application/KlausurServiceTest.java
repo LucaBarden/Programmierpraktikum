@@ -1,7 +1,7 @@
-/*
-
 package de.propra.chicken.application;
 
+import de.propra.chicken.application.service.Service;
+import de.propra.chicken.application.service.repo.IRepository;
 import de.propra.chicken.domain.model.Klausur;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,50 +16,29 @@ public class KlausurServiceTest {
     @DisplayName("Testet ob eine ungueltige LSF ID einen Fehler wirft")
     public void invalidLSFID(){
         //TODO: (in)validLsfID aus DB oder Internet je eigene Methode
-        KlausurRepository repo = mock(KlausurRepository.class);
-        KlausurService service = new KlausurService(repo);
-        doNothing().when(repo).save(any());
+        IRepository repo = mock(IRepository.class);
+        Service service = new Service(repo);
+        doNothing().when(repo).speicherKlausur(any());
 
         assertThrows(Exception.class, () -> {
-            service.save(new Klausur("Test", 123, false, null, null, null));
+            service.speicherKlausur(new Klausur("Test", 123, false, null, null, null));
         });
     }
 
     @Test
     @DisplayName("Testet ob eine gueltige LSF ID keinen Fehler wirft")
     public void validLSFID(){
-        KlausurRepository repo = mock(KlausurRepository.class);
-        KlausurService service = new KlausurService(repo);
-        doNothing().when(repo).save(any());
+        IRepository repo = mock(IRepository.class);
+        Service service = new Service(repo);
+        doNothing().when(repo).speicherKlausur(any());
 
         assertDoesNotThrow(() ->
-            service.save(new Klausur("Test", 12345, false, null, null, null)));
+            service.speicherKlausur(new Klausur("Test", 12345, false, null, null, null)));
     }
 
-    @Test
-    @DisplayName("Testet ob ein gueltiger Name keinen Fehler wirft")
-    public void validName(){
-        //TODO: mocken für fake-Internet-Abfrage
-        KlausurRepository repo = mock(KlausurRepository.class);
-        KlausurService service = new KlausurService(repo);
-        doNothing().when(repo).save(any());
 
-        assertDoesNotThrow(() ->
-                service.save(new Klausur("Rechnerarchitektur", 219468, false, null, null, null)));
-    }
-
-    @Test
-    @DisplayName("Testet ob ein ungueltiger Name einen Fehler wirft")
-    public void invalidName(){
-        KlausurRepository repo = mock(KlausurRepository.class);
-        KlausurService service = new KlausurService(repo);
-        doNothing().when(repo).save(any());
-
-        assertThrows(Exception.class, () ->
-                service.save(new Klausur("Rechnerarchitektur123", 219468, false, null, null, null)));
-    }
 
 
 }
 
-*/
+
