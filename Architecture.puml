@@ -1,0 +1,84 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+class ApplicationService {
+}
+
+component Domain {
+component Model {
+class Student {
+Long studentID
+int resturlaub
+Set<Klausur> klausuren
+Set<Urlaub> urlaube
+}
+
+class Urlaub {
+LocalDate tag
+LocalTime von
+LocalTime bis
+}
+
+class Klausur {
+string veranstaltung
+int lsfid
+boolean praesenz
+LocalDate tag
+LocalTime von
+LocalTime bis
+}
+}
+
+component service {
+class Validierung
+}
+}
+
+component ApplicationService {
+
+    component repository {
+        interface Repository
+        }
+    class Service {
+
+    }
+
+}
+
+component DB {
+    class RepositoryImpl {
+    Datenbankabfragen
+    }
+    interface CRUDKlausur {
+     Klausur speichern
+    }
+    interface CRUDStudent {
+
+    }
+}
+
+
+
+
+Service --> Domain
+Student -> Klausur
+Student --> Urlaub
+RepositoryImpl -> Repository
+Service -> repository
+Student -> Validierung
+RepositoryImpl -> CRUDKlausur
+RepositoryImpl --> CRUDStudent
+
+
+
+
+
+
+
+
+
+
+
+
+
+@enduml

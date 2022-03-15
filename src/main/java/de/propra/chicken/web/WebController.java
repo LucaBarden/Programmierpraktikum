@@ -1,9 +1,7 @@
 package de.propra.chicken.web;
 
-import de.propra.chicken.application.service.KlausurService;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.Urlaub;
-import de.propra.chicken.domain.service.KlausurDomainService;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;

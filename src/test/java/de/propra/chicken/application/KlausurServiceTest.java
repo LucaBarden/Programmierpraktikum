@@ -1,7 +1,7 @@
+/*
+
 package de.propra.chicken.application;
 
-import de.propra.chicken.application.service.KlausurService;
-import de.propra.chicken.application.service.repository.KlausurRepository;
 import de.propra.chicken.domain.model.Klausur;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,3 +61,5 @@ public class KlausurServiceTest {
 
 
 }
+
+*/

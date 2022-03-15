@@ -1,15 +1,13 @@
-package de.propra.chicken.db.repo;
+package de.propra.chicken.db;
 
 import de.propra.chicken.domain.model.Klausur;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Set;
 
 @Repository
-public interface DBKlausurRepository extends CrudRepository<Klausur, Long> {
-    List<Klausur> findAll();
-
-
-
+public interface CRUDKlausur extends CrudRepository<Klausur, Long> {
+    @Override
+    Set<Klausur> findAll();
 }
