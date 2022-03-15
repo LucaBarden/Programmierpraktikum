@@ -11,20 +11,17 @@ public class Klausur {
     private String veranstaltung;
     private int lsfid;
     private boolean praesenz;
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate date;
-    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime beginn;
-    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime end;
 
-    public Klausur(String veranstaltung, int lsfid, boolean praesenz, LocalDate date, LocalTime beginn, LocalTime end) {
+    public Klausur(String veranstaltung, int lsfid, boolean praesenz, String date, String beginn, String end) {
         this.veranstaltung = veranstaltung;
         this.lsfid = lsfid;
         this.praesenz = praesenz;
-        this.date = date;
-        this.beginn = beginn;
-        this.end = end;
+        this.date = LocalDate.parse(date);
+        this.beginn = LocalTime.parse(beginn);
+        this.end = LocalTime.parse(end);
     }
 
     public String getVeranstaltung() {

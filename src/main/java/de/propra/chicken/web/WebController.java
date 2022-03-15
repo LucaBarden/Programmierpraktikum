@@ -2,6 +2,7 @@ package de.propra.chicken.web;
 
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.Urlaub;
+import org.springframework.format.datetime.joda.LocalTimeParser;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 
@@ -40,20 +42,17 @@ public class WebController {
 
     @Secured("ROLE_USER")
     @GetMapping("/urlaub")
-    public String urlaub(@ModelAttribute Urlaub urlaub, Model model, @AuthenticationPrincipal OAuth2User principal) {
-        model.addAttribute("user",
-                principal != null ? principal.getAttribute("login") : null);
+    public String urlaub(Model model) {
+        model.addAttribute("urlaub", new Urlaub(LocalDate.now().toString(), "08:30", "12:00"));
         return "Urlaub";
     }
 
     @Secured("ROLE_USER")
     @PostMapping("/urlaubErstellen")
-    public String urlaubErstellen(@ModelAttribute Urlaub urlaub, Model model) {
+    public String urlaubErstellen(Urlaub urlaub, Model model) {
+        model.addAttribute("urlaub", new Urlaub(urlaub.getTag().toString(), urlaub.getVon().toString(), urlaub.getBis().toString()));
         // TODO Anlegen des Urlaubs
 
-        System.out.println(urlaub.getTag());
-        System.out.println(urlaub.getVon());
-        System.out.println(urlaub.getBis());
 
         return "redirect:/student";
     }
@@ -61,14 +60,17 @@ public class WebController {
     @Secured("ROLE_USER")
     @GetMapping("/klausurAnlegen")
     public String klausurAnlegen(Model model) {
-        model.addAttribute("klausur", new Klausur(null, 0, false, null, null, null));
+        model.addAttribute("klausur", new Klausur(null, 0, false, LocalDate.now().toString(), "08:30", "12:00"));
         return "NeueKlausur";
     }
 
     @Secured("ROLE_USER")
     @PostMapping("/klausurErstellen")
-    public String klausurErstellen(@ModelAttribute Klausur klausur, Model model) {
-
+    public String klausurErstellen(Klausur klausur, Model model) {
+        System.out.println(model.getAttribute("date"));
+        System.out.println(klausur.getBeginn());
+        model.addAttribute("klausur", new Klausur(klausur.getVeranstaltung(), klausur.getLsfid(), klausur.isPraesenz(),
+                klausur.getDate().toString(), klausur.getBeginn().toString(), klausur.getEnd().toString()));
         return "redirect:/klausur";
     }
 
