@@ -1,7 +1,6 @@
 package de.propra.chicken.domain.service;
 
 import de.propra.chicken.domain.model.Klausur;
-import de.propra.chicken.domain.model.Student;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -32,9 +31,4 @@ public class Validierung {
         return stornierbar;
     }
 
-    public static void klausurAnmeldung(Klausur klausur) throws Exception {
-        if(!klausur.getDate().isAfter(LocalDate.now())) {
-            throw new Exception("Klausur findet heute statt. Anmeldung nicht mehr moeglich");
-        }
-    }
 }

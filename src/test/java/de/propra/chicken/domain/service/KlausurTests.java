@@ -1,7 +1,6 @@
 package de.propra.chicken.domain.service;
 
 import de.propra.chicken.domain.model.Klausur;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,11 +15,11 @@ public class KlausurTests {
     Set<Klausur> arrange(){
         Set<Klausur> alleKlausuren = new HashSet<>();
         //gueltig
-        alleKlausuren.add(new Klausur("Rechnerarchitektur", 12, true, LocalDate.now().plusDays(1), null, null));
-        alleKlausuren.add(new Klausur("Progra", 34, false, LocalDate.now().plusDays(3), null, null));
+        alleKlausuren.add(new Klausur("Rechnerarchitektur", 12, true, LocalDate.now().plusDays(1).toString(), "10:00", "10:00"));
+        alleKlausuren.add(new Klausur("Progra", 34, false, LocalDate.now().plusDays(3).toString(), "10:00", "10:00"));
         //ungueltig
-        alleKlausuren.add(new Klausur("RDB", 56, false, LocalDate.now(), null, null));
-        alleKlausuren.add(new Klausur("AlDat", 78, false, LocalDate.now().minusDays(2), null, null));
+        alleKlausuren.add(new Klausur("RDB", 56, false, LocalDate.now().toString(), "10:00", "10:00"));
+        alleKlausuren.add(new Klausur("AlDat", 78, false, LocalDate.now().minusDays(2).toString(), "10:00", "10:00"));
 
         return alleKlausuren;
 

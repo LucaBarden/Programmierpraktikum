@@ -18,10 +18,10 @@ public class StudentTests {
     public void test1() {
         //arrange
         Student student = new Student(123456);
-        Klausur klausur = new Klausur("RA", 44445, false, LocalDate.now().plusDays(2), LocalTime.of(10,0,0), LocalTime.of(11,30,0));
+        Klausur klausur = new Klausur("RA", 44445, false, LocalDate.now().plusDays(2).toString(), LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
         student.addKlausur(klausur);
 
-        Exception thrown =assertThrows(Exception.class,() -> { student.validiereKlausurAnmeldung(klausur);});
+        Exception thrown =assertThrows(Exception.class,() -> student.validiereKlausurAnmeldung(klausur));
         assertThat(thrown.getMessage()).isEqualTo("Du bist bereits bei der Klausur angemeldet");
     }
 
@@ -30,11 +30,11 @@ public class StudentTests {
     public void test2() {
         //arrange
         Student student = new Student(123456);
-        Klausur klausur = new Klausur("RA", 44445, false, LocalDate.now().plusDays(2), LocalTime.of(10,0,0), LocalTime.of(11,30,0));
-        Klausur klausur2 = new Klausur("Rechnernetze", 54654, false, LocalDate.now().plusDays(2), LocalTime.of(10,0,0), LocalTime.of(11,30,0));
+        Klausur klausur = new Klausur("RA", 44445, false, LocalDate.now().plusDays(2).toString(), LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
+        Klausur klausur2 = new Klausur("Rechnernetze", 54654, false, LocalDate.now().plusDays(2).toString(), LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
         student.addKlausur(klausur);
 
-        assertDoesNotThrow(() -> { student.validiereKlausurAnmeldung(klausur2);});
+        assertDoesNotThrow(() -> student.validiereKlausurAnmeldung(klausur2));
     }
 
     @Test
@@ -42,9 +42,9 @@ public class StudentTests {
     public void test3() {
         //arrange
         Student student = new Student(123456);
-        Klausur klausur = new Klausur("RA", 44445, false, LocalDate.now(), LocalTime.of(10,0,0), LocalTime.of(11,30,0));
+        Klausur klausur = new Klausur("RA", 44445, false, LocalDate.now().toString(), LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
 
-        Exception thrown = assertThrows(Exception.class,() -> { student.validiereKlausurAnmeldung(klausur);});
+        Exception thrown = assertThrows(Exception.class,() -> student.validiereKlausurAnmeldung(klausur));
         assertThat(thrown.getMessage()).isEqualTo("Klausur findet heute statt. Anmeldung nicht mehr moeglich");
     }
 }

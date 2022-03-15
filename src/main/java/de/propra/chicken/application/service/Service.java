@@ -1,8 +1,8 @@
 package de.propra.chicken.application.service;
 
+import de.propra.chicken.domain.model.Student;
 import de.propra.chicken.application.service.repo.IRepository;
 import de.propra.chicken.domain.model.Klausur;
-import de.propra.chicken.domain.model.Student;
 import de.propra.chicken.domain.model.Urlaub;
 import de.propra.chicken.domain.service.Validierung;
 import org.jsoup.Jsoup;
@@ -18,13 +18,12 @@ public class Service {
         this.repo = repo;
     }
 
-
     public void klausurAnmelden(Klausur klausur) throws Exception {
         student.setKlausuren(repo.getKlausurenVonStudent(student));
         student.setUrlaube(repo.getUrlaubeVonStudent(student));
         try {
             student.validiereKlausurAnmeldung(klausur);
-            //TODO Je nach validierung Klausur zu Student hinzufügen oder nicht
+            student.addKlausur(klausur);
             student = repo.speicherKlausurAnmeldung(student);
         }
         catch(Exception ex) {
@@ -43,7 +42,6 @@ public class Service {
     }
 
     private void validiereKlausur(Klausur klausur) throws Exception {
-        //TODO Auf Namen der Klausur prüfen
         if(!repo.validiereLsfIdCache(klausur)) {
             try {
                 validiereLsfIdInternet(klausur);
@@ -78,9 +76,13 @@ public class Service {
     }
 
     public void speicherUrlaub(Urlaub urlaub) {
-        student.validiereUrlaub(urlaub);
-        //TODO Je nach Validierung Urlaub zu student hinzufügen oder nicht
-        student = repo.speicherStudent(student);
+        try {
+            student.validiereUrlaub(urlaub);
+            student.addUrlaub(urlaub);
+            student = repo.speicherStudent(student);
+        } catch (Exception ex) {
+            throw ex;
+        }
     }
 
     //TODO Set Student bei Anmeldung

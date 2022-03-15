@@ -1,7 +1,6 @@
 package de.propra.chicken.domain.model;
 
-import de.propra.chicken.domain.service.Validierung;
-
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +14,6 @@ public class Student {
     private Set<Klausur> klausuren = new HashSet<>();
 
     public Student(long githubID) {
-
         this.studentID = githubID;
         this.resturlaub = 240;
     }
@@ -32,28 +30,55 @@ public class Student {
         this.klausuren = klausuren;
     }
 
-    public void validiereUrlaub(Urlaub urlaub) {
+    public void addKlausur(Klausur klausur) {
+        this.klausuren.add(klausur);
+    }
+
+    public void validiereUrlaub(Urlaub urlaub) throws Exception {
         //TODO validiere Urlaub
-        /*
-        - ganze Viertelstunden & Startzeiten 00, 15, 30, 45
-        - Buchungszeit <= Resturlaub
-        - bei angemeldeter Klausur, überschneidende Urlaubszeit erstatten
-        - ein Block pro Tag: - den ganzen Tag frei
-                             - max 2,5 Stunden frei
-        - zwei Blöcke pro Tag: - müssen am Anfang und am Ende sein
-                               - mindestens 90 Min Arbeitszeit zwischen dem Urlaub
-        - bei Klausuranmeldung an dem Tag: Urlaub darf frei eingeteilt werden
-         */
+        Set<Urlaub> urlaubeSelberTag = new HashSet<>();
+        Set<Klausur> klausurSelberTag = new HashSet<>();
+
+        //ganze Viertelstunden & Startzeiten 00, 15, 30, 45
+        if(!(urlaub.getVon().getMinute() % 15 == 0) || !(urlaub.getBis().getMinute() % 15 == 0)) {
+            throw new Exception("Die Start- und Endzeit muss ein Vielfaches von 15 Minuten sein");
+        }
+        // Resturlaub >= Urlaubszeit soll gelten
+        if( this.resturlaub < Duration.between(urlaub.getVon(), urlaub.getBis()).toMinutes()) {
+            throw new Exception("Es ist zu wenig Resturlaub übrig");
+        }
+
+        for(Urlaub tmpUrlaub : urlaube) {
+            if(tmpUrlaub.getTag().compareTo(urlaub.getTag()) == 0) {
+                urlaubeSelberTag.add(tmpUrlaub);
+            }
+        }
+        for(Klausur tmpKlausur : klausuren) {
+            if(tmpKlausur.getDate().compareTo(urlaub.getTag()) == 0) {
+                klausurSelberTag.add(tmpKlausur);
+            }
+        }
+        if(!klausurSelberTag.isEmpty()) {
+            //eine Klausur ist am selben Tag: Urlaub darf frei eingeteilt werden
+            //überschneidende Urlaubszeit erstatten
+        }
+        else { //keine Klausur am selben Tag
+            if(urlaubeSelberTag.isEmpty()) {
+                //der anzulegende Urlaub ist der erste Urlaubsblock an dem Tag: den ganzen Tag frei oder max 2,5 Stunden
+            }
+            else if(urlaubeSelberTag.size() == 1) {
+                //schon 1 Urlaub am selben Tag: Blöcke müssen am Anfang und Ende liegen mit mind. 90 Min Arbeitszeit dazwischen
+            }
+            else if(urlaubeSelberTag.size() == 2) {
+                //schon 2 Urlaube am selben Tag: kein weiterer Urlaub kann gebucht werden
+            }
+        }
     }
 
     public void validiereKlausurAnmeldung(Klausur klausur) throws Exception {
-
-        try {
-            //Die klausur ist mindestens einen Tag später
-            Validierung.klausurAnmeldung(klausur);
-        }
-        catch(Exception ex) {
-            throw ex;
+        //Die klausur ist mindestens einen Tag später
+        if(!klausur.getDate().isAfter(LocalDate.now())) {
+            throw new Exception("Klausur findet heute statt. Anmeldung nicht mehr moeglich");
         }
         //Überprüft, ob der Student schon angemeldet ist
         for(Klausur tmpKlausur : this.klausuren) {
@@ -64,7 +89,7 @@ public class Student {
 
     }
 
-    public void addKlausur(Klausur klausur) {
-        this.klausuren.add(klausur);
+    public void addUrlaub(Urlaub urlaub) {
+        urlaube.add(urlaub);
     }
 }

@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class KlausurServiceTest {
+public class ServiceTest {
 
     @Test
     @DisplayName("Testet ob eine ungueltige LSF ID einen Fehler wirft")
@@ -36,6 +36,11 @@ public class KlausurServiceTest {
             service.speicherKlausur(new Klausur("Test", 12345, false, null, null, null)));
     }
 
+    @Test
+    @DisplayName("Klausuranmeldung ")
+    public void klausurAnmeldungTest() {
+
+    }
 
 
 
