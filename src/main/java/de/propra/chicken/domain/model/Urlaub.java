@@ -3,11 +3,10 @@ package de.propra.chicken.domain.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 
 public class Urlaub {
-
-    private long githubID;
 
     private LocalDate tag;
     private LocalTime von;
@@ -29,6 +28,14 @@ public class Urlaub {
 
     public LocalTime getBis() {
         return bis;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Urlaub urlaub = (Urlaub) o;
+        return Objects.equals(tag, urlaub.tag) && Objects.equals(von, urlaub.von) && Objects.equals(bis, urlaub.bis);
     }
 
 }

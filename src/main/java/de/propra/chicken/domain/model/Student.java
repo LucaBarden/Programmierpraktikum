@@ -40,9 +40,9 @@ public class Student {
 
     public Set<Urlaub> validiereUrlaub(Urlaub urlaub) throws Exception {
         //TODO validiere Urlaub
-        Set<Urlaub> urlaubeSelberTag = new HashSet<>();
+        /*Set<Urlaub> urlaubeSelberTag = new HashSet<>();
         Set<Klausur> klausurSelberTag = new HashSet<>();
-        Set<Urlaub> zuErstattenderUrlaub = new HashSet<>();
+        Set<Urlaub> zuErstattenderUrlaube = new HashSet<>();
 
         checkAufGrundregeln(urlaub);
 
@@ -59,38 +59,39 @@ public class Student {
         if (!klausurSelberTag.isEmpty()) {
             //eine Klausur ist am selben Tag: Urlaub darf frei eingeteilt werden
             //überschneidende Urlaubszeit erstatten
-            //TODO: mehr als eine Klausur an einem Tag ? vllt forschleife mit size der klausurSelberTag 
-            if (klausurSelberTag.size() == 1) {
-                Klausur ersteKlausur = klausurSelberTag.stream().toList().get(0);
-                String klausurTag = ersteKlausur.getDate().toString();
-                LocalTime anfangsZeitDerKlausur = ersteKlausur.getBeginn();
-                LocalTime endZeitDerKlausur = ersteKlausur.getEnd();
-                if (ersteKlausur.isPraesenz()) {
+            //TODO: mehr als eine Klausur an einem Tag ? vllt forschleife mit size der klausurSelberTag
+            for(Klausur k : klausurSelberTag) {
+                String klausurTag = k.getDate().toString();
+                LocalTime anfangsZeitDerKlausur = k.getBeginn();
+                LocalTime endZeitDerKlausur = k.getEnd();
+
+                if (k.isPraesenz()) {
                     if (anfangsZeitDerKlausur.isBefore(LocalTime.parse(BEGINN_PRAKTIKUM).plusHours(2))) { //vor 10.30 beginnt
                         if (endZeitDerKlausur.isAfter(LocalTime.parse(ENDE_PRAKTIKUM).minusHours(2))) { //nach 10.30 aufhört
-                            zuErstattenderUrlaub.add(new Urlaub(klausurTag, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
+                            zuErstattenderUrlaube.add(new Urlaub(klausurTag, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
                         } else {
-                            zuErstattenderUrlaub.add(new Urlaub(klausurTag, BEGINN_PRAKTIKUM, endZeitDerKlausur.plusHours(2).toString()));
+                            zuErstattenderUrlaube.add(new Urlaub(klausurTag, BEGINN_PRAKTIKUM, endZeitDerKlausur.plusHours(2).toString()));
                         }
                     } else { // nach 10.30 Beginn
-                        zuErstattenderUrlaub.add(new Urlaub(klausurTag, anfangsZeitDerKlausur.minusHours(2).toString(), ENDE_PRAKTIKUM));
+                        zuErstattenderUrlaube.add(new Urlaub(klausurTag, anfangsZeitDerKlausur.minusHours(2).toString(), ENDE_PRAKTIKUM));
                     }
                 } else { // nicht in Präsenz
                     if (anfangsZeitDerKlausur.isBefore(LocalTime.parse(BEGINN_PRAKTIKUM).plusMinutes(30))) { //vor 9.00 beginnt
                         if (endZeitDerKlausur.isAfter(LocalTime.parse(ENDE_PRAKTIKUM).minusMinutes(30))) { //nach 12.00 aufhört
-                            zuErstattenderUrlaub.add(new Urlaub(klausurTag, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
+                            zuErstattenderUrlaube.add(new Urlaub(klausurTag, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
                         } else {
-                            zuErstattenderUrlaub.add(new Urlaub(klausurTag, BEGINN_PRAKTIKUM, endZeitDerKlausur.plusMinutes(30).toString()));
+                            zuErstattenderUrlaube.add(new Urlaub(klausurTag, BEGINN_PRAKTIKUM, endZeitDerKlausur.plusMinutes(30).toString()));
                         }
                     } else { // nach 9 Beginn
                         if (endZeitDerKlausur.isAfter(LocalTime.parse(ENDE_PRAKTIKUM).minusMinutes(30))) { //nach 12.00 aufhört
-                            zuErstattenderUrlaub.add(new Urlaub(klausurTag, anfangsZeitDerKlausur.minusMinutes(30).toString(), ENDE_PRAKTIKUM));
+                            zuErstattenderUrlaube.add(new Urlaub(klausurTag, anfangsZeitDerKlausur.minusMinutes(30).toString(), ENDE_PRAKTIKUM));
                         } else {
-                            zuErstattenderUrlaub.add(new Urlaub(klausurTag, anfangsZeitDerKlausur.minusMinutes(30).toString(), endZeitDerKlausur.plusMinutes(30).toString()));
+                            zuErstattenderUrlaube.add(new Urlaub(klausurTag, anfangsZeitDerKlausur.minusMinutes(30).toString(), endZeitDerKlausur.plusMinutes(30).toString()));
                         }
 
                     }
                 }
+
             }
 
         } else { //keine Klausur am selben Tag
@@ -107,7 +108,39 @@ public class Student {
                 throw new Exception("Es wurden bereits zwei Urlaubsblöcke genommen");
             }
         }
-        return zuErstattenderUrlaub;
+
+        return berechneGueltigeUrlaube(urlaub, zuErstattenderUrlaube);*/
+        return null;
+    }
+
+    private Set<Urlaub> berechneGueltigeUrlaube(Urlaub urlaub, Set<Urlaub> zuErstattenderUrlaube) {
+        Set<Urlaub> gueltigeUrlaube = new HashSet<>();
+        for(Urlaub u : zuErstattenderUrlaube) {
+            //startzeit von u ist nach urlaub
+            if(u.getVon().isAfter(urlaub.getBis()) || u.getVon().equals(urlaub.getBis())) {
+                //nichts erstatten
+            }
+            //startzeit von u ist zwischen urlaub
+            else if((u.getVon().isAfter(urlaub.getVon()) || u.getVon().equals(urlaub.getVon())) && u.getVon().isBefore(urlaub.getBis())) {
+                //endezeit von u ist zwischen urlaub
+                if(u.getBis().isBefore(urlaub.getBis())) {
+                     //mitte erstatten
+                }
+                //endezeit von u ist nach urlaub
+                else {
+                    //ende erstatten
+                }
+            }
+            //startzeit von u ist vor urlaub
+            else {
+                    //endzeit von u ist zwischen Urlaub //anfang erstatten
+                    //endzeit von u ist nach urlaub //alles erstatten
+                    //endzeit von u ist vor urlaub //nichts erstatten
+            }
+
+
+        }
+        return gueltigeUrlaube;
     }
 
     private void checkTwoBlockConditions(Urlaub urlaub, Set<Urlaub> urlaubeSelberTag) throws Exception {
@@ -131,6 +164,14 @@ public class Student {
     }
 
     private void checkAufGrundregeln(Urlaub urlaub) throws Exception {
+        //Startzeit ist vor Endzeit
+        if(urlaub.getVon().isAfter(urlaub.getBis())) {
+            throw new Exception("Die Startzeit kann nicht nach der Endzeit liegen");
+        }
+        //Startzeit und Endzeit sind gleich
+        if(urlaub.getVon().equals(urlaub.getBis())) {
+            throw new Exception("Die Startzeit und Endzeit sind gleich!!");
+        }
         //ganze Viertelstunden & Startzeiten 00, 15, 30, 45
         if (!(urlaub.getVon().getMinute() % 15 == 0) || !(urlaub.getBis().getMinute() % 15 == 0)) {
             throw new Exception("Die Start- und Endzeit muss ein Vielfaches von 15 Minuten sein");
@@ -158,4 +199,6 @@ public class Student {
     public void addUrlaub(Urlaub urlaub) {
         urlaube.add(urlaub);
     }
+
+
 }
