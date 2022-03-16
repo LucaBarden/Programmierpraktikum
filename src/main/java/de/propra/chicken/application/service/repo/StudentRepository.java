@@ -15,7 +15,9 @@ public interface StudentRepository {
 
     Student speicherKlausurAnmeldung(Student student);
 
-    Set<Klausur> findAngemeldeteKlausuren(Student student);
+    Set<Klausur> findAngemeldeteKlausuren(long githubID);
 
     Student speicherStudent(Student student);
+
+    Student findByID(long githubID);
 }

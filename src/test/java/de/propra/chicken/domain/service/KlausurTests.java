@@ -30,8 +30,9 @@ public class KlausurTests {
     void klausurenUngueltig() {
         //arrange
         Set<Klausur> alleKlausuren = arrange();
+        KlausurService klausurService = new KlausurService();
         //act
-        Set<Klausur> gueltigeKlausuren = Validierung.validiereAlleKlausuren(alleKlausuren);
+        Set<Klausur> gueltigeKlausuren = klausurService.validiereAlleKlausuren(alleKlausuren);
         Set<Integer> lsfIDs = new TreeSet<>();
         for(Klausur klausur : gueltigeKlausuren) {
             lsfIDs.add(klausur.getLsfid());
@@ -49,8 +50,9 @@ public class KlausurTests {
     void klausurenStornierbar() {
         //arrange
         Set<Klausur> alleKlausuren = arrange();
+        KlausurService klausurService = new KlausurService();
         //act
-        Map<Klausur, Boolean> stornierbareKlausuren = Validierung.stornierbareKlausuren(alleKlausuren);
+        Map<Klausur, Boolean> stornierbareKlausuren = klausurService.stornierbareKlausuren(alleKlausuren);
 
         //assert
         assertThat(stornierbareKlausuren).hasSize(4);

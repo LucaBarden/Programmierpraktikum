@@ -35,8 +35,8 @@ public class Student {
         this.klausuren.add(klausur);
     }
 
-    public void addUrlaub(Urlaub urlaub) {
-        urlaube.add(urlaub);
+    public void addUrlaube(Set<Urlaub> urlaub) {
+        urlaube.addAll(urlaub);
     }
 
 

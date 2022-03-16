@@ -34,7 +34,7 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
     @Override
-    public Set<Klausur> findAngemeldeteKlausuren(Student student) {
+    public Set<Klausur> findAngemeldeteKlausuren(long gihubID) {
         //TODO lade alle Klausuranmeldungen
         return null;
     }
@@ -43,4 +43,10 @@ public class StudentRepositoryImpl implements StudentRepository {
     public Student speicherStudent(Student student) {
         return crudStudent.save(student);
     }
+
+    @Override
+    public Student findByID(long githubID) {
+        return crudStudent.findById(githubID).orElse(null);
+    }
+
 }

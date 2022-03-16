@@ -14,6 +14,7 @@ public class StudentService {
 
     private static String BEGINN_PRAKTIKUM = "08:30";
     private static String ENDE_PRAKTIKUM = "12:30";
+
     public Set<Urlaub> validiereUrlaub(Student student, Urlaub urlaub, Set<Klausur> klausuren) throws Exception {
         //TODO validiere Urlaub
         Set<Urlaub> urlaubeSelberTag = new HashSet<>();
@@ -148,7 +149,8 @@ public class StudentService {
         }
     }
 
-    public void validiereKlausurAnmeldung(Klausur klausur, Set<Klausur> angemeldeteKlausuren) throws Exception {
+    public Set<Urlaub> validiereKlausurAnmeldung(Klausur klausur, Set<Klausur> angemeldeteKlausuren, Set<Urlaub> urlaube) throws Exception {
+        //TODO: urlaube erstatten (wenn überlappt)
         //Die klausur ist mindestens einen Tag später
         if (!klausur.getDate().isAfter(LocalDate.now())) {
             throw new Exception("Klausur findet heute statt. Anmeldung nicht mehr moeglich");
@@ -160,6 +162,11 @@ public class StudentService {
             }
         }
 
+        return null;
     }
 
+    public Student erstatteUrlaube(Set<Urlaub> zuErstattendeUrlaube) {
+        //TODO erstatte Urlaube
+        return null;
+    }
 }

@@ -1,4 +1,4 @@
 package de.propra.chicken.domain.model;
 
-public record KlausurRef(Long id) {
+public record KlausurRef(int id) {
 }

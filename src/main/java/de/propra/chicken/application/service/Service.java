@@ -1,12 +1,13 @@
 package de.propra.chicken.application.service;
 
 import de.propra.chicken.application.service.repo.KlausurRepository;
+import de.propra.chicken.domain.model.KlausurRef;
 import de.propra.chicken.domain.model.Student;
 import de.propra.chicken.application.service.repo.StudentRepository;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.Urlaub;
 import de.propra.chicken.domain.service.StudentService;
-import de.propra.chicken.domain.service.Validierung;
+import de.propra.chicken.domain.service.KlausurService;
 import org.jsoup.Jsoup;
 import java.util.Map;
 import java.util.Set;
@@ -16,22 +17,25 @@ public class Service {
     private final StudentRepository studentRepo;
     private final KlausurRepository klausurRepo;
     private final StudentService studentService;
+    private final KlausurService klausurService;
 
-    public Service(StudentRepository studentRepo, KlausurRepository klausurRepo, StudentService studentService) {
+    public Service(StudentRepository studentRepo, KlausurRepository klausurRepo, StudentService studentService, KlausurService klausurService) {
         this.studentRepo = studentRepo;
         this.klausurRepo = klausurRepo;
         this.studentService = studentService;
+        this.klausurService = klausurService;
     }
 
-    public void klausurAnmelden(Klausur klausur) throws Exception {
+    public void klausurAnmelden(Klausur klausur, long githubID) throws Exception {
         //student.setKlausuren(studentRepo.getKlausurenVonStudent(student));
-
-        student.setUrlaube(studentRepo.getUrlaubeVonStudent(student));
+        Student student = studentRepo.findByID(githubID);
         try {
-            Set<Klausur> angemeldeteKlausuren = studentRepo.getKlausurenVonStudent(student)
-            studentService.validiereKlausurAnmeldung(klausur, angemeldeteKlausuren);
-            student.addKlausur(klausur);
-            student = studentRepo.speicherKlausurAnmeldung(student);
+            Set<Klausur> angemeldeteKlausuren = studentRepo.getKlausurenVonStudent(student);
+            Set<Urlaub> zuErstattendeUrlaube = studentService.validiereKlausurAnmeldung(klausur, angemeldeteKlausuren, student.getUrlaube());
+            student = studentService.erstatteUrlaube(zuErstattendeUrlaube);
+            KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
+            student.addKlausur(klausurRef);
+            studentRepo.speicherKlausurAnmeldung(student);
         }
         catch(Exception ex) {
             throw ex;
@@ -68,35 +72,31 @@ public class Service {
 
     public Set<Klausur> ladeAlleKlausuren() {
         Set<Klausur> alleKlausuren = klausurRepo.ladeAlleKlausuren();
-        return Validierung.validiereAlleKlausuren(alleKlausuren);
+        return klausurService.validiereAlleKlausuren(alleKlausuren);
     }
 
-    public Map<Klausur, Boolean> ladeAngemeldeteKlausuren() {
-        Set<Klausur> klausuren = studentRepo.findAngemeldeteKlausuren(student);
-        return Validierung.stornierbareKlausuren(klausuren);
+    public Map<Klausur, Boolean> ladeAngemeldeteKlausuren(long githubID) {
+        Set<Klausur> klausuren = studentRepo.findAngemeldeteKlausuren(githubID);
+        return klausurService.stornierbareKlausuren(klausuren);
     }
 
 
-    public void speicherStudent() {
+    public void speicherStudent(Student student) {
         //TODO validiere Student
-        student = studentRepo.speicherStudent(student);
+        studentRepo.speicherStudent(student);
     }
 
-    public void speicherUrlaub(Urlaub urlaub) throws Exception {
+    public void speicherUrlaub(Urlaub urlaub, long githubID) throws Exception {
         try {
-            StudentService studentService = new StudentService();
-            Set<Urlaub> zuErstattenderUrlaub = studentService.validiereUrlaub(urlaub);
-            //TODO: urlaub mit zuErstattenderUrlaub verrechnen
-            student.addUrlaub(urlaub);
-            student = studentRepo.speicherStudent(student);
+            Student student = studentRepo.findByID(githubID);
+            Set <Klausur> angemeldeteKlausuren = studentRepo.findAngemeldeteKlausuren(githubID);
+            Set<Urlaub> gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, angemeldeteKlausuren);
+
+            student.addUrlaube(gueltigerUrlaub);
+            studentRepo.speicherStudent(student);
         } catch (Exception ex) {
             throw ex;
         }
     }
 
-    //TODO Set Student bei Anmeldung
-    public void setStudent(long githubID) {
-        //TODO Student aus der DB laden
-        this.student = new Student(githubID);
-    }
 }

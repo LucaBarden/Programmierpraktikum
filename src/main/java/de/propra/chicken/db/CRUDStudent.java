@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CRUDStudent extends CrudRepository<Student, Long> {
+
+    Student findByID(long githubID);
 }
