@@ -77,7 +77,7 @@ public class Service {
 
     public void speicherUrlaub(Urlaub urlaub) throws Exception {
         try {
-            Urlaub zuErstattenderUrlaub = student.validiereUrlaub(urlaub);
+            Set<Urlaub> zuErstattenderUrlaub = student.validiereUrlaub(urlaub);
             //TODO: urlaub mit zuErstattenderUrlaub verrechnen
             student.addUrlaub(urlaub);
             student = repo.speicherStudent(student);
