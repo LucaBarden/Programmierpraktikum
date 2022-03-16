@@ -1,9 +1,11 @@
 package de.propra.chicken.application.service;
 
+import de.propra.chicken.application.service.repo.KlausurRepository;
 import de.propra.chicken.domain.model.Student;
-import de.propra.chicken.application.service.repo.IRepository;
+import de.propra.chicken.application.service.repo.StudentRepository;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.Urlaub;
+import de.propra.chicken.domain.service.StudentService;
 import de.propra.chicken.domain.service.Validierung;
 import org.jsoup.Jsoup;
 import java.util.Map;
@@ -11,20 +13,25 @@ import java.util.Set;
 
 public class Service {
 
-    private final IRepository repo;
-    private Student student;
+    private final StudentRepository studentRepo;
+    private final KlausurRepository klausurRepo;
+    private final StudentService studentService;
 
-    public Service(IRepository repo) {
-        this.repo = repo;
+    public Service(StudentRepository studentRepo, KlausurRepository klausurRepo, StudentService studentService) {
+        this.studentRepo = studentRepo;
+        this.klausurRepo = klausurRepo;
+        this.studentService = studentService;
     }
 
     public void klausurAnmelden(Klausur klausur) throws Exception {
-        student.setKlausuren(repo.getKlausurenVonStudent(student));
-        student.setUrlaube(repo.getUrlaubeVonStudent(student));
+        //student.setKlausuren(studentRepo.getKlausurenVonStudent(student));
+
+        student.setUrlaube(studentRepo.getUrlaubeVonStudent(student));
         try {
-            student.validiereKlausurAnmeldung(klausur);
+            Set<Klausur> angemeldeteKlausuren = studentRepo.getKlausurenVonStudent(student)
+            studentService.validiereKlausurAnmeldung(klausur, angemeldeteKlausuren);
             student.addKlausur(klausur);
-            student = repo.speicherKlausurAnmeldung(student);
+            student = studentRepo.speicherKlausurAnmeldung(student);
         }
         catch(Exception ex) {
             throw ex;
@@ -34,7 +41,7 @@ public class Service {
     public void speicherKlausur(Klausur klausur) throws Exception {
         try {
             validiereKlausur(klausur);
-            repo.speicherKlausur(klausur);
+            klausurRepo.speicherKlausur(klausur);
         } catch (Exception ex) {
             throw ex;
         }
@@ -42,7 +49,7 @@ public class Service {
     }
 
     private void validiereKlausur(Klausur klausur) throws Exception {
-        if(!repo.validiereLsfIdCache(klausur)) {
+        if(!klausurRepo.validiereLsfIdCache(klausur)) {
             try {
                 validiereLsfIdInternet(klausur);
             } catch(Exception ex) {
@@ -60,27 +67,28 @@ public class Service {
     }
 
     public Set<Klausur> ladeAlleKlausuren() {
-        Set<Klausur> alleKlausuren = repo.ladeAlleKlausuren();
+        Set<Klausur> alleKlausuren = klausurRepo.ladeAlleKlausuren();
         return Validierung.validiereAlleKlausuren(alleKlausuren);
     }
 
     public Map<Klausur, Boolean> ladeAngemeldeteKlausuren() {
-        Set<Klausur> klausuren = repo.findAngemeldeteKlausuren(student);
+        Set<Klausur> klausuren = studentRepo.findAngemeldeteKlausuren(student);
         return Validierung.stornierbareKlausuren(klausuren);
     }
 
 
     public void speicherStudent() {
         //TODO validiere Student
-        student = repo.speicherStudent(student);
+        student = studentRepo.speicherStudent(student);
     }
 
     public void speicherUrlaub(Urlaub urlaub) throws Exception {
         try {
-            Set<Urlaub> zuErstattenderUrlaub = student.validiereUrlaub(urlaub);
+            StudentService studentService = new StudentService();
+            Set<Urlaub> zuErstattenderUrlaub = studentService.validiereUrlaub(urlaub);
             //TODO: urlaub mit zuErstattenderUrlaub verrechnen
             student.addUrlaub(urlaub);
-            student = repo.speicherStudent(student);
+            student = studentRepo.speicherStudent(student);
         } catch (Exception ex) {
             throw ex;
         }

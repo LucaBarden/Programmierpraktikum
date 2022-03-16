@@ -1,7 +1,7 @@
 package de.propra.chicken.application;
 
 import de.propra.chicken.application.service.Service;
-import de.propra.chicken.application.service.repo.IRepository;
+import de.propra.chicken.application.service.repo.StudentRepository;
 import de.propra.chicken.domain.model.Klausur;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ public class ServiceTest {
     @DisplayName("Testet ob eine ungueltige LSF ID einen Fehler wirft")
     public void invalidLSFID(){
         //TODO: (in)validLsfID aus DB oder Internet je eigene Methode
-        IRepository repo = mock(IRepository.class);
+        StudentRepository repo = mock(StudentRepository.class);
         Service service = new Service(repo);
         doNothing().when(repo).speicherKlausur(any());
 
@@ -28,7 +28,7 @@ public class ServiceTest {
     @Test
     @DisplayName("Testet ob eine gueltige LSF ID keinen Fehler wirft")
     public void validLSFID(){
-        IRepository repo = mock(IRepository.class);
+        StudentRepository repo = mock(StudentRepository.class);
         Service service = new Service(repo);
         doNothing().when(repo).speicherKlausur(any());
 

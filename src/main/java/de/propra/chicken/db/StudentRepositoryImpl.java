@@ -1,20 +1,17 @@
 package de.propra.chicken.db;
 
-import de.propra.chicken.application.service.repo.IRepository;
+import de.propra.chicken.application.service.repo.StudentRepository;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.Student;
 import de.propra.chicken.domain.model.Urlaub;
 
 import java.util.Set;
 
-public class IRepositoryImpl implements IRepository {
+public class StudentRepositoryImpl implements StudentRepository {
 
-
-    private CRUDKlausur crudKlausur;
     private CRUDStudent crudStudent;
 
-    public IRepositoryImpl(CRUDKlausur crudKlausur, CRUDStudent crudStudent) {
-        this.crudKlausur = crudKlausur;
+    public StudentRepositoryImpl(CRUDStudent crudStudent) {
         this.crudStudent = crudStudent;
     }
 
@@ -34,22 +31,6 @@ public class IRepositoryImpl implements IRepository {
     public Student speicherKlausurAnmeldung(Student student) {
 
         return crudStudent.save(student);
-    }
-
-    @Override
-    public boolean validiereLsfIdCache(Klausur klausur) {
-        //TODO validiere lsfid
-        return false;
-    }
-
-    @Override
-    public void speicherKlausur(Klausur klausur) {
-        //TODO save Klausur
-    }
-
-    @Override
-    public Set<Klausur> ladeAlleKlausuren() {
-        return crudKlausur.findAll();
     }
 
     @Override
