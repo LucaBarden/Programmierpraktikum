@@ -1,6 +1,7 @@
 package de.propra.chicken.domain.service;
 
 import de.propra.chicken.domain.model.Klausur;
+import de.propra.chicken.domain.model.KlausurRef;
 import de.propra.chicken.domain.model.Student;
 import de.propra.chicken.domain.model.Urlaub;
 
@@ -15,10 +16,10 @@ public class StudentService {
     private static String BEGINN_PRAKTIKUM = "08:30";
     private static String ENDE_PRAKTIKUM = "12:30";
 
-    public Set<Urlaub> validiereUrlaub(Student student, Urlaub urlaub, Set<Klausur> klausuren) throws Exception {
+    public Set<Urlaub> validiereUrlaub(Student student, Urlaub urlaub, Set<KlausurRef> klausuren) throws Exception {
         //TODO validiere Urlaub
         Set<Urlaub> urlaubeSelberTag = new HashSet<>();
-        Set<Klausur> klausurSelberTag = new HashSet<>();
+        Set<KlausurRef> klausurSelberTag = new HashSet<>();
         Set<Urlaub> zuErstattenderUrlaube = new HashSet<>();
         Set<Urlaub> urlaube = student.getUrlaube();
 
@@ -30,10 +31,10 @@ public class StudentService {
             //eine Klausur ist am selben Tag: Urlaub darf frei eingeteilt werden
             //überschneidende Urlaubszeit erstatten
             //TODO: mehr als eine Klausur an einem Tag ? vllt forschleife mit size der klausurSelberTag
-            for(Klausur k : klausurSelberTag) {
-                String klausurTag = k.getDate().toString();
-                LocalTime anfangsZeitDerKlausur = k.getBeginn();
-                LocalTime endZeitDerKlausur = k.getEnd();
+            for(KlausurRef k : klausurSelberTag) {
+                String klausurTag = k.getTag().toString();
+                LocalTime anfangsZeitDerKlausur = k.getVon();
+                LocalTime endZeitDerKlausur = k.getBis();
 
                 if (k.isPraesenz()) {
                     if (anfangsZeitDerKlausur.isBefore(LocalTime.parse(BEGINN_PRAKTIKUM).plusHours(2))) { //vor 10.30 beginnt
@@ -83,9 +84,9 @@ public class StudentService {
 
     }
 
-    private void klausurSelberTag(Urlaub urlaub, Set<Klausur> klausuren, Set<Klausur> klausurSelberTag) {
-        for (Klausur tmpKlausur : klausuren) {
-            if (tmpKlausur.getDate().compareTo(urlaub.getTag()) == 0) {
+    private void klausurSelberTag(Urlaub urlaub, Set<KlausurRef> klausuren, Set<KlausurRef> klausurSelberTag) {
+        for (KlausurRef tmpKlausur : klausuren) {
+            if (tmpKlausur.getTag().compareTo(urlaub.getTag()) == 0) {
                 klausurSelberTag.add(tmpKlausur);
             }
         }

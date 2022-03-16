@@ -1,21 +1,19 @@
 package de.propra.chicken.domain.model;
 
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Student {
 
-    private final long studentID;
+    private final long githubID;
     private int resturlaub;
 
     private Set<Urlaub> urlaube = new HashSet<>();
     private Set<KlausurRef> klausuren = new HashSet<>();
 
     public Student(long githubID) {
-        this.studentID = githubID;
+        this.githubID = githubID;
         this.resturlaub = 240;
     }
 

@@ -16,7 +16,7 @@ public class OnionTest {
                 .domainServices("..domain.service..")
                 .applicationServices("..application.service..")
 
-                .adapter("web", "..web..")
+                .adapter("web", "..controller..")
                 .adapter("db", "..db..");
 
     //@Disabled

@@ -18,6 +18,8 @@ import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -107,6 +109,9 @@ public class SecuredControllerTests {
         mockMvc.perform(post("/klausurErstellen").session(session)
                         .param("_praesenz", "on")
                         .param("lsfid", "12345")
+                        .param("date", LocalDate.now().toString())
+                        .param("beginn", LocalTime.now().toString())
+                        .param("end", LocalTime.now().plusHours(1).toString())
                         .with(csrf()))
 
                 .andExpect(status().is3xxRedirection())

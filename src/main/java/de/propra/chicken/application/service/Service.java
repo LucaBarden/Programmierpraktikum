@@ -33,7 +33,7 @@ public class Service {
             Set<Klausur> angemeldeteKlausuren = studentRepo.getKlausurenVonStudent(student);
             Set<Urlaub> zuErstattendeUrlaube = studentService.validiereKlausurAnmeldung(klausur, angemeldeteKlausuren, student.getUrlaube());
             student = studentService.erstatteUrlaube(zuErstattendeUrlaube);
-            KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
+            KlausurRef klausurRef = new KlausurRef(klausur.getLsfid(), klausur.getDate(), klausur.getBeginn(), klausur.getEnd());
             student.addKlausur(klausurRef);
             studentRepo.speicherKlausurAnmeldung(student);
         }
@@ -63,8 +63,8 @@ public class Service {
     }
 
     private void validiereLsfIdInternet(Klausur klausur) throws Exception {
-        String webContent = Jsoup.connect(String.format("https://lsf.hhu.de/qisserver/rds?state=verpublish" +
-                "&status=init&vmfile=no&publishid=%d&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung", klausur.getLsfid())).get().text();
+        String webContent = Jsoup.connect(String.format("https://lsf.hhu.de/qisserver/rds?state=verpublish&status=init&vmfile=no&publishid=%s&moduleCall=webInfo" +
+                "&publishConfFile=webInfo&publishSubDir=veranstaltung", klausur.getLsfid())).get().text();
         if(!(webContent.contains("VeranstaltungsID"))){
             throw new IllegalArgumentException("Invalide LSF ID");
         }
@@ -76,7 +76,8 @@ public class Service {
     }
 
     public Map<Klausur, Boolean> ladeAngemeldeteKlausuren(long githubID) {
-        Set<Klausur> klausuren = studentRepo.findAngemeldeteKlausuren(githubID);
+        Set<KlausurRef> klausurenRef = studentRepo.findAngemeldeteKlausuren(githubID);
+        Set<Klausur> klausuren = klausurRepo.getKlausurenByRefs(klausurenRef);
         return klausurService.stornierbareKlausuren(klausuren);
     }
 
@@ -89,7 +90,7 @@ public class Service {
     public void speicherUrlaub(Urlaub urlaub, long githubID) throws Exception {
         try {
             Student student = studentRepo.findByID(githubID);
-            Set <Klausur> angemeldeteKlausuren = studentRepo.findAngemeldeteKlausuren(githubID);
+            Set <KlausurRef> angemeldeteKlausuren = studentRepo.findAngemeldeteKlausuren(githubID);
             Set<Urlaub> gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, angemeldeteKlausuren);
 
             student.addUrlaube(gueltigerUrlaub);

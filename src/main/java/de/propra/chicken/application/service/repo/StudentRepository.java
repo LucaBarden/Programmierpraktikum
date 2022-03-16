@@ -1,6 +1,7 @@
 package de.propra.chicken.application.service.repo;
 
 import de.propra.chicken.domain.model.Klausur;
+import de.propra.chicken.domain.model.KlausurRef;
 import de.propra.chicken.domain.model.Student;
 import de.propra.chicken.domain.model.Urlaub;
 import org.springframework.stereotype.Repository;
@@ -15,7 +16,7 @@ public interface StudentRepository {
 
     Student speicherKlausurAnmeldung(Student student);
 
-    Set<Klausur> findAngemeldeteKlausuren(long githubID);
+    Set<KlausurRef> findAngemeldeteKlausuren(long githubID);
 
     Student speicherStudent(Student student);
 

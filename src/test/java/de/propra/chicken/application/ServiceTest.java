@@ -9,6 +9,10 @@ import de.propra.chicken.domain.service.StudentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -26,9 +30,10 @@ public class ServiceTest {
         Service service = new Service(studentRepo, klausurRepo,studentService, klausurService);
         doNothing().when(klausurRepo).speicherKlausur(any());
 
-        assertThrows(Exception.class, () -> {
-            service.speicherKlausur(new Klausur("Test", 123, false, null, null, null));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.speicherKlausur(new Klausur("Test", 123, false, LocalDate.now().toString(), LocalTime.now().toString(), LocalTime.now().plusHours(1).toString()));
         });
+        assertThat(exception.getMessage()).isEqualTo("Invalide LSF ID");
     }
 
     @Test
@@ -42,7 +47,7 @@ public class ServiceTest {
         doNothing().when(klausurRepo).speicherKlausur(any());
 
         assertDoesNotThrow(() ->
-            service.speicherKlausur(new Klausur("Test", 12345, false, null, null, null)));
+            service.speicherKlausur(new Klausur("Test", 225282, false, LocalDate.now().toString(), LocalTime.now().toString(), LocalTime.now().plusHours(1).toString())));
     }
 
     @Test

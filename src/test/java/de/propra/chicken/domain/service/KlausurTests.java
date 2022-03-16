@@ -33,15 +33,15 @@ public class KlausurTests {
         KlausurService klausurService = new KlausurService();
         //act
         Set<Klausur> gueltigeKlausuren = klausurService.validiereAlleKlausuren(alleKlausuren);
-        Set<Integer> lsfIDs = new TreeSet<>();
+        Set<Long> lsfIDs = new TreeSet<>();
         for(Klausur klausur : gueltigeKlausuren) {
             lsfIDs.add(klausur.getLsfid());
         }
         //assert
         assertThat(gueltigeKlausuren).hasSize(2);
 
-        assertThat(lsfIDs).contains(12);
-        assertThat(lsfIDs).contains(34);
+        assertThat(lsfIDs).contains(12L);
+        assertThat(lsfIDs).contains(34L);
     }
 
 

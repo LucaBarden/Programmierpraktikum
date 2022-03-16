@@ -9,13 +9,13 @@ import java.util.Objects;
 
 public class Klausur {
     private String veranstaltung;
-    private int lsfid;
+    private long lsfid;
     private boolean praesenz;
     private LocalDate date;
     private LocalTime beginn;
     private LocalTime end;
 
-    public Klausur(String veranstaltung, int lsfid, boolean praesenz, String date, String beginn, String end) {
+    public Klausur(String veranstaltung, long lsfid, boolean praesenz, String date, String beginn, String end) {
         this.veranstaltung = veranstaltung;
         this.lsfid = lsfid;
         this.praesenz = praesenz;
@@ -28,7 +28,7 @@ public class Klausur {
         return veranstaltung;
     }
 
-    public int getLsfid() {
+    public long getLsfid() {
         return this.lsfid;
     }
 
