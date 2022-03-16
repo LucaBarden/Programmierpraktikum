@@ -40,7 +40,7 @@ public class Student {
 
     public Set<Urlaub> validiereUrlaub(Urlaub urlaub) throws Exception {
         //TODO validiere Urlaub
-        /*Set<Urlaub> urlaubeSelberTag = new HashSet<>();
+        Set<Urlaub> urlaubeSelberTag = new HashSet<>();
         Set<Klausur> klausurSelberTag = new HashSet<>();
         Set<Urlaub> zuErstattenderUrlaube = new HashSet<>();
 
@@ -109,8 +109,8 @@ public class Student {
             }
         }
 
-        return berechneGueltigeUrlaube(urlaub, zuErstattenderUrlaube);*/
-        return null;
+        return berechneGueltigeUrlaube(urlaub, zuErstattenderUrlaube);
+
     }
 
     private Set<Urlaub> berechneGueltigeUrlaube(Urlaub urlaub, Set<Urlaub> zuErstattenderUrlaube) {
