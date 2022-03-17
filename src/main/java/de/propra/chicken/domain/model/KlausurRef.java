@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class KlausurRef {
+
     private final long id;
     private LocalDate tag;
     private LocalTime von;

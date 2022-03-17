@@ -54,4 +54,17 @@ public class Urlaub {
         return Objects.equals(tag, urlaub.tag) && Objects.equals(von, urlaub.von) && Objects.equals(bis, urlaub.bis);
     }
 
+    @Override
+    public String toString() {
+        return "Urlaub{" +
+                "tag=" + tag +
+                ", von=" + von +
+                ", bis=" + bis +
+                '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tag, von, bis);
+    }
 }

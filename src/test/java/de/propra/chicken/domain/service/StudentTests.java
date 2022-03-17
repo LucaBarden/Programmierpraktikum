@@ -413,7 +413,11 @@ public class StudentTests {
         Urlaub urlaub2 = new Urlaub("1999-01-01", "10:00", "10:30");
         Urlaub urlaub3 = new Urlaub("1999-01-01", "12:00", "12:30");
 
-        assertThat(gueltigerUrlaub).hasSize(3);
-        //assertThat(gueltigerUrlaub).contains(urlaub1, urlaub2, urlaub3);
+        System.out.println(gueltigerUrlaub.size());
+        System.out.println(gueltigerUrlaub);
+        assertThat(gueltigerUrlaub.size()).isEqualTo(3);
+        assertThat(gueltigerUrlaub).contains(urlaub1, urlaub2, urlaub3);
     }
+
+
 }

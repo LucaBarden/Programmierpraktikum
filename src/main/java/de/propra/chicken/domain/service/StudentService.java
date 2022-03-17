@@ -40,7 +40,6 @@ public class StudentService {
 
 
     public Set<Urlaub> validiereUrlaub(Student student, Urlaub urlaub, Set<KlausurRef> klausuren) throws Exception {
-        //TODO validiere Urlaub
         Set<Urlaub> urlaube = student.getUrlaube();
         Set<Urlaub> zuErstattendeZeiten = new HashSet<>();
 
@@ -192,49 +191,66 @@ public class StudentService {
         }
     }
 
-    private Set<Urlaub> berechneGueltigeUrlaube(Urlaub urlaub, Set<Urlaub> zuErstattenderUrlaube) {
+    private Set<Urlaub> berechneGueltigeUrlaube(Urlaub urlaub, Set<Urlaub> zuErstattenderUrlaube) throws InterruptedException {
         Set<Urlaub> zuPruefendeUrlaube = new HashSet<>();
+        Set<Urlaub> stashUrlaube = new HashSet<>();
         zuPruefendeUrlaube.add(urlaub);
-        for(Urlaub pruefen : zuPruefendeUrlaube) {
-            for(Urlaub u : zuErstattenderUrlaube) {
-                //Startzeit von u ist nach urlaub oder gleichzeitig mit dessen Endzeit
-                if (u.getVon().isAfter(pruefen.getBis()) || u.getVon().equals(pruefen.getBis())) {
-                    //nichts erstatten: der zu buchende Urlaub ist gültig
-                }
-                //Startzeit von u liegt im neu zu buchenden Urlaub
-                else if ((u.getVon().isAfter(pruefen.getVon())) && u.getVon().isBefore(pruefen.getBis())) {
-                    //Endzeit von u liegt im neu zu buchenden Urlaub
-                    if (u.getBis().isBefore(pruefen.getBis())) {
-                        //Mitte erstatten: der geplante Urlaub urlaub wird in zwei Urlaubsblöcke aufgeteilt
-                        Urlaub ersterBlock = new Urlaub(pruefen.getTag().toString(), pruefen.getVon().toString(), u.getVon().toString());
-                        Urlaub zweiterBlock = new Urlaub(pruefen.getTag().toString(), u.getBis().toString(), pruefen.getBis().toString());
-                        zuPruefendeUrlaube.remove(pruefen);
-                        zuPruefendeUrlaube.add(ersterBlock);
-                        zuPruefendeUrlaube.add(zweiterBlock);
+        boolean aenderung = true;
+
+        while(aenderung) {
+            aenderung = false;
+            for (Urlaub pruefen : zuPruefendeUrlaube) {
+                if(aenderung) break;
+                for (Urlaub u : zuErstattenderUrlaube) {
+                    //Startzeit von u ist nach urlaub oder gleichzeitig mit dessen Endzeit
+                    if (u.getVon().isAfter(pruefen.getBis()) || u.getVon().equals(pruefen.getBis())) {
+                        //nichts erstatten: der zu buchende Urlaub ist gültig
+                        stashUrlaube.add(pruefen);
                     }
-                    //Endzeit von u ist nach urlaub oder gleichzeitig mit dessen Endzeit
-                    else if (u.getBis().isAfter(pruefen.getBis()) || u.getBis().equals(pruefen.getBis())) {
-                        //Ende erstatten
-                        pruefen.setBis(u.getVon());
+                    //Startzeit von u liegt im neu zu buchenden Urlaub
+                    else if ((u.getVon().isAfter(pruefen.getVon())) && u.getVon().isBefore(pruefen.getBis())) {
+                        //Endzeit von u liegt im neu zu buchenden Urlaub
+                        if (u.getBis().isBefore(pruefen.getBis())) {
+                            //Mitte erstatten: der geplante Urlaub urlaub wird in zwei Urlaubsblöcke aufgeteilt
+                            Urlaub ersterBlock = new Urlaub(pruefen.getTag().toString(), pruefen.getVon().toString(), u.getVon().toString());
+                            Urlaub zweiterBlock = new Urlaub(pruefen.getTag().toString(), u.getBis().toString(), pruefen.getBis().toString());
+                            stashUrlaube.remove(pruefen);
+                            stashUrlaube.add(ersterBlock);
+                            stashUrlaube.add(zweiterBlock);
+                            aenderung = true;
+                            break;
+                        }
+                        //Endzeit von u ist nach urlaub oder gleichzeitig mit dessen Endzeit
+                        else if (u.getBis().isAfter(pruefen.getBis()) || u.getBis().equals(pruefen.getBis())) {
+                            //Ende erstatten
+                            Urlaub stashUrlaub = new Urlaub(pruefen.getTag().toString(), pruefen.getVon().toString(), u.getVon().toString());
+                            stashUrlaube.add(stashUrlaub);
+                            /* pruefen.setBis(u.getVon());*/
+                            aenderung = true;
+                            break;
+                        }
                     }
-                }
-                //Startzeit von u ist vor urlaub oder gleichzeitig mit der Startzeit von urlaub
-                else if (u.getVon().isBefore(pruefen.getVon()) || u.getVon().equals(pruefen.getVon())) {
-                    //Endzeit von u liegt in urlaub
-                    if (u.getBis().isAfter(pruefen.getVon()) && u.getBis().isBefore(pruefen.getBis())) {
-                        //anfang erstatten
-                        pruefen.setVon(u.getBis());
-                    }
-                    //Endzeit von u ist nach urlaub oder gleichzeitig mit dessen Endzeit
-                    else if (u.getBis().isAfter(pruefen.getBis()) || u.getBis().equals(pruefen.getBis())) {
-                        //alles erstatten: gesamter Urlaub ist überflüssig (nicht gültig): nichts tun
-                    }
-                    //Endzeit von u ist vor urlaub oder gleichzeitig mit dessen Startzeit
-                    else if (u.getBis().isBefore(pruefen.getVon()) || u.getBis().equals(pruefen.getVon())) {
-                        //nichts erstatten
+                    //Startzeit von u ist vor urlaub oder gleichzeitig mit der Startzeit von urlaub
+                    else if (u.getVon().isBefore(pruefen.getVon()) || u.getVon().equals(pruefen.getVon())) {
+                        //Endzeit von u liegt in urlaub
+                        if (u.getBis().isAfter(pruefen.getVon()) && u.getBis().isBefore(pruefen.getBis())) {
+                            //anfang erstatten
+                            Urlaub stashUrlaub = new Urlaub(pruefen.getTag().toString(), u.getBis().toString(), pruefen.getBis().toString());
+                            stashUrlaube.add(stashUrlaub);
+                            //pruefen.setVon(u.getBis());
+                            aenderung = true;
+                            break;
+                        }
+                        //Endzeit von u ist vor urlaub oder gleichzeitig mit dessen Startzeit
+                        else if (u.getBis().isBefore(pruefen.getVon()) || u.getBis().equals(pruefen.getVon())) {
+                            //nichts erstatten
+                            stashUrlaube.add(pruefen);
+                        }
                     }
                 }
             }
+            zuPruefendeUrlaube = stashUrlaube;
+            stashUrlaube = new HashSet<>();
         }
         return zuPruefendeUrlaube;
     }
