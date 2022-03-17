@@ -29,6 +29,14 @@ public class KlausurRef {
         this.isPraesenz = isPraesenz;
     }
 
+    public KlausurRef(int id, String tag, String von, String bis, boolean isPraesenz) {
+        this.id  = id;
+        this.tag = LocalDate.parse(tag);
+        this.von = LocalTime.parse(von);
+        this.bis = LocalTime.parse(bis);
+        this.isPraesenz = isPraesenz;
+    }
+
     public long getId() {
         return id;
     }

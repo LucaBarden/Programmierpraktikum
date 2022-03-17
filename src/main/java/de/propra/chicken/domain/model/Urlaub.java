@@ -18,6 +18,14 @@ public class Urlaub {
         this.bis = LocalTime.parse(bis);
     }
 
+    /*
+     * um in der Urlaubsvalidierung .toString() zu sparen. sinnvoll?
+    public Urlaub(LocalDate tag, LocalTime von, LocalTime bis) {
+        this.tag = tag;
+        this.von = von;
+        this.bis = bis;
+    }*/
+
     public LocalDate getTag() {
         return tag;
     }
@@ -28,6 +36,14 @@ public class Urlaub {
 
     public LocalTime getBis() {
         return bis;
+    }
+
+    public void setVon(LocalTime von) {
+        this.von = von;
+    }
+
+    public void setBis(LocalTime bis) {
+        this.bis = bis;
     }
 
     @Override

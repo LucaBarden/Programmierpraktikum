@@ -1,6 +1,7 @@
 package de.propra.chicken.domain.model;
 
 import java.time.Duration;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,22 +43,25 @@ public class Student {
         return urlaube;
     }
 
-    public void checkAufGrundregeln(Urlaub urlaub) throws Exception {
-        //Startzeit ist vor Endzeit
+    public void checkAufGrundregeln(Urlaub urlaub, String beginn, String ende) throws Exception {
+        //Fehler: Startzeit ist nach Endzeit
         if(urlaub.getVon().isAfter(urlaub.getBis())) {
             throw new Exception("Die Startzeit kann nicht nach der Endzeit liegen");
         }
-        //Startzeit und Endzeit sind gleich
+        //Fehler: Startzeit und Endzeit sind gleich
         if(urlaub.getVon().equals(urlaub.getBis())) {
             throw new Exception("Die Startzeit und Endzeit sind gleich!!");
         }
-        //ganze Viertelstunden & Startzeiten 00, 15, 30, 45
+        //Fehler: keine ganzen Viertelstunden & Startzeiten 00, 15, 30, 45
         if (!(urlaub.getVon().getMinute() % 15 == 0) || !(urlaub.getBis().getMinute() % 15 == 0)) {
             throw new Exception("Die Start- und Endzeit muss ein Vielfaches von 15 Minuten sein");
         }
-        // Resturlaub >= Urlaubszeit soll gelten
+        //Fehler: Resturlaub < Urlaubszeit
         if (this.resturlaub < Duration.between(urlaub.getVon(), urlaub.getBis()).toMinutes()) {
             throw new Exception("Es ist zu wenig Resturlaub übrig");
+        }
+        if(urlaub.getVon().isBefore(LocalTime.parse(beginn)) || urlaub.getBis().isAfter(LocalTime.parse(ende))) {
+            throw new Exception("Der Urlaub muss im Praktikumszeitraum liegen");
         }
     }
 
