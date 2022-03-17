@@ -95,9 +95,9 @@ public class SecuredControllerTests {
     @DisplayName("Button auf /urlaub leitet auf /student weiter")
     void urlaubPost() throws Exception {
         mockMvc.perform(post("/urlaubErstellen").session(session)
-                        .param("tag", "2022-02-01")
-                        .param("von", "10:30")
-                        .param("bis", "12:00")
+                        .param("tag", LocalDate.now().toString())
+                        .param("von", LocalTime.now().toString())
+                        .param("bis", LocalTime.now().plusHours(1).toString())
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/student"));

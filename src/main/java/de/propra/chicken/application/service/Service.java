@@ -1,11 +1,8 @@
 package de.propra.chicken.application.service;
 
 import de.propra.chicken.application.service.repo.KlausurRepository;
-import de.propra.chicken.domain.model.KlausurRef;
-import de.propra.chicken.domain.model.Student;
+import de.propra.chicken.domain.model.*;
 import de.propra.chicken.application.service.repo.StudentRepository;
-import de.propra.chicken.domain.model.Klausur;
-import de.propra.chicken.domain.model.Urlaub;
 import de.propra.chicken.domain.service.StudentService;
 import de.propra.chicken.domain.service.KlausurService;
 import org.jsoup.Jsoup;
@@ -30,10 +27,12 @@ public class Service {
         //student.setKlausuren(studentRepo.getKlausurenVonStudent(student));
         Student student = studentRepo.findByID(githubID);
         try {
-            Set<Klausur> angemeldeteKlausuren = studentRepo.getKlausurenVonStudent(student);
-            Set<Urlaub> zuErstattendeUrlaube = studentService.validiereKlausurAnmeldung(klausur, angemeldeteKlausuren, student.getUrlaube());
+            Set<KlausurRef> angemeldeteKlausurenRefs = studentRepo.getKlausurenVonStudent(student);
+            Set<KlausurData> angemeldeteKlausuren = klausurRepo.getKlausurenByRefs(angemeldeteKlausurenRefs);
+            Set<Urlaub> zuErstattendeUrlaube = studentService.validiereKlausurAnmeldung(new KlausurRef(klausur.getLsfid()), new KlausurData(klausur.getDate(), klausur.getBeginn(), klausur.getEnd(), klausur.isPraesenz()),
+                    angemeldeteKlausuren, student.getUrlaube(), angemeldeteKlausurenRefs);
             student = studentService.erstatteUrlaube(zuErstattendeUrlaube);
-            KlausurRef klausurRef = new KlausurRef(klausur.getLsfid(), klausur.getDate(), klausur.getBeginn(), klausur.getEnd());
+            KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
             student.addKlausur(klausurRef);
             studentRepo.speicherKlausurAnmeldung(student);
         }
@@ -76,8 +75,8 @@ public class Service {
     }
 
     public Map<Klausur, Boolean> ladeAngemeldeteKlausuren(long githubID) {
-        Set<KlausurRef> klausurenRef = studentRepo.findAngemeldeteKlausuren(githubID);
-        Set<Klausur> klausuren = klausurRepo.getKlausurenByRefs(klausurenRef);
+        Set<KlausurRef> klausurenRef = studentRepo.findAngemeldeteKlausurenIds(githubID);
+        Set<KlausurData> klausuren = klausurRepo.getKlausurenByRefs(klausurenRef);
         return klausurService.stornierbareKlausuren(klausuren);
     }
 
@@ -90,7 +89,7 @@ public class Service {
     public void speicherUrlaub(Urlaub urlaub, long githubID) throws Exception {
         try {
             Student student = studentRepo.findByID(githubID);
-            Set <KlausurRef> angemeldeteKlausuren = studentRepo.findAngemeldeteKlausuren(githubID);
+            Set <KlausurData> angemeldeteKlausuren = studentRepo.findAngemeldeteKlausuren(githubID);
             Set<Urlaub> gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, angemeldeteKlausuren);
 
             student.addUrlaube(gueltigerUrlaub);

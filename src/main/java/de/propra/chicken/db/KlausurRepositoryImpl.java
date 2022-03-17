@@ -2,6 +2,7 @@ package de.propra.chicken.db;
 
 import de.propra.chicken.application.service.repo.KlausurRepository;
 import de.propra.chicken.domain.model.Klausur;
+import de.propra.chicken.domain.model.KlausurData;
 import de.propra.chicken.domain.model.KlausurRef;
 
 import java.util.HashSet;
@@ -26,10 +27,10 @@ public class KlausurRepositoryImpl implements KlausurRepository {
     }
 
     @Override
-    public Set<Klausur> getKlausurenByRefs(Set<KlausurRef> klausurenRef) {
-        Set<Klausur> klausuren  = new HashSet<Klausur>();
-        for (KlausurRef klausurRef : klausurenRef) {
-            klausuren.add(crudKlausur.findById(klausurRef.getId()).orElse(null));
+    public Set<KlausurData> getKlausurenByRefs(Set<KlausurRef> klausurenRef) {
+        Set<KlausurData> klausuren  = new HashSet<Klausur>();
+        for (KlausurRef ref : klausurenRef) {
+            klausuren.add(crudKlausur.findById(ref.getLsfID()).orElse(null));
         }
         return klausuren;
     }

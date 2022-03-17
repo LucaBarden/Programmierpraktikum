@@ -1,9 +1,7 @@
 package de.propra.chicken.domain.service;
 
-import de.propra.chicken.domain.model.Klausur;
-import de.propra.chicken.domain.model.KlausurRef;
-import de.propra.chicken.domain.model.Student;
-import de.propra.chicken.domain.model.Urlaub;
+import de.propra.chicken.domain.model.*;
+import org.apache.tomcat.jni.Local;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,13 +21,14 @@ public class StudentTests {
     public void test1() {
         //arrange
         Student student = new Student(123456);
-        Klausur klausur = new Klausur("RA", 44445, false, LocalDate.now().plusDays(2).toString(), LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
-        KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
+        KlausurData klausur = new KlausurData(LocalDate.now().plusDays(2), LocalTime.of(10,0,0), LocalTime.of(11,30,0), false);
+        KlausurRef klausurRef = new KlausurRef(44445);
         StudentService studentService = new StudentService();
-        Set<Klausur> angemeldeteKlausuren = Set.of(klausur);
+        Set<KlausurData> angemeldeteKlausuren = Set.of(klausur);
+        Set<KlausurRef> angemeldeteKlausurRefs = Set.of(klausurRef);
         student.addKlausur(klausurRef);
 
-        Exception thrown =assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausur, angemeldeteKlausuren, new HashSet<Urlaub>()));
+        Exception thrown =assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausur, angemeldeteKlausuren, new HashSet<Urlaub>(), angemeldeteKlausurRefs));
         assertThat(thrown.getMessage()).isEqualTo("Du bist bereits bei der Klausur angemeldet");
     }
 
@@ -66,7 +65,7 @@ public class StudentTests {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
         Urlaub urlaub = new Urlaub("1999-01-01", "08:00", "09:00");
-        Set<KlausurRef> klausuren = new HashSet<>();
+        Set<KlausurData> klausuren = new HashSet<>();
         Set<Urlaub> gueltigerUrlaub;
         Exception thrown = null;
 
@@ -85,7 +84,7 @@ public class StudentTests {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
         Urlaub urlaub = new Urlaub("1999-01-01", "10:00", "09:00");
-        Set<KlausurRef> klausuren = new HashSet<>();
+        Set<KlausurData> klausuren = new HashSet<>();
         Set<Urlaub> gueltigerUrlaub;
         Exception thrown = null;
 
@@ -104,7 +103,7 @@ public class StudentTests {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
         Urlaub urlaub = new Urlaub("1999-01-01", "10:00", "10:00");
-        Set<KlausurRef> klausuren = new HashSet<>();
+        Set<KlausurData> klausuren = new HashSet<>();
         Set<Urlaub> gueltigerUrlaub;
         Exception thrown = null;
 
@@ -123,7 +122,7 @@ public class StudentTests {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
         Urlaub urlaub = new Urlaub("1999-01-01", "10:53", "12:00");
-        Set<KlausurRef> klausuren = new HashSet<>();
+        Set<KlausurData> klausuren = new HashSet<>();
         Set<Urlaub> gueltigerUrlaub;
         Exception thrown = null;
 
@@ -143,7 +142,7 @@ public class StudentTests {
         Student student = new Student(123);
         student.setResturlaub(15);
         Urlaub urlaub = new Urlaub("1999-01-01", "10:00", "10:30");
-        Set<KlausurRef> klausuren = new HashSet<>();
+        Set<KlausurData> klausuren = new HashSet<>();
         Set<Urlaub> gueltigerUrlaub;
         Exception thrown = null;
 
@@ -162,7 +161,7 @@ public class StudentTests {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
         Urlaub urlaub = new Urlaub("1999-01-01", "08:30", "11:30");
-        Set<KlausurRef> klausuren = new HashSet<>();
+        Set<KlausurData> klausuren = new HashSet<>();
         Set<Urlaub> gueltigerUrlaub;
         Exception thrown = null;
 
@@ -187,7 +186,7 @@ public class StudentTests {
         urlaube.add(urlaub2);
         student.setUrlaube(urlaube);
         Urlaub urlaub = new Urlaub("1999-01-01", "08:30", "11:30");
-        Set<KlausurRef> klausuren = new HashSet<>();
+        Set<KlausurData> klausuren = new HashSet<>();
         Set<Urlaub> gueltigerUrlaub;
         Exception thrown = null;
 
@@ -211,7 +210,7 @@ public class StudentTests {
         urlaube.add(urlaub1);
         student.setUrlaube(urlaube);
         Urlaub urlaub = new Urlaub("1999-01-01", "12:00", "12:30");
-        Set<KlausurRef> klausuren = new HashSet<>();
+        Set<KlausurData> klausuren = new HashSet<>();
 
         assertDoesNotThrow(() -> studentService.validiereUrlaub(student, urlaub, klausuren));
     }
@@ -226,7 +225,7 @@ public class StudentTests {
         urlaube.add(urlaub1);
         student.setUrlaube(urlaube);
         Urlaub urlaub = new Urlaub("1999-01-01", "11:00", "12:30");
-        Set<KlausurRef> klausuren = new HashSet<>();
+        Set<KlausurData> klausuren = new HashSet<>();
         Set<Urlaub> gueltigerUrlaub;
 
         Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren));
@@ -244,7 +243,7 @@ public class StudentTests {
         urlaube.add(urlaub1);
         student.setUrlaube(urlaube);
         Urlaub urlaub = new Urlaub("1999-01-01", "12:00", "12:30");
-        Set<KlausurRef> klausuren = new HashSet<>();
+        Set<KlausurData> klausuren = new HashSet<>();
         Set<Urlaub> gueltigerUrlaub;
         Exception thrown = null;
 
@@ -267,7 +266,7 @@ public class StudentTests {
         urlaube.add(urlaub1);
         student.setUrlaube(urlaube);
         Urlaub urlaub = new Urlaub("1999-01-01", "12:00", "12:15");
-        Set<KlausurRef> klausuren = new HashSet<>();
+        Set<KlausurData> klausuren = new HashSet<>();
         Set<Urlaub> gueltigerUrlaub;
         Exception thrown = null;
 
@@ -288,9 +287,9 @@ public class StudentTests {
 
         Urlaub urlaub = new Urlaub("1999-01-01", "08:30", "09:00");
 
-        Set<KlausurRef> klausuren = new HashSet<>();
-        KlausurRef klausurRef = new KlausurRef(123, "1999-01-01", "10:45", "12:00", true);
-        klausuren.add(klausurRef);
+        Set<KlausurData> klausuren = new HashSet<>();
+        KlausurData klausurData = new KlausurData(LocalDate.parse("1999-01-01"), LocalTime.parse("10:45"), LocalTime.parse("12:00"), true);
+        klausuren.add(klausurData);
 
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
         Exception thrown = null;
@@ -314,9 +313,9 @@ public class StudentTests {
 
         Urlaub urlaub = new Urlaub("1999-01-01", "08:30", "12:30");
 
-        Set<KlausurRef> klausuren = new HashSet<>();
-        KlausurRef klausurRef = new KlausurRef(123, "1999-01-01", "10:00", "11:00", false);
-        klausuren.add(klausurRef);
+        Set<KlausurData> klausuren = new HashSet<>();
+        KlausurData klausurData = new KlausurData( LocalDate.parse("1999-01-01"), LocalTime.parse("10:00"), LocalTime.parse("11:00"), false);
+        klausuren.add(klausurData);
 
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
 
@@ -341,9 +340,9 @@ public class StudentTests {
 
         Urlaub urlaub = new Urlaub("1999-01-01", "11:00", "12:30");
 
-        Set<KlausurRef> klausuren = new HashSet<>();
-        KlausurRef klausurRef = new KlausurRef(123, "1999-01-01", "10:00", "11:00", false);
-        klausuren.add(klausurRef);
+        Set<KlausurData> klausuren = new HashSet<>();
+        KlausurData klausurData = new KlausurData(LocalDate.parse("1999-01-01"), LocalTime.parse("10:00"), LocalTime.parse("11:00"), false);
+        klausuren.add(klausurData);
 
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
 
@@ -367,11 +366,11 @@ public class StudentTests {
 
         Urlaub urlaub = new Urlaub("1999-01-01", "09:30", "12:00");
 
-        Set<KlausurRef> klausuren = new HashSet<>();
-        KlausurRef klausurRef1 = new KlausurRef(123, "1999-01-01", "09:00", "09:30", false);
-        KlausurRef klausurRef2 = new KlausurRef(123, "1999-01-01", "12:00", "12:30", false);
-        klausuren.add(klausurRef1);
-        klausuren.add(klausurRef2);
+        Set<KlausurData> klausuren = new HashSet<>();
+        KlausurData klausurData1 = new KlausurData(LocalDate.parse("1999-01-01"), LocalTime.parse("09:00"), LocalTime.parse("09:30"), false);
+        KlausurData klausurData2 = new KlausurData(LocalDate.parse("1999-01-01"), LocalTime.parse("12:00"), LocalTime.parse("12:30"), false);
+        klausuren.add(klausurData1);
+        klausuren.add(klausurData2);
 
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
 
@@ -395,11 +394,11 @@ public class StudentTests {
 
         Urlaub urlaub = new Urlaub("1999-01-01", "08:30", "12:30");
 
-        Set<KlausurRef> klausuren = new HashSet<>();
-        KlausurRef klausurRef1 = new KlausurRef(123, "1999-01-01", "09:15", "09:30", false);
-        KlausurRef klausurRef2 = new KlausurRef(123, "1999-01-01", "11:00", "11:30", false);
-        klausuren.add(klausurRef1);
-        klausuren.add(klausurRef2);
+        Set<KlausurData> klausuren = new HashSet<>();
+        KlausurData klausurData1 = new KlausurData(LocalDate.parse("1999-01-01"), LocalTime.parse("09:15"), LocalTime.parse("09:30"), false);
+        KlausurData klausurData2 = new KlausurData(LocalDate.parse("1999-01-01"), LocalTime.parse("11:00"), LocalTime.parse("11:30"), false);
+        klausuren.add(klausurData1);
+        klausuren.add(klausurData2);
 
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
 
@@ -417,6 +416,36 @@ public class StudentTests {
         System.out.println(gueltigerUrlaub);
         assertThat(gueltigerUrlaub.size()).isEqualTo(3);
         assertThat(gueltigerUrlaub).contains(urlaub1, urlaub2, urlaub3);
+    }
+
+    @Test
+    @DisplayName("Urlaubsvalidierung: zwei Onlineklausuren am selben Tag, den ganzen Tag Urlaub nehmen")
+    void urlaubZweiVerschiedeneKlausurenUrlaubSplit() {
+        StudentService studentService = new StudentService();
+        Student student = new Student(123);
+
+        Urlaub urlaub = new Urlaub("1999-01-01", "08:30", "12:30");
+
+        Set<KlausurData> klausuren = new HashSet<>();
+        KlausurData klausurData1 = new KlausurData(LocalDate.parse("1999-01-01"), LocalTime.parse("09:15"), LocalTime.parse("09:30"), true);
+        KlausurData klausurData2 = new KlausurData(LocalDate.parse("1999-01-01"), LocalTime.parse("11:00"), LocalTime.parse("11:30"), false);
+        klausuren.add(klausurData1);
+        klausuren.add(klausurData2);
+
+        Set<Urlaub> gueltigerUrlaub = new HashSet<>();
+
+        try { //wenn eine Klausur am selben Tag ist werden keine Fehler geworfen, sondern der gültige Urlaub zurückgegeben
+            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Urlaub urlaub1 = new Urlaub("1999-01-01", "12:00", "12:30");
+
+        System.out.println(gueltigerUrlaub.size());
+        System.out.println(gueltigerUrlaub);
+        assertThat(gueltigerUrlaub.size()).isEqualTo(1);
+        assertThat(gueltigerUrlaub).contains(urlaub1);
     }
 
 

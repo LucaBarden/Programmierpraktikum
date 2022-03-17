@@ -1,10 +1,7 @@
 package de.propra.chicken.db;
 
 import de.propra.chicken.application.service.repo.StudentRepository;
-import de.propra.chicken.domain.model.Klausur;
-import de.propra.chicken.domain.model.KlausurRef;
-import de.propra.chicken.domain.model.Student;
-import de.propra.chicken.domain.model.Urlaub;
+import de.propra.chicken.domain.model.*;
 
 import java.util.Set;
 
@@ -17,7 +14,7 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
     @Override
-    public Set<Klausur> getKlausurenVonStudent(Student student) {
+    public Set<KlausurRef> getKlausurenVonStudent(Student student) {
         //TODO DB Query
         return null;
     }
@@ -35,7 +32,7 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
     @Override
-    public Set<KlausurRef> findAngemeldeteKlausuren(long gihubID) {
+    public Set<KlausurData> findAngemeldeteKlausuren(long gihubID) {
         //TODO lade alle Klausuranmeldungen
         return null;
     }

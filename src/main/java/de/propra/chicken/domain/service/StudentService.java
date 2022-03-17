@@ -1,9 +1,6 @@
 package de.propra.chicken.domain.service;
 
-import de.propra.chicken.domain.model.Klausur;
-import de.propra.chicken.domain.model.KlausurRef;
-import de.propra.chicken.domain.model.Student;
-import de.propra.chicken.domain.model.Urlaub;
+import de.propra.chicken.domain.model.*;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -16,15 +13,15 @@ public class StudentService {
     private static String BEGINN_PRAKTIKUM = "08:30";
     private static String ENDE_PRAKTIKUM   = "12:30";
 
-    public Set<Urlaub> validiereKlausurAnmeldung(Klausur klausur, Set<Klausur> angemeldeteKlausuren, Set<Urlaub> urlaube) throws Exception {
+    public Set<Urlaub> validiereKlausurAnmeldung(KlausurRef anzumeldendeKlausur, KlausurData klausurData, Set<KlausurData> angemeldeteKlausuren, Set<Urlaub> urlaube, Set<KlausurRef> angemeldeteKlausurenRefs) throws Exception {
         //TODO: urlaube erstatten (wenn überlappt)
         //Die klausur ist mindestens einen Tag später
-        if (!klausur.getDate().isAfter(LocalDate.now())) {
+        if (!klausurData.tag().isAfter(LocalDate.now())) {
             throw new Exception("Klausur findet heute statt. Anmeldung nicht mehr moeglich");
         }
         //Überprüft, ob der Student schon angemeldet ist
-        for (Klausur tmpKlausur : angemeldeteKlausuren) {
-            if (tmpKlausur.getLsfid() == klausur.getLsfid()) {
+        for (KlausurRef tmpKlausur : angemeldeteKlausurenRefs) {
+            if (tmpKlausur.getLsfID() == anzumeldendeKlausur.getLsfID()) {
                 throw new Exception("Du bist bereits bei der Klausur angemeldet");
             }
         }
@@ -39,14 +36,14 @@ public class StudentService {
 
 
 
-    public Set<Urlaub> validiereUrlaub(Student student, Urlaub urlaub, Set<KlausurRef> klausuren) throws Exception {
+    public Set<Urlaub> validiereUrlaub(Student student, Urlaub urlaub, Set<KlausurData> klausuren) throws Exception {
         Set<Urlaub> urlaube = student.getUrlaube();
         Set<Urlaub> zuErstattendeZeiten = new HashSet<>();
 
         student.checkAufGrundregeln(urlaub, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
 
         Set<Urlaub> urlaubeSelberTag = urlaubSelberTag(urlaub, urlaube);
-        Set<KlausurRef> klausurSelberTag = klausurSelberTag(urlaub, klausuren);
+        Set<KlausurData> klausurSelberTag = klausurSelberTag(urlaub, klausuren);
 
         //eine oder mehrere Klausuren am selben Tag: Urlaub darf frei eingeteilt werden
         //& überschneidende Urlaubszeit wird erstattet (keine Exceptions)
@@ -60,10 +57,10 @@ public class StudentService {
         return berechneGueltigeUrlaube(urlaub, zuErstattendeZeiten);
     }
 
-    private Set<KlausurRef> klausurSelberTag(Urlaub urlaub, Set<KlausurRef> klausuren) {
-        Set<KlausurRef> kSelberTag = new HashSet<>();
-        for (KlausurRef tmpKlausur : klausuren) {
-            if (tmpKlausur.getTag().compareTo(urlaub.getTag()) == 0) {
+    private Set<KlausurData> klausurSelberTag(Urlaub urlaub, Set<KlausurData> klausuren) {
+        Set<KlausurData> kSelberTag = new HashSet<>();
+        for (KlausurData tmpKlausur : klausuren) {
+            if (tmpKlausur.tag().compareTo(urlaub.getTag()) == 0) {
                 kSelberTag.add(tmpKlausur);
             }
         }
@@ -80,11 +77,11 @@ public class StudentService {
         return uSelberTag;
     }
 
-    private void klausurenAmSelbenTag(Set<Urlaub> zuErstattenderUrlaube, Set<KlausurRef> klausurSelberTag) {
-        for(KlausurRef k : klausurSelberTag) {
-            String klausurTag            = k.getTag().toString();
-            LocalTime anfangsZeitKlausur = k.getVon();
-            LocalTime endZeitKlausur     = k.getBis();
+    private void klausurenAmSelbenTag(Set<Urlaub> zuErstattenderUrlaube, Set<KlausurData> klausurSelberTag) {
+        for(KlausurData k : klausurSelberTag) {
+            String klausurTag            = k.tag().toString();
+            LocalTime anfangsZeitKlausur = k.von();
+            LocalTime endZeitKlausur     = k.bis();
 
             if(k.isPraesenz()) {
                 //puffer ist die Zeit in Minuten, die man vor und nach einer Klausur freigestellt wird
@@ -224,6 +221,7 @@ public class StudentService {
                         else if (u.getBis().isAfter(pruefen.getBis()) || u.getBis().equals(pruefen.getBis())) {
                             //Ende erstatten
                             Urlaub stashUrlaub = new Urlaub(pruefen.getTag().toString(), pruefen.getVon().toString(), u.getVon().toString());
+                            stashUrlaube.remove(pruefen);
                             stashUrlaube.add(stashUrlaub);
                             /* pruefen.setBis(u.getVon());*/
                             aenderung = true;
@@ -236,6 +234,7 @@ public class StudentService {
                         if (u.getBis().isAfter(pruefen.getVon()) && u.getBis().isBefore(pruefen.getBis())) {
                             //anfang erstatten
                             Urlaub stashUrlaub = new Urlaub(pruefen.getTag().toString(), u.getBis().toString(), pruefen.getBis().toString());
+                            stashUrlaube.remove(pruefen);
                             stashUrlaube.add(stashUrlaub);
                             //pruefen.setVon(u.getBis());
                             aenderung = true;
