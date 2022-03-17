@@ -27,12 +27,18 @@ public class KlausurRepositoryImpl implements KlausurRepository {
     }
 
     @Override
-    public Set<KlausurData> getKlausurenByRefs(Set<KlausurRef> klausurenRef) {
-        Set<KlausurData> klausuren  = new HashSet<Klausur>();
+    public Set<Klausur> getKlausurenByRefs(Set<KlausurRef> klausurenRef) {
+        Set<Klausur> klausuren  = new HashSet<Klausur>();
         for (KlausurRef ref : klausurenRef) {
             klausuren.add(crudKlausur.findById(ref.getLsfID()).orElse(null));
         }
         return klausuren;
+    }
+
+    @Override
+    public Set<KlausurData> getKlausurenDataByRefs(Set<KlausurRef> angemeldeteKlausurenRefs) {
+        //TODO von klausur in klausurdata
+        return null;
     }
 
     @Override

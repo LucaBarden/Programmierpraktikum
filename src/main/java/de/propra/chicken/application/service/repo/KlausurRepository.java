@@ -13,6 +13,7 @@ public interface KlausurRepository {
 
     Set<Klausur> ladeAlleKlausuren();
 
-    Set<KlausurData> getKlausurenByRefs(Set<KlausurRef> klausuren);
+    Set<Klausur> getKlausurenByRefs(Set<KlausurRef> klausuren);
 
+    Set<KlausurData> getKlausurenDataByRefs(Set<KlausurRef> angemeldeteKlausurenRefs);
 }

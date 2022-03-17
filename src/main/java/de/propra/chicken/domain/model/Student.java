@@ -18,6 +18,10 @@ public class Student {
         this.resturlaub = 240;
     }
 
+    public long getGithubID() {
+        return githubID;
+    }
+
     public void setResturlaub(int resturlaub) {
         this.resturlaub = resturlaub;
     }

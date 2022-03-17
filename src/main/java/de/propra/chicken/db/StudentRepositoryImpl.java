@@ -47,4 +47,10 @@ public class StudentRepositoryImpl implements StudentRepository {
         return crudStudent.findById(githubID).orElse(null);
     }
 
+    @Override
+    public Set<KlausurRef> findAngemeldeteKlausurenIds(long githubID) {
+        //TODO die angemeldeteten KlausurRefs zurückgeben
+        return null;
+    }
+
 }

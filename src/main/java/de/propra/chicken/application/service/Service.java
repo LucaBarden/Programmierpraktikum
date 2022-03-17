@@ -28,7 +28,7 @@ public class Service {
         Student student = studentRepo.findByID(githubID);
         try {
             Set<KlausurRef> angemeldeteKlausurenRefs = studentRepo.getKlausurenVonStudent(student);
-            Set<KlausurData> angemeldeteKlausuren = klausurRepo.getKlausurenByRefs(angemeldeteKlausurenRefs);
+            Set<KlausurData> angemeldeteKlausuren = klausurRepo.getKlausurenDataByRefs(angemeldeteKlausurenRefs);
             Set<Urlaub> zuErstattendeUrlaube = studentService.validiereKlausurAnmeldung(new KlausurRef(klausur.getLsfid()), new KlausurData(klausur.getDate(), klausur.getBeginn(), klausur.getEnd(), klausur.isPraesenz()),
                     angemeldeteKlausuren, student.getUrlaube(), angemeldeteKlausurenRefs);
             student = studentService.erstatteUrlaube(zuErstattendeUrlaube);
@@ -76,14 +76,17 @@ public class Service {
 
     public Map<Klausur, Boolean> ladeAngemeldeteKlausuren(long githubID) {
         Set<KlausurRef> klausurenRef = studentRepo.findAngemeldeteKlausurenIds(githubID);
-        Set<KlausurData> klausuren = klausurRepo.getKlausurenByRefs(klausurenRef);
+        Set<Klausur> klausuren = klausurRepo.getKlausurenByRefs(klausurenRef);
+
         return klausurService.stornierbareKlausuren(klausuren);
     }
 
 
     public void speicherStudent(Student student) {
-        //TODO validiere Student
-        studentRepo.speicherStudent(student);
+        Student studentTmp = studentRepo.findByID(student.getGithubID());
+        if(studentTmp == null){
+            studentRepo.speicherStudent(student);
+        }
     }
 
     public void speicherUrlaub(Urlaub urlaub, long githubID) throws Exception {

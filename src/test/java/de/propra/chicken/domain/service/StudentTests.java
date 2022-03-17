@@ -28,7 +28,7 @@ public class StudentTests {
         Set<KlausurRef> angemeldeteKlausurRefs = Set.of(klausurRef);
         student.addKlausur(klausurRef);
 
-        Exception thrown =assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausur, angemeldeteKlausuren, new HashSet<Urlaub>(), angemeldeteKlausurRefs));
+        Exception thrown =assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausurRef, klausur, angemeldeteKlausuren, new HashSet<Urlaub>(), angemeldeteKlausurRefs));
         assertThat(thrown.getMessage()).isEqualTo("Du bist bereits bei der Klausur angemeldet");
     }
 
@@ -37,14 +37,17 @@ public class StudentTests {
     public void test2() {
         //arrange
         Student student = new Student(123456);
-        Klausur klausur = new Klausur("RA", 44445, false, LocalDate.now().plusDays(2).toString(), LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
-        Klausur klausur2 = new Klausur("Rechnernetze", 54654, false, LocalDate.now().plusDays(2).toString(), LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
-        KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
+        KlausurData klausur = new KlausurData( LocalDate.now().plusDays(2), LocalTime.of(10,0,0), LocalTime.of(11,30,0),false);
+        KlausurData klausur2 = new KlausurData( LocalDate.now().plusDays(2), LocalTime.of(10,0,0), LocalTime.of(11,30,0), false);
+        KlausurRef klausurRef = new KlausurRef(44445);
+        KlausurRef klausurRef2 = new KlausurRef(54654);
+
         StudentService studentService = new StudentService();
-        Set<Klausur> angemeldeteKlausuren = Set.of(klausur);
+        Set<KlausurData> angemeldeteKlausuren = Set.of(klausur);
+        Set<KlausurRef> angemeldeteKlausurenRef = Set.of(klausurRef);
         student.addKlausur(klausurRef);
 
-        assertDoesNotThrow(() -> studentService.validiereKlausurAnmeldung(klausur2, angemeldeteKlausuren, new HashSet<Urlaub>()));
+        assertDoesNotThrow(() -> studentService.validiereKlausurAnmeldung(klausurRef2, klausur2, angemeldeteKlausuren, new HashSet<Urlaub>(),angemeldeteKlausurenRef));
     }
 
     @Test
