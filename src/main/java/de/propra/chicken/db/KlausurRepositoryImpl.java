@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+
 @Repository
 public class KlausurRepositoryImpl implements KlausurRepository {
 
@@ -65,7 +66,7 @@ public class KlausurRepositoryImpl implements KlausurRepository {
     }
 
     private KlausurDTO transferKlausurToDTO(Klausur s){
-        return new KlausurDTO(s.getLsfid(), s.getName(), s.isPraesenz(), s.getDatum(), s.getBeginn(), s.getEnd());
+        return new KlausurDTO(s.getLsfid(), s.getName(), s.isPraesenz(), s.getDatum(), s.getBeginn(),s.getEnd());
     }
 
 }
