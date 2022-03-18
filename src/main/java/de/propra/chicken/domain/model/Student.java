@@ -1,5 +1,7 @@
 package de.propra.chicken.domain.model;
 
+import org.springframework.data.annotation.Id;
+
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.HashSet;
@@ -47,6 +49,9 @@ public class Student {
         urlaube.addAll(urlaub);
     }
 
+    public int getResturlaub() {
+        return resturlaub;
+    }
 
     public Set<Urlaub> getUrlaube() {
         return urlaube;

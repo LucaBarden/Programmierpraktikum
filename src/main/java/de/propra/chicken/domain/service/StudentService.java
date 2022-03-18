@@ -45,12 +45,21 @@ public class StudentService {
 
         Set<Urlaub> urlaubeSelberTag = urlaubSelberTag(urlaub, urlaube);
         Set<KlausurData> klausurSelberTag = klausurSelberTag(urlaub, klausuren);
+        Set<Urlaub> gueltigeUrlaube = new HashSet<>();
 
         //eine oder mehrere Klausuren am selben Tag: Urlaub darf frei eingeteilt werden
         //& überschneidende Urlaubszeit wird erstattet (keine Exceptions)
         if (!klausurSelberTag.isEmpty()) {
-            klausurenAmSelbenTag(zuErstattendeZeiten, klausurSelberTag);
-            gleichzeitigerUrlaub(zuErstattendeZeiten, urlaubeSelberTag, urlaub);
+            /* 1) wenn mind. eine Klausur am selben Tag ist, wird die dafür zu erstattende Zeit berechnet
+             *    (Klausuranfang - puffer) bis (Klausurende + puffer) wird erstattet
+             * 2) die zu erstattende Zeit wird von dem zu buchenden Urlaub abgezogen und der Urlaub ggf in zwei oder
+             *    mehr Blöcke aufgeteilt
+             * 3) der bisher berechnete gültige Urlaub wird auf Überschneidungen mit zuvor genommenem Urlaub überprüft
+             *    und überschneidende Urlaubsblöcke werden zu einem Block zusammen gelegt bzw nur der längere behalten
+             */
+            klausurenAmSelbenTag(zuErstattendeZeiten, klausurSelberTag); // 1)
+            gueltigeUrlaube = berechneGueltigeUrlaube(urlaub, zuErstattendeZeiten); // 2)
+            gueltigeUrlaube = gleichzeitigerUrlaub(urlaubeSelberTag, gueltigeUrlaube); // 3)
         //keine Klausur am selben Tag
         } else {
             keineKlausurSelberTag(urlaub, urlaubeSelberTag);
@@ -103,7 +112,7 @@ public class StudentService {
                 zuErstattendeZeiten.add(new Urlaub(klausurTag, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
             //die Klausur endet vor (Praktikumsende - puffer): Urlaub wird ab (Klausurende + puffer) erstattet
             } else {
-                zuErstattendeZeiten.add(new Urlaub(klausurTag, BEGINN_PRAKTIKUM, endZeitDerKlausur.plusMinutes(30).toString()));
+                zuErstattendeZeiten.add(new Urlaub(klausurTag, BEGINN_PRAKTIKUM, endZeitDerKlausur.plusMinutes(puffer).toString()));
             }
 
         //die Klausur fängt nach (Praktikumsbeginn + puffer) an: Urlaub wird ab (Klausurbeginn - puffer) erstattet
@@ -118,33 +127,60 @@ public class StudentService {
         }
     }
 
-    private void gleichzeitigerUrlaub(Set<Urlaub> zuErstattendeZeiten, Set<Urlaub> urlaubeSelberTag, Urlaub urlaub) {
-        //TODO: Überschneidungen bei altem und neuem Urlaub erstatten (analog zur Erstattung wegen Klausur)
-        /*for(Urlaub u : urlaubeSelberTag) {
-            String urlaubTag            = u.getTag().toString();
-            LocalTime anfangsZeitUrlaub = u.getVon();
-            LocalTime endZeitUrlaub     = u.getBis();
+    private Set<Urlaub> gleichzeitigerUrlaub(Set<Urlaub> urlaubeSelberTag, Set<Urlaub> neueUrlaube) {
+        //TODO: Testen im StudentService (mind. eine Klausur an dem Tag + neuer Urlaub überschneidet sich mit altem Urlaub)
+        if(urlaubeSelberTag.size() == 0) return neueUrlaube;
+        if(neueUrlaube.size() == 0) return urlaubeSelberTag;
 
-            //erstattungsZeitenUrlaub(zuErstattendeZeiten, urlaubTag, anfangsZeitUrlaub, endZeitUrlaub);
-            if("alter und neuer Urlaub überschneiden sich oder sind direkt hintereinander") {
-                //Startzeit des alten Urlaubs liegt vor Startzeit des neuen Urlaubs und Endzeit des neuen Urlaubs liegt nach Endzeit des alten Urlaubs
-                //Startzeit alt & Endzeit neu
-                if() {
+        Set<Urlaub> zuPruefendeUrlaube = urlaubeSelberTag;
+        Set<Urlaub> gueltigeUrlaube = new HashSet<>();
+
+        for(Urlaub neu : neueUrlaube) {
+            for (Urlaub alt : zuPruefendeUrlaube) {
+                if (alt.getBeginn().equals(neu.getBeginn())) {
+                    if (alt.getEnd().equals(neu.getEnd())) {
+                        //1: beide Urlaube sind gleich, einer wird übernommen
+                        gueltigeUrlaube.add(neu);
+                    } else if (alt.getEnd().isAfter(neu.getEnd())) {
+                        //2: der alte Urlaub wird übernommen
+                        gueltigeUrlaube.add(alt);
+                    } else if (alt.getEnd().isBefore(neu.getEnd())) {
+                        //3: der neue Urlaub wird übernommen
+                        gueltigeUrlaube.add(neu);
+                    }
+                } else if (alt.getBeginn().isAfter(neu.getBeginn()) && alt.getBeginn().isBefore(neu.getEnd())) {
+                    if (alt.getEnd().equals(neu.getEnd())) {
+                        //4: der neue Urlaub wird übernommen
+                        gueltigeUrlaube.add(neu);
+                    } else if (alt.getEnd().isAfter(neu.getEnd())) {
+                        //5: Start vom neuen und Ende vom alten Urlaub
+                        gueltigeUrlaube.add(new Urlaub(neu.getTag().toString(), neu.getBeginn().toString(), alt.getEnd().toString()));
+                    } else if (alt.getEnd().isBefore(neu.getEnd())) {
+                        //6: der neue Urlaub wird übernommen
+                        gueltigeUrlaube.add(neu);
+                    }
+                } else if (alt.getBeginn().isBefore(neu.getBeginn()) && (neu.getBeginn().isBefore(alt.getEnd()) || neu.getBeginn().equals(alt.getEnd()))) {
+                    if (alt.getEnd().equals(neu.getEnd())) {
+                        //7: der alte Urlaub wird übernommen
+                        gueltigeUrlaube.add(alt);
+                    } else if (alt.getEnd().isAfter(neu.getEnd())) {
+                        //8: der alte Urlaub wird übernommen
+                        gueltigeUrlaube.add(alt);
+                    } else if (alt.getEnd().isBefore(neu.getEnd())) {
+                        //9: Start vom alten und Ende vom neuen Urlaub
+                        gueltigeUrlaube.add(new Urlaub(neu.getTag().toString(), alt.getBeginn().toString(), neu.getEnd().toString()));
+                    }
                 }
-                //Startzeit alt & Endzeit alt
-                else if() {
-
-                }
-                //Startzeit neu & Endzeit alt
-                else if() {
-
-                }
-                //Startzeit neu & Endzeit neu
-                else if() {
-
+                //die alten und der neue Urlaub überschneiden sich nicht: beide sind gültig
+                else {
+                    gueltigeUrlaube.add(alt);
+                    gueltigeUrlaube.add(neu);
                 }
             }
-        }*/
+            zuPruefendeUrlaube = gueltigeUrlaube;
+            gueltigeUrlaube.removeAll(gueltigeUrlaube);
+        }
+        return zuPruefendeUrlaube;
     }
 
     private void keineKlausurSelberTag(Urlaub urlaub, Set<Urlaub> urlaubeSelberTag) throws Exception {
@@ -159,7 +195,7 @@ public class StudentService {
             //die zwei Urlaubsblöcke müssen am Anfang und Ende liegen mit mind. 90 Min Arbeitszeit dazwischen
             regelnFuerZweiBloecke(urlaub, urlaubeSelberTag);
             //schon mehr als ein Urlaub am selben Tag
-        } else if (urlaubeSelberTag.size() > 1) {
+        } else{
             //kein weiterer Urlaub kann gebucht werden
             throw new Exception("Es wurden bereits zwei Urlaubsblöcke genommen");
         }

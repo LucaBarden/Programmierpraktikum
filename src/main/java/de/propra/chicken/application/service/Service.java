@@ -109,9 +109,5 @@ public class Service {
         }
     }
 
-    private Student transferDTOtoStudent(StudentDTO dto) {
-        return new Student(dto.getGithubID(), dto.getResturlaub());
-
-    }
 
 }

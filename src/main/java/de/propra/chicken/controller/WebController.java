@@ -2,6 +2,7 @@ package de.propra.chicken.controller;
 
 import de.propra.chicken.application.service.Service;
 import de.propra.chicken.domain.model.Klausur;
+import de.propra.chicken.domain.model.Student;
 import de.propra.chicken.domain.model.Urlaub;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,7 +34,7 @@ public class WebController {
                 principal != null ? principal.getAttribute("login") : null
         );
         System.out.println(principal.getAttributes());
-        return "Student";
+        return "redirect:/student";
     }
 
     @Secured("ROLE_USER")
@@ -42,6 +43,7 @@ public class WebController {
         model.addAttribute("user",
                 principal != null ? principal.getAttribute("login") : null
         );
+        service.speicherStudent(new Student(Long.parseLong(principal.getAttribute("id").toString())));
         return "Student";
     }
 
@@ -55,9 +57,7 @@ public class WebController {
     @Secured("ROLE_USER")
     @PostMapping("/urlaubErstellen")
     public String urlaubErstellen(Urlaub urlaub, @AuthenticationPrincipal OAuth2User principal) {
-        // TODO Anlegen des Urlaubs
         System.out.println(urlaub);
-        System.out.println(principal.getAttribute("id").toString());
         try {
             service.speicherUrlaub(urlaub, Long.parseLong(principal.getAttribute("id").toString()));
 

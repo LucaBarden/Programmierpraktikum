@@ -2,10 +2,11 @@ package de.propra.chicken.dto;
 
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-
+@Table("klausur")
 public class KlausurDTO {
     @Id
     private long lsfID;

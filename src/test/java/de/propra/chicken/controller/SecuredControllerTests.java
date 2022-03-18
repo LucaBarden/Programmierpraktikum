@@ -50,6 +50,7 @@ public class SecuredControllerTests {
         session = newSession;
     }
 
+
     OAuth2AuthenticationToken buildPrincipal(String role, String name) {
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("login", name);

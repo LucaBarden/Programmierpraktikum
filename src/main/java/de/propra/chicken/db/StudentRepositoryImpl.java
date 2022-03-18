@@ -2,6 +2,7 @@ package de.propra.chicken.db;
 
 import de.propra.chicken.application.service.repo.StudentRepository;
 import de.propra.chicken.domain.model.*;
+import de.propra.chicken.dto.StudentDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
@@ -43,5 +44,14 @@ public class StudentRepositoryImpl implements StudentRepository {
     @Override
     public Set<KlausurRef> getAngemeldeteKlausurenIds(long githubID) {
         return crudStudent.findAngemeldeteKlausurenIds(githubID);
+    }
+
+    private Student transferDTOToStudent(StudentDTO dto) {
+        return new Student(dto.getGithubID(), dto.getResturlaub());
+
+    }
+
+    private StudentDTO transferStudentToDTO(Student s){
+        return new StudentDTO(s.getGithubID(), s.getResturlaub());
     }
 }

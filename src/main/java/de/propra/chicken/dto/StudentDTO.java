@@ -1,7 +1,9 @@
 package de.propra.chicken.dto;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
+@Table("student")
 public class StudentDTO {
 
     @Id
