@@ -50,7 +50,7 @@ public class Service {
             Set<KlausurRef> angemeldeteKlausurenRefs = studentRepo.getAngemeldeteKlausurenIds(student.getGithubID());
             Set<KlausurData> angemeldeteKlausuren = klausurRepo.getKlausurenDataByRefs(angemeldeteKlausurenRefs);
             Set<Urlaub> zuErstattendeUrlaube = studentService.validiereKlausurAnmeldung(new KlausurRef(klausur.getLsfid()), new KlausurData(klausur.getDatum(), klausur.getBeginn(), klausur.getEnd(), klausur.isPraesenz()),
-                    angemeldeteKlausuren, student.getUrlaube(), angemeldeteKlausurenRefs);
+                    angemeldeteKlausuren, student, angemeldeteKlausurenRefs);
             student = studentService.erstatteUrlaube(zuErstattendeUrlaube);
             KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
             student.addKlausur(klausurRef);
@@ -126,4 +126,7 @@ public class Service {
     }
 
 
+    public void test(Student student) {
+        studentRepo.speicherStudent(student);
+    }
 }

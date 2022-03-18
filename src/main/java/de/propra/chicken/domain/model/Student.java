@@ -1,12 +1,12 @@
 package de.propra.chicken.domain.model;
 
-import de.propra.chicken.db.dto.StudentDTO;
-import org.springframework.data.annotation.Id;
+import de.propra.chicken.domain.dto.StudentDTO;
 
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Student {
 
@@ -24,10 +24,6 @@ public class Student {
     public Student(long githubID, int resturlaub) {
         this.githubID = githubID;
         this.resturlaub = resturlaub;
-    }
-
-    public int getResturlaub() {
-        return resturlaub;
     }
 
     public long getGithubID() {
@@ -54,9 +50,6 @@ public class Student {
         urlaube.addAll(urlaub);
     }
 
-    public Set<Urlaub> getUrlaube() {
-        return urlaube;
-    }
 
     public Set<Urlaub> urlaubSelberTag(Urlaub urlaub) {
         Set<Urlaub> uSelberTag = new HashSet<>();
@@ -90,6 +83,8 @@ public class Student {
         }
     }
 
-
+    public StudentDTO getDto() {
+        return new StudentDTO(this.urlaube.stream().map(u -> u.getDTO(githubID)).collect(Collectors.toSet()), this.resturlaub, this.githubID);
+    }
 
 }

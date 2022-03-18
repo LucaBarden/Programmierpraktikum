@@ -27,7 +27,7 @@ public class StudentTests {
         Set<KlausurRef> angemeldeteKlausurRefs = Set.of(klausurRef);
         student.addKlausur(klausurRef);
 
-        Exception thrown =assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausurRef, klausur, angemeldeteKlausuren, new HashSet<Urlaub>(), angemeldeteKlausurRefs));
+        Exception thrown =assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausurRef, klausur, angemeldeteKlausuren, student, angemeldeteKlausurRefs));
         assertThat(thrown.getMessage()).isEqualTo("Du bist bereits bei der Klausur angemeldet");
     }
 
@@ -46,7 +46,7 @@ public class StudentTests {
         Set<KlausurRef> angemeldeteKlausurenRef = Set.of(klausurRef);
         student.addKlausur(klausurRef);
 
-        assertDoesNotThrow(() -> studentService.validiereKlausurAnmeldung(klausurRef2, klausur2, angemeldeteKlausuren, new HashSet<Urlaub>(),angemeldeteKlausurenRef));
+        assertDoesNotThrow(() -> studentService.validiereKlausurAnmeldung(klausurRef2, klausur2, angemeldeteKlausuren, student,angemeldeteKlausurenRef));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class StudentTests {
         KlausurData klausurData = klausur.getKlausurData();
         StudentService studentService = new StudentService();
 
-        Exception thrown = assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausurRef, klausurData, new HashSet<>(), new HashSet<>(), new HashSet<>() ));
+        Exception thrown = assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausurRef, klausurData, new HashSet<>(), student, new HashSet<>() ));
         assertThat(thrown.getMessage()).isEqualTo("Klausur findet heute statt. Anmeldung nicht mehr moeglich");
     }
 

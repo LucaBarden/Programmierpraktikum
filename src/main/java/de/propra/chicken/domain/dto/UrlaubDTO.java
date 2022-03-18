@@ -1,6 +1,7 @@
-package de.propra.chicken.db.dto;
+package de.propra.chicken.domain.dto;
 
 import de.propra.chicken.domain.model.Urlaub;
+import org.apache.tomcat.jni.Local;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -18,10 +19,10 @@ public class UrlaubDTO {
     private long github_id;
 
 
-    public UrlaubDTO(Urlaub urlaub, long github_id){
-        this.tag = urlaub.getTag();
-        this.beginn = urlaub.getBeginn();
-        this.end = urlaub.getEnd();
+    public UrlaubDTO(LocalDate tag, LocalTime beginn, LocalTime end, long github_id){
+        this.tag = tag;
+        this.beginn = beginn;
+        this.end = end;
         this.github_id = github_id;
     }
 }

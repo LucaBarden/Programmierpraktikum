@@ -2,7 +2,7 @@ package de.propra.chicken.db;
 
 import de.propra.chicken.application.service.repo.StudentRepository;
 import de.propra.chicken.domain.model.*;
-import de.propra.chicken.db.dto.StudentDTO;
+import de.propra.chicken.domain.dto.StudentDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
@@ -23,7 +23,7 @@ public class StudentRepositoryImpl implements StudentRepository {
 
     @Override
     public Student speicherKlausurAnmeldung(Student student) {
-        return transferDTOToStudent(crudStudent.save(transferStudentToDTO(student)));
+        return transferDTOToStudent(crudStudent.save(student.getDto()));
     }
 
     @Override
@@ -34,7 +34,7 @@ public class StudentRepositoryImpl implements StudentRepository {
     //Works
     @Override
     public Student speicherStudent(Student student) {
-        return transferDTOToStudent(crudStudent.save(transferStudentToDTO(student)));
+        return transferDTOToStudent(crudStudent.save(student.getDto()));
     }
 
     @Override
@@ -57,7 +57,5 @@ public class StudentRepositoryImpl implements StudentRepository {
 
     }
 
-    private StudentDTO transferStudentToDTO(Student s){
-        return new StudentDTO(s);
-    }
+
 }

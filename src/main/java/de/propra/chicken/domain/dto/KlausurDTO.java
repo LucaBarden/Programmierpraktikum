@@ -1,11 +1,9 @@
-package de.propra.chicken.db.dto;
+package de.propra.chicken.domain.dto;
 
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
