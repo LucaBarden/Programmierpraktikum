@@ -1,6 +1,7 @@
 package de.propra.chicken.controller;
 
 
+import de.propra.chicken.application.service.Service;
 import de.propra.chicken.configuration.MethodSecurityConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SecuredControllerTests {
 
     private static MockHttpSession session;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -96,8 +98,8 @@ public class SecuredControllerTests {
     void urlaubPost() throws Exception {
         mockMvc.perform(post("/urlaubErstellen").session(session)
                         .param("tag", LocalDate.now().toString())
-                        .param("von", LocalTime.now().toString())
-                        .param("bis", LocalTime.now().plusHours(1).toString())
+                        .param("beginn", LocalTime.now().toString())
+                        .param("end", LocalTime.now().plusHours(1).toString())
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/student"));
@@ -125,6 +127,13 @@ public class SecuredControllerTests {
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/student"));
+    }
+
+    @Test
+    @DisplayName("Ein unangemeldeter User hat keinen zugriff")
+    void noAccess() throws Exception {
+        mockMvc.perform(post("/"))
+                .andExpect(status().isForbidden());
     }
 
 

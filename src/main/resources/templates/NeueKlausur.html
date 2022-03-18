@@ -15,7 +15,7 @@
         <div class="form-floating mb-3 form-control-lg">
             <div class="form-group mb-3">
                 <label for="veranstaltung">Name der Veranstaltung</label>
-                <input type="text" class="form-control" id="veranstaltung" th:field="*{veranstaltung}"
+                <input type="text" class="form-control" id="veranstaltung" th:field="*{name}"
                        placeholder="Rechnerarchitektur" name="veranstaltung" value="">
             </div>
         </div>
@@ -40,7 +40,7 @@
         <div class="form-floating mb-3 form-control-lg">
             <div class="form-group mb-3">
                 <label for="tag" class="form-label">Datum der Klausur (dd.mm.yyyy)</label>
-                <input type="date" class="form-control" id="tag" placeholder="" th:field="*{date}"
+                <input type="date" class="form-control" id="tag" placeholder="" th:field="*{datum}"
                        name="datum" value="">
             </div>
 

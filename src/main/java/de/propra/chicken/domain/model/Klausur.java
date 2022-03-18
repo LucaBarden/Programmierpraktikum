@@ -1,31 +1,29 @@
 package de.propra.chicken.domain.model;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
 
 public class Klausur {
-    private String veranstaltung;
+    private String name;
     private long lsfid;
     private boolean praesenz;
-    private LocalDate date;
+    private LocalDate datum;
     private LocalTime beginn;
     private LocalTime end;
 
-    public Klausur(String veranstaltung, long lsfid, boolean praesenz, String date, String beginn, String end) {
-        this.veranstaltung = veranstaltung;
+    public Klausur(String name, long lsfid, boolean praesenz, String datum, String beginn, String end) {
+        this.name = name;
         this.lsfid = lsfid;
         this.praesenz = praesenz;
-        this.date = LocalDate.parse(date);
+        this.datum = LocalDate.parse(datum);
         this.beginn = LocalTime.parse(beginn);
         this.end = LocalTime.parse(end);
     }
 
-    public String getVeranstaltung() {
-        return veranstaltung;
+    public String getName() {
+        return name;
     }
 
     public long getLsfid() {
@@ -36,8 +34,8 @@ public class Klausur {
         return praesenz;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getDatum() {
+        return datum;
     }
 
     public LocalTime getBeginn() {
@@ -59,5 +57,25 @@ public class Klausur {
     @Override
     public int hashCode() {
         return Objects.hash(lsfid);
+    }
+
+    public KlausurData getKlausurData(){
+        return new KlausurData(this.datum, this.beginn, this.end, this.praesenz);
+    }
+
+    public KlausurRef getKlausurRef(){
+        return new KlausurRef(this.lsfid);
+    }
+
+    @Override
+    public String toString() {
+        return "Klausur{" +
+                "veranstaltung='" + name + '\'' +
+                ", lsfid=" + lsfid +
+                ", praesenz=" + praesenz +
+                ", date=" + datum +
+                ", beginn=" + beginn +
+                ", end=" + end +
+                '}';
     }
 }

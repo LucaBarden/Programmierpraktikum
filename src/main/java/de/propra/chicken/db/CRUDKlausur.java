@@ -10,4 +10,5 @@ import java.util.Set;
 public interface CRUDKlausur extends CrudRepository<Klausur, Long> {
     @Override
     Set<Klausur> findAll();
+
 }

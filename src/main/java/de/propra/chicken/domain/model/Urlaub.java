@@ -9,41 +9,33 @@ import java.util.Objects;
 public class Urlaub {
 
     private LocalDate tag;
-    private LocalTime von;
-    private LocalTime bis;
+    private LocalTime beginn;
+    private LocalTime end;
 
-    public Urlaub(String tag, String von, String bis) {
+    public Urlaub(String tag, String beginn, String end) {
         this.tag = LocalDate.parse(tag);
-        this.von = LocalTime.parse(von);
-        this.bis = LocalTime.parse(bis);
+        this.beginn = LocalTime.parse(beginn);
+        this.end = LocalTime.parse(end);
     }
-
-    /*
-     * um in der Urlaubsvalidierung .toString() zu sparen. sinnvoll?
-    public Urlaub(LocalDate tag, LocalTime von, LocalTime bis) {
-        this.tag = tag;
-        this.von = von;
-        this.bis = bis;
-    }*/
 
     public LocalDate getTag() {
         return tag;
     }
 
-    public LocalTime getVon() {
-        return von;
+    public LocalTime getBeginn() {
+        return beginn;
     }
 
-    public LocalTime getBis() {
-        return bis;
+    public LocalTime getEnd() {
+        return end;
     }
 
-    public void setVon(LocalTime von) {
-        this.von = von;
+    public void setBeginn(LocalTime beginn) {
+        this.beginn = beginn;
     }
 
-    public void setBis(LocalTime bis) {
-        this.bis = bis;
+    public void setEnd(LocalTime end) {
+        this.end = end;
     }
 
     @Override
@@ -51,20 +43,20 @@ public class Urlaub {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Urlaub urlaub = (Urlaub) o;
-        return Objects.equals(tag, urlaub.tag) && Objects.equals(von, urlaub.von) && Objects.equals(bis, urlaub.bis);
+        return Objects.equals(tag, urlaub.tag) && Objects.equals(beginn, urlaub.beginn) && Objects.equals(end, urlaub.end);
     }
 
     @Override
     public String toString() {
         return "Urlaub{" +
                 "tag=" + tag +
-                ", von=" + von +
-                ", bis=" + bis +
+                ", von=" + beginn +
+                ", bis=" + end +
                 '}';
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tag, von, bis);
+        return Objects.hash(tag, beginn, end);
     }
 }

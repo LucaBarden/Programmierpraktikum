@@ -1,16 +1,16 @@
 CREATE TABLE IF NOT EXISTS
-    klausuren (
+    klausur (
                   name varchar(100) not null,
                   lsfID int not null unique,
+                  praesenz boolean not null,
                   datum date not null,
                   beginn time not null,
-                  schluss time not null,
-                  isPraesenz boolean not null,
+                  end time not null,
                   primary key (lsfID)
 );
 
 CREATE TABLE IF NOT EXISTS
-    studenten (
+    student (
                   githubID INT NOT NULL UNIQUE,
                   resturlaub INT NOT NULL,
                   PRIMARY KEY (githubID)
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS
 
 
 CREATE TABLE IF NOT EXISTS
-    klausurStudent (
+    klausur_student (
                        lsfID INT NOT NULL,
                        githubID INT NOT NULL,
                        PRIMARY KEY (lsfID,githubID)
@@ -34,13 +34,4 @@ CREATE TABLE IF NOT EXISTS
                githubID INT not null,
                constraint urlaub
                    PRIMARY KEY (id)
-);
-
-CREATE TABLE IF NOT EXISTS
-    auditLog (
-                 id INT unsigned NOT NULL AUTO_INCREMENT,
-                 githubID INT NOT NULL,
-                 timestamp DATETIME NOT NULL,
-                 constraint auditLog
-                     PRIMARY KEY (id)
 );

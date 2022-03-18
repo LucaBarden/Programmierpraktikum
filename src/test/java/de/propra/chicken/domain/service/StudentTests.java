@@ -1,7 +1,6 @@
 package de.propra.chicken.domain.service;
 
 import de.propra.chicken.domain.model.*;
-import org.apache.tomcat.jni.Local;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -56,9 +55,11 @@ public class StudentTests {
         //arrange
         Student student = new Student(123456);
         Klausur klausur = new Klausur("RA", 44445, false, LocalDate.now().toString(), LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
+        KlausurRef klausurRef = klausur.getKlausurRef();
+        KlausurData klausurData = klausur.getKlausurData();
         StudentService studentService = new StudentService();
 
-        Exception thrown = assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausur, new HashSet<Klausur>(), new HashSet<Urlaub>() ));
+        Exception thrown = assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausurRef, klausurData, new HashSet<>(), new HashSet<>(), new HashSet<>() ));
         assertThat(thrown.getMessage()).isEqualTo("Klausur findet heute statt. Anmeldung nicht mehr moeglich");
     }
 
@@ -304,8 +305,8 @@ public class StudentTests {
         }
 
         assertThat(gueltigerUrlaub).hasSize(1);
-        assertThat(gueltigerUrlaub.stream().toList().get(0).getVon().toString()). isEqualTo("08:30");
-        assertThat(gueltigerUrlaub.stream().toList().get(0).getBis().toString()). isEqualTo("08:45");
+        assertThat(gueltigerUrlaub.stream().toList().get(0).getBeginn().toString()). isEqualTo("08:30");
+        assertThat(gueltigerUrlaub.stream().toList().get(0).getEnd().toString()). isEqualTo("08:45");
     }
 
     @Test

@@ -1,17 +1,18 @@
 package de.propra.chicken.domain.service;
 
 import de.propra.chicken.domain.model.Klausur;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
-
+@Service
 public class KlausurService {
 
 
     public  Set<Klausur> validiereAlleKlausuren(Set<Klausur> alleKlausuren) {
         Set<Klausur> gueltigeKlausuren = new HashSet<>();
         for(Klausur klausur : alleKlausuren) {
-            if(klausur.getDate().isAfter(LocalDate.now())) {
+            if(klausur.getDatum().isAfter(LocalDate.now())) {
                 gueltigeKlausuren.add(klausur);
             }
         }
@@ -21,7 +22,7 @@ public class KlausurService {
     public Map<Klausur, Boolean> stornierbareKlausuren(Set<Klausur> klausuren) {
         Map<Klausur, Boolean> stornierbar = new HashMap<>();
         for(Klausur klausur : klausuren) {
-            if(klausur.getDate().isAfter(LocalDate.now())) {
+            if(klausur.getDatum().isAfter(LocalDate.now())) {
                 stornierbar.put(klausur, true);
             }
             else {

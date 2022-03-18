@@ -4,10 +4,11 @@ import de.propra.chicken.application.service.repo.KlausurRepository;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.KlausurData;
 import de.propra.chicken.domain.model.KlausurRef;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashSet;
 import java.util.Set;
-
+@Repository
 public class KlausurRepositoryImpl implements KlausurRepository {
 
     private CRUDKlausur crudKlausur;
@@ -18,10 +19,11 @@ public class KlausurRepositoryImpl implements KlausurRepository {
 
     @Override
     public void speicherKlausur(Klausur klausur) {
-        //TODO save Klausur
+        crudKlausur.save(klausur);
     }
 
     @Override
+    //TODO Darf keine Klausur returnen ?
     public Set<Klausur> ladeAlleKlausuren() {
         return crudKlausur.findAll();
     }
