@@ -59,7 +59,7 @@ public class WebController {
     public String urlaubErstellen(Urlaub urlaub, @AuthenticationPrincipal OAuth2User principal) {
         System.out.println(urlaub);
         try {
-            service.speicherUrlaub(urlaub, Long.parseLong(principal.getAttribute("id").toString()));
+            service.speicherUrlaub(urlaub, Long.parseLong(principal.getAttribute("id").toString()), principal);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,10 +77,10 @@ public class WebController {
 
     @Secured("ROLE_USER")
     @PostMapping("/klausurErstellen")
-    public String klausurErstellen(Klausur klausur) {
+    public String klausurErstellen(Klausur klausur, @AuthenticationPrincipal OAuth2User principal) {
         System.out.println(klausur);
         try {
-            service.saveKlausur(klausur);
+            service.saveKlausur(klausur, principal);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -89,7 +89,8 @@ public class WebController {
 
     @Secured("ROLE_USER")
     @GetMapping("/klausur")
-    public String klausur() {
+    public String klausur(Model model) {
+        model.addAttribute("klausuren", service.ladeAlleKlausuren());
         return "Klausur";
     }
 

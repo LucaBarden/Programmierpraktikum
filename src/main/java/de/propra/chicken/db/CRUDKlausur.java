@@ -11,6 +11,6 @@ public interface CRUDKlausur extends CrudRepository<KlausurDTO, Long> {
 
     Set<KlausurDTO> findAll();
 
-    Set<KlausurDTO> findAllByID();
+    //Set<KlausurDTO> findAllByID();
 
 }

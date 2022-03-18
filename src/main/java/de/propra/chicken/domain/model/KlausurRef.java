@@ -1,7 +1,9 @@
 package de.propra.chicken.domain.model;
 
-public class KlausurRef {
+import org.springframework.data.annotation.Id;
 
+public class KlausurRef {
+    @Id
     private long lsfID;
 
     public KlausurRef(long lsfID) {

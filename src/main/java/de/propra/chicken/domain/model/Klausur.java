@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 
@@ -71,13 +72,9 @@ public class Klausur {
 
     @Override
     public String toString() {
-        return "Klausur{" +
-                "veranstaltung='" + name + '\'' +
-                ", lsfid=" + lsfid +
-                ", praesenz=" + praesenz +
-                ", date=" + datum +
-                ", beginn=" + beginn +
-                ", end=" + end +
-                '}';
+
+        return this.name + "(" + this.getDatum().toString() + ", "
+                + this.getBeginn().truncatedTo(ChronoUnit.MINUTES).toString() + " - "
+                + this.getEnd().truncatedTo(ChronoUnit.MINUTES).toString() + " Uhr)";
     }
 }

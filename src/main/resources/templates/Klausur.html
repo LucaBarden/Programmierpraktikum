@@ -23,6 +23,7 @@
     <div class="formular mtb-3">
         <form name="klausur_anmelden" method="post" th:action="@{/klausurAnmelden}" th:object="${klausur}">
             <select class="form-control" name="klausur" id="klausur-select">
+                <option th:each="k : ${klausuren}"><span th:text="${k.name}"></span></option>
             </select>
 
             <p class="p-3"><strong>

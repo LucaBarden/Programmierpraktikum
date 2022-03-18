@@ -7,10 +7,14 @@ import de.propra.chicken.application.service.repo.StudentRepository;
 import de.propra.chicken.domain.service.StudentService;
 import de.propra.chicken.domain.service.KlausurService;
 import org.jsoup.Jsoup;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.FileHandler;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 @org.springframework.stereotype.Service
 public class Service {
@@ -20,7 +24,8 @@ public class Service {
     private final StudentService studentService;
     private final KlausurService klausurService;
 
-    //Logger logger = Logger.getLogger("de.propra.chicken.application.service.Service");
+    Logger logger = Logger.getLogger("de.propra.chicken.application.service.Service");
+    FileHandler fileHandler;
 
 
     public Service(StudentRepository studentRepo, KlausurRepository klausurRepo, StudentService studentService, KlausurService klausurService) {
@@ -28,9 +33,18 @@ public class Service {
         this.klausurRepo = klausurRepo;
         this.studentService = studentService;
         this.klausurService = klausurService;
+
+        try {
+            fileHandler = new FileHandler("./output.log");
+            logger.addHandler(fileHandler);
+            SimpleFormatter formatter = new SimpleFormatter();
+            fileHandler.setFormatter(formatter);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void klausurAnmelden(Klausur klausur, long githubID) throws Exception {
+    public void klausurAnmelden(Klausur klausur, long githubID, OAuth2User principal) throws Exception {
         //student.setKlausuren(studentRepo.getKlausurenVonStudent(student));
         Student student = studentRepo.findByID(githubID);
         try {
@@ -42,13 +56,14 @@ public class Service {
             KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
             student.addKlausur(klausurRef);
             studentRepo.speicherKlausurAnmeldung(student);
+            logger.info(String.valueOf(githubID) + "hat sich zur Klausur" + klausur.getName()+"(" + klausur.getLsfid()+")");
         } catch (Exception ex) {
             throw ex;
         }
     }
 
-    public void saveKlausur(Klausur klausur) throws Exception {
-        klausurRepo.speicherKlausur(klausur);
+    public void saveKlausur(Klausur klausur, OAuth2User principal) throws Exception {
+        speicherKlausur(klausur);
     }
 
 
@@ -94,7 +109,7 @@ public class Service {
         }
     }
 
-    public void speicherUrlaub(Urlaub urlaub, long githubID) throws Exception {
+    public void speicherUrlaub(Urlaub urlaub, long githubID, OAuth2User principal) throws Exception {
         try {
             //rausfinden ob wir Studenten aus der DB bekommen dürfen oder DTOS zu Studenten machen müssen
             Student student = studentRepo.findByID(githubID);
