@@ -1,5 +1,6 @@
 package de.propra.chicken.domain.model;
 
+import de.propra.chicken.db.dto.StudentDTO;
 import org.springframework.data.annotation.Id;
 
 import java.time.Duration;
@@ -23,6 +24,10 @@ public class Student {
     public Student(long githubID, int resturlaub) {
         this.githubID = githubID;
         this.resturlaub = resturlaub;
+    }
+
+    public int getResturlaub() {
+        return resturlaub;
     }
 
     public long getGithubID() {
@@ -49,12 +54,18 @@ public class Student {
         urlaube.addAll(urlaub);
     }
 
-    public int getResturlaub() {
-        return resturlaub;
-    }
-
     public Set<Urlaub> getUrlaube() {
         return urlaube;
+    }
+
+    public Set<Urlaub> urlaubSelberTag(Urlaub urlaub) {
+        Set<Urlaub> uSelberTag = new HashSet<>();
+        for (Urlaub tmpUrlaub : urlaube) {
+            if (tmpUrlaub.getTag().compareTo(urlaub.getTag()) == 0) {
+                uSelberTag.add(tmpUrlaub);
+            }
+        }
+        return uSelberTag;
     }
 
     public void checkAufGrundregeln(Urlaub urlaub, String beginn, String ende) throws Exception {
@@ -78,5 +89,7 @@ public class Student {
             throw new Exception("Der Urlaub muss im Praktikumszeitraum liegen");
         }
     }
+
+
 
 }

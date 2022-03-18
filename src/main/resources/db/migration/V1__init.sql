@@ -26,13 +26,12 @@ CREATE TABLE IF NOT EXISTS
                        PRIMARY KEY (klausur,student)
 );
 
-
 CREATE TABLE IF NOT EXISTS
     urlaub (
-               id INT auto_increment,
-               datum DATE NOT NULL,
+               ID INT auto_increment,
+               tag DATE NOT NULL,
                beginn TIME not null,
-               schluss TIME not null,
+               end TIME not null,
                github_id INT not null,
                constraint urlaub
                    PRIMARY KEY (id),

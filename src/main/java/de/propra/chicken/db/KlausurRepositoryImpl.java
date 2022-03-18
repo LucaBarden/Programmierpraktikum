@@ -1,11 +1,13 @@
 package de.propra.chicken.db;
 
+import com.google.common.collect.Sets;
 import de.propra.chicken.application.service.repo.KlausurRepository;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.KlausurData;
 import de.propra.chicken.domain.model.KlausurRef;
 import de.propra.chicken.db.dto.KlausurDTO;
 import org.springframework.stereotype.Repository;
+import org.yaml.snakeyaml.events.Event;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,6 +32,7 @@ public class KlausurRepositoryImpl implements KlausurRepository {
     }
 
 
+    //Works
     @Override
     public Set<Klausur> ladeAlleKlausuren() {
         Set<KlausurDTO> all = crudKlausur.findAll();
@@ -40,24 +43,30 @@ public class KlausurRepositoryImpl implements KlausurRepository {
         return klausuren;
     }
 
+    //Works
     @Override
     public Set<Klausur> getKlausurenByRefs(Set<KlausurRef> klausurenRef) {
-        Set<Long> IDs = klausurenRef.stream().map(klausurRef -> klausurRef.getLsfID()).collect(Collectors.toSet());
-        Set<KlausurDTO> DTOs = new HashSet<>();
-
-        //DTOs.addAll((Collection<? extends KlausurDTO>) crudKlausur.findAllById(IDs));
-
+        Set<KlausurDTO> DTOs = findeKlausurenByID(klausurenRef);
         return DTOs.stream().map(k -> transferDTOToKlausur(k)).collect(Collectors.toSet());
     }
 
+    //Works
     @Override
     public Set<KlausurData> getKlausurenDataByRefs(Set<KlausurRef> angemeldeteKlausurenRefs) {
+        Set<KlausurDTO> DTOs = findeKlausurenByID(angemeldeteKlausurenRefs);
+
+        return DTOs.stream().map(k -> transferDTOToKlausur(k).getKlausurData()).collect(Collectors.toSet());
+    }
+
+    private Set<KlausurDTO> findeKlausurenByID(Set<KlausurRef> angemeldeteKlausurenRefs) {
         Set<Long> IDs = angemeldeteKlausurenRefs.stream().map(klausurRef -> klausurRef.getLsfID()).collect(Collectors.toSet());
         Set<KlausurDTO> DTOs = new HashSet<>();
 
-        DTOs.addAll((Collection<? extends KlausurDTO>) crudKlausur.findAllById(IDs));
-
-        return DTOs.stream().map(k -> transferDTOToKlausur(k).getKlausurData()).collect(Collectors.toSet());
+        for (Long id : IDs) {
+            Set<KlausurDTO> klausurDTOS = crudKlausur.findeKlausurByID(id);
+            DTOs.addAll(klausurDTOS);
+        }
+        return DTOs;
     }
 
     private Klausur transferDTOToKlausur(KlausurDTO dto) {

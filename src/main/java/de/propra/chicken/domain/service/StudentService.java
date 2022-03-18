@@ -14,7 +14,7 @@ public class StudentService {
     private static String BEGINN_PRAKTIKUM = "08:30";
     private static String ENDE_PRAKTIKUM   = "12:30";
 
-    public Set<Urlaub> validiereKlausurAnmeldung(KlausurRef anzumeldendeKlausur, KlausurData klausurData, Set<KlausurData> angemeldeteKlausuren, Set<Urlaub> urlaube, Set<KlausurRef> angemeldeteKlausurenRefs) throws Exception {
+    public Set<Urlaub> validiereKlausurAnmeldung(KlausurRef anzumeldendeKlausur, KlausurData klausurData, Set<KlausurData> angemeldeteKlausuren, Student student, Set<KlausurRef> angemeldeteKlausurenRefs) throws Exception {
         //TODO: urlaube erstatten (wenn überlappt)
         //Die klausur ist mindestens einen Tag später
         if (!klausurData.tag().isAfter(LocalDate.now())) {
@@ -38,12 +38,12 @@ public class StudentService {
 
 
     public Set<Urlaub> validiereUrlaub(Student student, Urlaub urlaub, Set<KlausurData> klausuren) throws Exception {
-        Set<Urlaub> urlaube = student.getUrlaube();
+
         Set<Urlaub> zuErstattendeZeiten = new HashSet<>();
 
         student.checkAufGrundregeln(urlaub, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
 
-        Set<Urlaub> urlaubeSelberTag = urlaubSelberTag(urlaub, urlaube);
+        Set<Urlaub> urlaubeSelberTag = student.urlaubSelberTag(urlaub);
         Set<KlausurData> klausurSelberTag = klausurSelberTag(urlaub, klausuren);
         Set<Urlaub> gueltigeUrlaube = new HashSet<>();
 
@@ -77,15 +77,6 @@ public class StudentService {
         return kSelberTag;
     }
 
-    private Set<Urlaub> urlaubSelberTag(Urlaub urlaub, Set<Urlaub> urlaube) {
-        Set<Urlaub> uSelberTag = new HashSet<>();
-        for (Urlaub tmpUrlaub : urlaube) {
-            if (tmpUrlaub.getTag().compareTo(urlaub.getTag()) == 0) {
-                uSelberTag.add(tmpUrlaub);
-            }
-        }
-        return uSelberTag;
-    }
 
     private void klausurenAmSelbenTag(Set<Urlaub> zuErstattenderUrlaube, Set<KlausurData> klausurSelberTag) {
         for(KlausurData k : klausurSelberTag) {
