@@ -76,4 +76,8 @@ public class Klausur {
                 + this.getBeginn().truncatedTo(ChronoUnit.MINUTES).toString() + " - "
                 + this.getEnd().truncatedTo(ChronoUnit.MINUTES).toString() + " Uhr)";
     }
+
+    public Klausur returnThis(){
+        return this;
+    }
 }

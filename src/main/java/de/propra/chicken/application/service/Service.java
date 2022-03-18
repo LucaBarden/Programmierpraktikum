@@ -50,7 +50,7 @@ public class Service {
             Set<KlausurRef> angemeldeteKlausurenRefs = studentRepo.getAngemeldeteKlausurenIds(student.getGithubID());
             Set<KlausurData> angemeldeteKlausuren = klausurRepo.getKlausurenDataByRefs(angemeldeteKlausurenRefs);
             Set<Urlaub> zuErstattendeUrlaube = studentService.validiereKlausurAnmeldung(new KlausurRef(klausur.getLsfid()), new KlausurData(klausur.getDatum(), klausur.getBeginn(), klausur.getEnd(), klausur.isPraesenz()),
-                    angemeldeteKlausuren, student.getUrlaube(), angemeldeteKlausurenRefs);
+                    angemeldeteKlausuren, student, angemeldeteKlausurenRefs);
             student = studentService.erstatteUrlaube(zuErstattendeUrlaube);
             KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
             student.addKlausur(klausurRef);
@@ -63,7 +63,7 @@ public class Service {
 
     public void saveKlausur(Klausur klausur, OAuth2User principal) throws Exception {
         speicherKlausur(klausur);
-        logger.info(principal.getAttribute("name") + "(" + principal.getAttribute("id") + ") " + "hat die Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " erstellt");
+        logger.info(principal.getAttribute("login") + "(" + principal.getAttribute("id") + ") " + "hat die Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " erstellt");
     }
 
 
@@ -112,7 +112,6 @@ public class Service {
 
     public void speicherUrlaub(Urlaub urlaub, long githubID, OAuth2User principal) throws Exception {
         try {
-            //rausfinden ob wir Studenten aus der DB bekommen dürfen oder DTOS zu Studenten machen müssen
             Student student = studentRepo.findByID(githubID);
             Set<KlausurData> angemeldeteKlausuren = studentRepo.findAngemeldeteKlausuren(githubID);
             Set<Urlaub> gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, angemeldeteKlausuren);
@@ -126,4 +125,7 @@ public class Service {
     }
 
 
+    public void test(Student student) {
+        studentRepo.speicherStudent(student);
+    }
 }

@@ -1,15 +1,12 @@
 package de.propra.chicken.db;
 
-import com.google.common.collect.Sets;
 import de.propra.chicken.application.service.repo.KlausurRepository;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.KlausurData;
 import de.propra.chicken.domain.model.KlausurRef;
-import de.propra.chicken.db.dto.KlausurDTO;
+import de.propra.chicken.domain.dto.KlausurDTO;
 import org.springframework.stereotype.Repository;
-import org.yaml.snakeyaml.events.Event;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -63,8 +60,8 @@ public class KlausurRepositoryImpl implements KlausurRepository {
         Set<KlausurDTO> DTOs = new HashSet<>();
 
         for (Long id : IDs) {
-            Set<KlausurDTO> klausurDTOS = crudKlausur.findeKlausurByID(id);
-            DTOs.addAll(klausurDTOS);
+            KlausurDTO klausurDTOS = crudKlausur.findeKlausurByID(id);
+            DTOs.add(klausurDTOS);
         }
         return DTOs;
     }

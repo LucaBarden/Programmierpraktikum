@@ -25,7 +25,7 @@
             <select class="form-control" name="klausur" id="klausur-select">
                 <th:block th:each="k : ${klausuren}">
                     <option>
-                    <span th:text="${k.toString()}"></span>
+                    <span th:value="${k.getLsfid()}" th:text="${k.toString()}"></span>
                     </option>
                 </th:block>
 

@@ -1,6 +1,8 @@
 package de.propra.chicken.domain.model;
 
 
+import de.propra.chicken.domain.dto.UrlaubDTO;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -58,5 +60,9 @@ public class Urlaub {
     @Override
     public int hashCode() {
         return Objects.hash(tag, beginn, end);
+    }
+
+    public UrlaubDTO getDTO(long githubID) {
+        return new UrlaubDTO(tag, beginn, end, githubID);
     }
 }
