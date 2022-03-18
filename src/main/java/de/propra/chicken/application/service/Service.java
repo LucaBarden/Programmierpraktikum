@@ -1,15 +1,16 @@
 package de.propra.chicken.application.service;
 
+import ch.qos.logback.classic.BasicConfigurator;
 import de.propra.chicken.application.service.repo.KlausurRepository;
 import de.propra.chicken.domain.model.*;
 import de.propra.chicken.application.service.repo.StudentRepository;
 import de.propra.chicken.domain.service.StudentService;
 import de.propra.chicken.domain.service.KlausurService;
-import de.propra.chicken.dto.StudentDTO;
 import org.jsoup.Jsoup;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 @org.springframework.stereotype.Service
 public class Service {
@@ -18,6 +19,9 @@ public class Service {
     private final KlausurRepository klausurRepo;
     private final StudentService studentService;
     private final KlausurService klausurService;
+
+    //Logger logger = Logger.getLogger("de.propra.chicken.application.service.Service");
+
 
     public Service(StudentRepository studentRepo, KlausurRepository klausurRepo, StudentService studentService, KlausurService klausurService) {
         this.studentRepo = studentRepo;

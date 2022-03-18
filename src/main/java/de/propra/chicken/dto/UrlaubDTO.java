@@ -11,7 +11,7 @@ public class UrlaubDTO {
     private LocalTime beginn;
     private LocalTime end;
     @Id
-    private int id;
+    private int ID;
     private long github_id;
 
     public UrlaubDTO(String tag, String beginn, String end, long github_id) {

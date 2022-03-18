@@ -1,6 +1,5 @@
 package de.propra.chicken.db;
 
-import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.dto.KlausurDTO;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

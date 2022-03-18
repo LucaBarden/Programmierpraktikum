@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public class StudentDTO {
 
     @Id
+    private long ID;
     private final long githubID;
     private int resturlaub;
     private Set<UrlaubDTO> urlaub;

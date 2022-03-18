@@ -8,16 +8,18 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 @Table("klausur")
 public class KlausurDTO {
+
     @Id
-    private long lsfID;
+    private Long ID;
+    private Long lsfid;
     private String veranstaltung;
     private boolean praesenz;
     private LocalDate date;
     private LocalTime beginn;
     private LocalTime end;
 
-    public KlausurDTO(long lsfID, String veranstaltung, boolean praesenz, LocalDate date, LocalTime beginn, LocalTime end) {
-        this.lsfID = lsfID;
+    public KlausurDTO(Long lsfid, String veranstaltung, boolean praesenz, LocalDate date, LocalTime beginn, LocalTime end) {
+        this.lsfid = lsfid;
         this.veranstaltung = veranstaltung;
         this.praesenz = praesenz;
         this.date = date;
@@ -25,8 +27,8 @@ public class KlausurDTO {
         this.end = end;
     }
 
-    public long getLsfID() {
-        return lsfID;
+    public Long getLsfID() {
+        return lsfid;
     }
 
     public String getVeranstaltung() {
@@ -52,7 +54,7 @@ public class KlausurDTO {
     @Override
     public String toString() {
         return "KlausurDTO{" +
-                "lsfID=" + lsfID +
+                "lsfID=" + lsfid +
                 ", veranstaltung='" + veranstaltung + '\'' +
                 ", praesenz=" + praesenz +
                 ", date=" + date +

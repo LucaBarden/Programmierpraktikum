@@ -1,19 +1,21 @@
 CREATE TABLE IF NOT EXISTS
     klausur (
+                  id int auto_increment,
                   name varchar(100) not null,
                   lsf_id int not null unique,
                   praesenz boolean not null,
                   datum date not null,
                   beginn time not null,
                   end time not null,
-                  primary key (lsf_id)
+                  primary key (id)
 );
 
 CREATE TABLE IF NOT EXISTS
     student (
+                  id int auto_increment,
                   github_id INT NOT NULL UNIQUE,
                   resturlaub INT NOT NULL,
-                  PRIMARY KEY (github_id)
+                  PRIMARY KEY (id)
 );
 
 
