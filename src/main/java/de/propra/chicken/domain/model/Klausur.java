@@ -72,7 +72,6 @@ public class Klausur {
 
     @Override
     public String toString() {
-
         return this.name + "(" + this.getDatum().toString() + ", "
                 + this.getBeginn().truncatedTo(ChronoUnit.MINUTES).toString() + " - "
                 + this.getEnd().truncatedTo(ChronoUnit.MINUTES).toString() + " Uhr)";

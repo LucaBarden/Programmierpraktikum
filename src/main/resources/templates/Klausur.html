@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>PP2 Urlaub Übersicht</title>
@@ -21,11 +21,15 @@
         </form>
     </div>
     <div class="formular mtb-3">
-        <form name="klausur_anmelden" method="post" th:action="@{/klausurAnmelden}" th:object="${klausur}">
+        <form name="klausur_anmelden" method="post" th:action="@{/klausurAnmelden}">
             <select class="form-control" name="klausur" id="klausur-select">
-                <option th:each="k : ${klausuren}"><span th:text="${k.name}"></span></option>
-            </select>
+                <th:block th:each="k : ${klausuren}">
+                    <option>
+                    <span th:text="${k.toString()}"></span>
+                    </option>
+                </th:block>
 
+            </select>
             <p class="p-3"><strong>
                 Sie bestätigen hiermit, dass Sie für die oben ausgewählte
                 Klausur angemeldet sind.

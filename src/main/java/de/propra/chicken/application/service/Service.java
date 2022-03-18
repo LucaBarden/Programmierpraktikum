@@ -18,7 +18,6 @@ import java.util.logging.SimpleFormatter;
 
 @org.springframework.stereotype.Service
 public class Service {
-    //TODO Log4J
     private final StudentRepository studentRepo;
     private final KlausurRepository klausurRepo;
     private final StudentService studentService;
@@ -56,16 +55,15 @@ public class Service {
             KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
             student.addKlausur(klausurRef);
             studentRepo.speicherKlausurAnmeldung(student);
-            logger.info(principal.getAttribute("name") + "hat sich zur Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " angemeldet");
+            logger.info(principal.getAttribute("login") + "hat sich zur Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " angemeldet");
         } catch (Exception ex) {
             throw ex;
         }
     }
 
     public void saveKlausur(Klausur klausur, OAuth2User principal) throws Exception {
-        logger.info(principal.getAttribute("name") + "(" + String.valueOf(principal.getAttribute("id"))
-                + ") " + "hat die Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " erstellt");
         speicherKlausur(klausur);
+        logger.info(principal.getAttribute("name") + "(" + principal.getAttribute("id") + ") " + "hat die Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " erstellt");
     }
 
 
@@ -105,9 +103,10 @@ public class Service {
 
 
     public void speicherStudent(Student student) {
-        logger.info("User " + String.valueOf(student.getGithubID()));
-        if(!studentRepo.existsById(student.getGithubID())){
+        boolean b = studentRepo.existsById(student.getGithubID());
+        if(!b){
             studentRepo.speicherStudent(student);
+            logger.info("User " + String.valueOf(student.getGithubID()) + " angelegt");
         }
     }
 
@@ -120,7 +119,7 @@ public class Service {
 
             student.addUrlaube(gueltigerUrlaub);
             studentRepo.speicherStudent(student);
-            logger.info(principal.getAttribute("name") + "(" + String.valueOf(principal.getAttribute("id")) + ") hat Urlaub eingetragen");
+            logger.info(principal.getAttribute("login") + "(" + principal.getAttribute("id") + ") hat Urlaub eingetragen");
         } catch (Exception ex) {
             throw ex;
         }

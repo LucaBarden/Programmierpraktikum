@@ -49,8 +49,9 @@ public class WebController {
 
     @Secured("ROLE_USER")
     @GetMapping("/urlaub")
-    public String urlaub(Model model) {
+    public String urlaub(Model model, @AuthenticationPrincipal OAuth2User principal) {
         model.addAttribute("urlaub", new Urlaub(LocalDate.now().toString(), "08:30", "12:00"));
+        service.speicherStudent(new Student(Long.parseLong(principal.getAttribute("id").toString())));
         return "Urlaub";
     }
 
@@ -89,8 +90,9 @@ public class WebController {
 
     @Secured("ROLE_USER")
     @GetMapping("/klausur")
-    public String klausur(Model model) {
+    public String klausur(Model model, @AuthenticationPrincipal OAuth2User principal) {
         model.addAttribute("klausuren", service.ladeAlleKlausuren());
+        service.speicherStudent(new Student(Long.parseLong(principal.getAttribute("id").toString())));
         return "Klausur";
     }
 
@@ -117,13 +119,13 @@ public class WebController {
     //TODO Am Ende die zwei Mappings wieder löschen
     //TODO security ändern
 
-    @Secured("ROLE_USER")
+    @Secured("ROLE_ORGA")
     @GetMapping("/orga")
     public String orga() {
         return "Orga";
     }
 
-    @Secured("ROLE_USER")
+    @Secured("ROLE_TUTOR")
     @GetMapping("/tutor")
     public String tutor() {
         return "Tutor";

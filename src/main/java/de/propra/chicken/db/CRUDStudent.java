@@ -22,4 +22,7 @@ public interface CRUDStudent extends CrudRepository<StudentDTO, Long> {
 
     @Query("select * from urlaub u where u.github_id = :id")
     Set<Urlaub> getUrlaube(@Param("id") long id);
+
+    @Query("select exists(select * from student where github_id = :id)")
+    boolean existsById(@Param("id") long id);
 }
