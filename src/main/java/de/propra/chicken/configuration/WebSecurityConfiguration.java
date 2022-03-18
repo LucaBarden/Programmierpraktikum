@@ -69,7 +69,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             } else {
                 System.out.printf("Nicht Team User %s%n", login);
             }
-            //TODO User Organizations auf propra checken
 
             return new DefaultOAuth2User(authorities, attributes, "login");
         };

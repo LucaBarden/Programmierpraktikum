@@ -31,7 +31,6 @@ public class KlausurRepositoryImpl implements KlausurRepository {
 
 
     @Override
-    //TODO Darf keine Klausur returnen ?
     public Set<Klausur> ladeAlleKlausuren() {
         Set<KlausurDTO> all = crudKlausur.findAll();
         Set<Klausur> klausuren = new HashSet<>();

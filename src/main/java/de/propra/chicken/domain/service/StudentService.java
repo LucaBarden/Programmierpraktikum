@@ -129,6 +129,7 @@ public class StudentService {
 
     private Set<Urlaub> gleichzeitigerUrlaub(Set<Urlaub> urlaubeSelberTag, Set<Urlaub> neueUrlaube) {
         //TODO: Testen im StudentService (mind. eine Klausur an dem Tag + neuer Urlaub überschneidet sich mit altem Urlaub)
+
         if(urlaubeSelberTag.size() == 0) return neueUrlaube;
         if(neueUrlaube.size() == 0) return urlaubeSelberTag;
 

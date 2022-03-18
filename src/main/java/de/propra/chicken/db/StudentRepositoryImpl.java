@@ -23,7 +23,7 @@ public class StudentRepositoryImpl implements StudentRepository {
 
     @Override
     public Student speicherKlausurAnmeldung(Student student) {
-        return crudStudent.save(student);
+        return transferDTOToStudent(crudStudent.save(transferStudentToDTO(student)));
     }
 
     @Override
@@ -33,12 +33,12 @@ public class StudentRepositoryImpl implements StudentRepository {
 
     @Override
     public Student speicherStudent(Student student) {
-        return crudStudent.save(student);
+        return transferDTOToStudent(crudStudent.save(transferStudentToDTO(student)));
     }
 
     @Override
     public Student findByID(long githubID) {
-        return crudStudent.findById(githubID).orElse(null);
+        return transferDTOToStudent(crudStudent.findById(githubID).orElse(null));
     }
 
     @Override
@@ -52,6 +52,6 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
     private StudentDTO transferStudentToDTO(Student s){
-        return new StudentDTO(s.getGithubID(), s.getResturlaub());
+        return new StudentDTO(s);
     }
 }

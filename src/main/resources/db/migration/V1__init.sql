@@ -27,11 +27,13 @@ CREATE TABLE IF NOT EXISTS
 
 CREATE TABLE IF NOT EXISTS
     urlaub (
-               id INT NOT NULL auto_increment,
+               id INT auto_increment,
                datum DATE NOT NULL,
                beginn TIME not null,
                schluss TIME not null,
                github_id INT not null,
                constraint urlaub
-                   PRIMARY KEY (id)
+                   PRIMARY KEY (id),
+                   foreign key (github_id) references student(github_id)
+
 );
