@@ -1,5 +1,6 @@
 package de.propra.chicken.controller;
 
+import de.propra.chicken.application.service.Service;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.Urlaub;
 import org.springframework.security.access.annotation.Secured;
@@ -19,7 +20,11 @@ import java.util.Map;
 @Controller
 public class WebController {
 
-    //TODO Security richtig einstellen
+    private final Service service;
+
+    public WebController(Service service) {
+        this.service = service;
+    }
 
     @Secured("ROLE_USER")
     @GetMapping("/")
@@ -27,6 +32,7 @@ public class WebController {
         model.addAttribute("user",
                 principal != null ? principal.getAttribute("login") : null
         );
+        System.out.println(principal.getAttributes());
         return "Student";
     }
 
@@ -48,10 +54,16 @@ public class WebController {
 
     @Secured("ROLE_USER")
     @PostMapping("/urlaubErstellen")
-    public String urlaubErstellen(Urlaub urlaub, Model model) {
-        model.addAttribute("urlaub", new Urlaub(urlaub.getTag().toString(), urlaub.getVon().toString(), urlaub.getBis().toString()));
+    public String urlaubErstellen(Urlaub urlaub, @AuthenticationPrincipal OAuth2User principal) {
         // TODO Anlegen des Urlaubs
+        System.out.println(urlaub);
+        System.out.println(principal.getAttribute("id").toString());
+        try {
+            service.speicherUrlaub(urlaub, Long.parseLong(principal.getAttribute("id").toString()));
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return "redirect:/student";
     }
@@ -65,11 +77,13 @@ public class WebController {
 
     @Secured("ROLE_USER")
     @PostMapping("/klausurErstellen")
-    public String klausurErstellen(Klausur klausur, Model model) {
-        System.out.println(model.getAttribute("date"));
-        System.out.println(klausur.getBeginn());
-        model.addAttribute("klausur", new Klausur(klausur.getVeranstaltung(), klausur.getLsfid(), klausur.isPraesenz(),
-                klausur.getDate().toString(), klausur.getBeginn().toString(), klausur.getEnd().toString()));
+    public String klausurErstellen(Klausur klausur) {
+        System.out.println(klausur);
+        try {
+            service.saveKlausur(klausur);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return "redirect:/klausur";
     }
 

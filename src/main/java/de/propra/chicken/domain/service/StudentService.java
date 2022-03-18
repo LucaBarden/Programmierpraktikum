@@ -1,13 +1,14 @@
 package de.propra.chicken.domain.service;
 
 import de.propra.chicken.domain.model.*;
+import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
-
+@Service
 public class StudentService {
 
     private static String BEGINN_PRAKTIKUM = "08:30";
@@ -150,7 +151,7 @@ public class StudentService {
         //der anzulegende Urlaub ist der erste Urlaubsblock an dem Tag
         if (urlaubeSelberTag.isEmpty()) {
             //den ganzen Tag frei oder max 2,5 Stunden sind erlaubt
-            if (Duration.between(urlaub.getVon(), urlaub.getBis()).toMinutes() > 150 && Duration.between(urlaub.getVon(), urlaub.getBis()).toMinutes() < 240) {
+            if (Duration.between(urlaub.getBeginn(), urlaub.getEnd()).toMinutes() > 150 && Duration.between(urlaub.getBeginn(), urlaub.getEnd()).toMinutes() < 240) {
                 throw new Exception("Der Urlaub ist weder den ganzen Tag lang noch weniger als 2.5 Stunden lang");
             }
             //schon 1 Urlaub am selben Tag
@@ -167,19 +168,19 @@ public class StudentService {
     private void regelnFuerZweiBloecke(Urlaub urlaub, Set<Urlaub> urlaubeSelberTag) throws Exception {
         Urlaub amSelbenTag = urlaubeSelberTag.stream().toList().get(0);
         //der zuvor gebuchte Urlaub liegt am Anfang der Praktikumszeit
-        if (amSelbenTag.getVon().compareTo(LocalTime.parse(BEGINN_PRAKTIKUM)) == 0) {
-            if (Duration.between(amSelbenTag.getBis(), urlaub.getVon()).toMinutes() < 90) {
+        if (amSelbenTag.getBeginn().compareTo(LocalTime.parse(BEGINN_PRAKTIKUM)) == 0) {
+            if (Duration.between(amSelbenTag.getEnd(), urlaub.getBeginn()).toMinutes() < 90) {
                 throw new Exception("Man muss mindestens 90 Minuten zwischen den beiden Urlaubsblöcken arbeiten");
             }
-            if (!(urlaub.getBis().compareTo(LocalTime.parse(ENDE_PRAKTIKUM)) == 0)) {
+            if (!(urlaub.getEnd().compareTo(LocalTime.parse(ENDE_PRAKTIKUM)) == 0)) {
                 throw new Exception("Der neue Urlaub muss am Ende des Tages liegen");
             }
         //der zuvor gebuchte Urlaub liegt am Ende der Praktikumszeit
-        } else if (amSelbenTag.getBis().compareTo(LocalTime.parse(ENDE_PRAKTIKUM)) == 0) {
-            if (Duration.between(urlaub.getBis(), amSelbenTag.getVon()).toMinutes() < 90) { //min. 90 arbeiten
+        } else if (amSelbenTag.getEnd().compareTo(LocalTime.parse(ENDE_PRAKTIKUM)) == 0) {
+            if (Duration.between(urlaub.getEnd(), amSelbenTag.getBeginn()).toMinutes() < 90) { //min. 90 arbeiten
                 throw new Exception("Man muss mindestens 90 Minuten zwischen den beiden Urlaubsblöcken arbeiten");
             }
-            if (!(urlaub.getVon().compareTo(LocalTime.parse(BEGINN_PRAKTIKUM)) == 0)) {
+            if (!(urlaub.getBeginn().compareTo(LocalTime.parse(BEGINN_PRAKTIKUM)) == 0)) {
                 throw new Exception("Der neue Urlaub muss am Anfang des Tages liegen");
             }
             //der zuvor gebuchte Urlaub ist weder am Anfang noch am Ende des Tages
@@ -200,17 +201,17 @@ public class StudentService {
                 if(aenderung) break;
                 for (Urlaub u : zuErstattenderUrlaube) {
                     //Startzeit von u ist nach urlaub oder gleichzeitig mit dessen Endzeit
-                    if (u.getVon().isAfter(pruefen.getBis()) || u.getVon().equals(pruefen.getBis())) {
+                    if (u.getBeginn().isAfter(pruefen.getEnd()) || u.getBeginn().equals(pruefen.getEnd())) {
                         //nichts erstatten: der zu buchende Urlaub ist gültig
                         stashUrlaube.add(pruefen);
                     }
                     //Startzeit von u liegt im neu zu buchenden Urlaub
-                    else if ((u.getVon().isAfter(pruefen.getVon())) && u.getVon().isBefore(pruefen.getBis())) {
+                    else if ((u.getBeginn().isAfter(pruefen.getBeginn())) && u.getBeginn().isBefore(pruefen.getEnd())) {
                         //Endzeit von u liegt im neu zu buchenden Urlaub
-                        if (u.getBis().isBefore(pruefen.getBis())) {
+                        if (u.getEnd().isBefore(pruefen.getEnd())) {
                             //Mitte erstatten: der geplante Urlaub urlaub wird in zwei Urlaubsblöcke aufgeteilt
-                            Urlaub ersterBlock = new Urlaub(pruefen.getTag().toString(), pruefen.getVon().toString(), u.getVon().toString());
-                            Urlaub zweiterBlock = new Urlaub(pruefen.getTag().toString(), u.getBis().toString(), pruefen.getBis().toString());
+                            Urlaub ersterBlock = new Urlaub(pruefen.getTag().toString(), pruefen.getBeginn().toString(), u.getBeginn().toString());
+                            Urlaub zweiterBlock = new Urlaub(pruefen.getTag().toString(), u.getEnd().toString(), pruefen.getEnd().toString());
                             stashUrlaube.remove(pruefen);
                             stashUrlaube.add(ersterBlock);
                             stashUrlaube.add(zweiterBlock);
@@ -218,9 +219,9 @@ public class StudentService {
                             break;
                         }
                         //Endzeit von u ist nach urlaub oder gleichzeitig mit dessen Endzeit
-                        else if (u.getBis().isAfter(pruefen.getBis()) || u.getBis().equals(pruefen.getBis())) {
+                        else if (u.getEnd().isAfter(pruefen.getEnd()) || u.getEnd().equals(pruefen.getEnd())) {
                             //Ende erstatten
-                            Urlaub stashUrlaub = new Urlaub(pruefen.getTag().toString(), pruefen.getVon().toString(), u.getVon().toString());
+                            Urlaub stashUrlaub = new Urlaub(pruefen.getTag().toString(), pruefen.getBeginn().toString(), u.getBeginn().toString());
                             stashUrlaube.remove(pruefen);
                             stashUrlaube.add(stashUrlaub);
                             /* pruefen.setBis(u.getVon());*/
@@ -229,11 +230,11 @@ public class StudentService {
                         }
                     }
                     //Startzeit von u ist vor urlaub oder gleichzeitig mit der Startzeit von urlaub
-                    else if (u.getVon().isBefore(pruefen.getVon()) || u.getVon().equals(pruefen.getVon())) {
+                    else if (u.getBeginn().isBefore(pruefen.getBeginn()) || u.getBeginn().equals(pruefen.getBeginn())) {
                         //Endzeit von u liegt in urlaub
-                        if (u.getBis().isAfter(pruefen.getVon()) && u.getBis().isBefore(pruefen.getBis())) {
+                        if (u.getEnd().isAfter(pruefen.getBeginn()) && u.getEnd().isBefore(pruefen.getEnd())) {
                             //anfang erstatten
-                            Urlaub stashUrlaub = new Urlaub(pruefen.getTag().toString(), u.getBis().toString(), pruefen.getBis().toString());
+                            Urlaub stashUrlaub = new Urlaub(pruefen.getTag().toString(), u.getEnd().toString(), pruefen.getEnd().toString());
                             stashUrlaube.remove(pruefen);
                             stashUrlaube.add(stashUrlaub);
                             //pruefen.setVon(u.getBis());
@@ -241,7 +242,7 @@ public class StudentService {
                             break;
                         }
                         //Endzeit von u ist vor urlaub oder gleichzeitig mit dessen Startzeit
-                        else if (u.getBis().isBefore(pruefen.getVon()) || u.getBis().equals(pruefen.getVon())) {
+                        else if (u.getEnd().isBefore(pruefen.getBeginn()) || u.getEnd().equals(pruefen.getBeginn())) {
                             //nichts erstatten
                             stashUrlaube.add(pruefen);
                         }

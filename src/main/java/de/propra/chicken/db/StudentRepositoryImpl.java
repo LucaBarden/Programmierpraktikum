@@ -2,9 +2,10 @@ package de.propra.chicken.db;
 
 import de.propra.chicken.application.service.repo.StudentRepository;
 import de.propra.chicken.domain.model.*;
+import org.springframework.stereotype.Repository;
 
 import java.util.Set;
-
+@Repository
 public class StudentRepositoryImpl implements StudentRepository {
 
     private CRUDStudent crudStudent;
@@ -13,28 +14,20 @@ public class StudentRepositoryImpl implements StudentRepository {
         this.crudStudent = crudStudent;
     }
 
-    @Override
-    public Set<KlausurRef> getKlausurenVonStudent(Student student) {
-        //TODO DB Query
-        return null;
-    }
 
     @Override
     public Set<Urlaub> getUrlaubeVonStudent(Student student) {
-        //TODO DB Query
-        return null;
+        return crudStudent.getUrlaube(student.getGithubID());
     }
 
     @Override
     public Student speicherKlausurAnmeldung(Student student) {
-
         return crudStudent.save(student);
     }
 
     @Override
-    public Set<KlausurData> findAngemeldeteKlausuren(long gihubID) {
-        //TODO lade alle Klausuranmeldungen
-        return null;
+    public Set<KlausurData> findAngemeldeteKlausuren(long githubID) {
+        return crudStudent.findAngemeldeteKlausuren(githubID);
     }
 
     @Override
@@ -48,9 +41,7 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
     @Override
-    public Set<KlausurRef> findAngemeldeteKlausurenIds(long githubID) {
-        //TODO die angemeldeteten KlausurRefs zurückgeben
-        return null;
+    public Set<KlausurRef> getAngemeldeteKlausurenIds(long githubID) {
+        return crudStudent.findAngemeldeteKlausurenIds(githubID);
     }
-
 }

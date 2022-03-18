@@ -18,6 +18,11 @@ public class Student {
         this.resturlaub = 240;
     }
 
+    public Student(long githubID, int resturlaub) {
+        this.githubID = githubID;
+        this.resturlaub = resturlaub;
+    }
+
     public long getGithubID() {
         return githubID;
     }
@@ -49,22 +54,22 @@ public class Student {
 
     public void checkAufGrundregeln(Urlaub urlaub, String beginn, String ende) throws Exception {
         //Fehler: Startzeit ist nach Endzeit
-        if(urlaub.getVon().isAfter(urlaub.getBis())) {
+        if(urlaub.getBeginn().isAfter(urlaub.getEnd())) {
             throw new Exception("Die Startzeit kann nicht nach der Endzeit liegen");
         }
         //Fehler: Startzeit und Endzeit sind gleich
-        if(urlaub.getVon().equals(urlaub.getBis())) {
+        if(urlaub.getBeginn().equals(urlaub.getEnd())) {
             throw new Exception("Die Startzeit und Endzeit sind gleich!!");
         }
         //Fehler: keine ganzen Viertelstunden & Startzeiten 00, 15, 30, 45
-        if (!(urlaub.getVon().getMinute() % 15 == 0) || !(urlaub.getBis().getMinute() % 15 == 0)) {
+        if (!(urlaub.getBeginn().getMinute() % 15 == 0) || !(urlaub.getEnd().getMinute() % 15 == 0)) {
             throw new Exception("Die Start- und Endzeit muss ein Vielfaches von 15 Minuten sein");
         }
         //Fehler: Resturlaub < Urlaubszeit
-        if (this.resturlaub < Duration.between(urlaub.getVon(), urlaub.getBis()).toMinutes()) {
+        if (this.resturlaub < Duration.between(urlaub.getBeginn(), urlaub.getEnd()).toMinutes()) {
             throw new Exception("Es ist zu wenig Resturlaub übrig");
         }
-        if(urlaub.getVon().isBefore(LocalTime.parse(beginn)) || urlaub.getBis().isAfter(LocalTime.parse(ende))) {
+        if(urlaub.getBeginn().isBefore(LocalTime.parse(beginn)) || urlaub.getEnd().isAfter(LocalTime.parse(ende))) {
             throw new Exception("Der Urlaub muss im Praktikumszeitraum liegen");
         }
     }
