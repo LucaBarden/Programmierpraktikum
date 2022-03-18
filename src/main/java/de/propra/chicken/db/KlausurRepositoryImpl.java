@@ -4,9 +4,7 @@ import de.propra.chicken.application.service.repo.KlausurRepository;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.KlausurData;
 import de.propra.chicken.domain.model.KlausurRef;
-import de.propra.chicken.domain.model.Student;
-import de.propra.chicken.dto.KlausurDTO;
-import de.propra.chicken.dto.StudentDTO;
+import de.propra.chicken.db.dto.KlausurDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -23,6 +21,7 @@ public class KlausurRepositoryImpl implements KlausurRepository {
         this.crudKlausur = crudKlausur;
     }
 
+    //Works
     @Override
     public void speicherKlausur(Klausur klausur) {
         KlausurDTO dto = transferKlausurToDTO(klausur);
@@ -61,7 +60,7 @@ public class KlausurRepositoryImpl implements KlausurRepository {
     }
 
     private Klausur transferDTOToKlausur(KlausurDTO dto) {
-        return new Klausur( dto.getVeranstaltung(), dto.getLsfID(), dto.isPraesenz(), dto.getDate().toString(), dto.getBeginn().toString(), dto.getEnd().toString());
+        return new Klausur( dto.getName(), dto.getLsfID(), dto.isPraesenz(), dto.getDatum().toString(), dto.getBeginn().toString(), dto.getEnd().toString());
 
     }
 

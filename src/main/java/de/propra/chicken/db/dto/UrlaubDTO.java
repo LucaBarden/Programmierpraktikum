@@ -1,4 +1,4 @@
-package de.propra.chicken.dto;
+package de.propra.chicken.db.dto;
 
 import de.propra.chicken.domain.model.Urlaub;
 import org.springframework.data.annotation.Id;

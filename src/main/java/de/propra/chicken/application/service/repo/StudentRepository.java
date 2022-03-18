@@ -19,5 +19,7 @@ public interface StudentRepository {
 
     Set<KlausurRef> getAngemeldeteKlausurenIds(long githubID);
 
+    boolean existsById(long githubID);
+
 
 }
