@@ -9,7 +9,9 @@ import java.util.Set;
 
 @Repository
 public interface CRUDKlausur extends CrudRepository<KlausurDTO, Long> {
-    @Override
+
     Set<KlausurDTO> findAll();
+
+    Set<KlausurDTO> findAllByID();
 
 }

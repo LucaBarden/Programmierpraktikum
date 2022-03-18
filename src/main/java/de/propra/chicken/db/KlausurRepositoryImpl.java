@@ -9,8 +9,11 @@ import de.propra.chicken.dto.KlausurDTO;
 import de.propra.chicken.dto.StudentDTO;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 @Repository
 public class KlausurRepositoryImpl implements KlausurRepository {
 
@@ -22,44 +25,49 @@ public class KlausurRepositoryImpl implements KlausurRepository {
 
     @Override
     public void speicherKlausur(Klausur klausur) {
-        crudKlausur.save(klausur);
+        KlausurDTO dto = transferKlausurToDTO(klausur);
+        crudKlausur.save(dto);
     }
 
 
     @Override
     //TODO Darf keine Klausur returnen ?
-    public Set<KlausurDTO> ladeAlleKlausuren() {
-        return crudKlausur.findAll();
-    }
-
-    @Override
-    public Set<Klausur> getKlausurenByRefs(Set<KlausurRef> klausurenRef) {
-        Set<Klausur> klausuren  = new HashSet<Klausur>();
-        for (KlausurRef ref : klausurenRef) {
-            klausuren.add(crudKlausur.findById(ref.getLsfID()).orElse(null));
+    public Set<Klausur> ladeAlleKlausuren() {
+        Set<KlausurDTO> all = crudKlausur.findAll();
+        Set<Klausur> klausuren = new HashSet<>();
+        for(KlausurDTO curr : all) {
+            klausuren.add(transferDTOToKlausur(curr));
         }
         return klausuren;
     }
 
     @Override
-    public Set<KlausurData> getKlausurenDataByRefs(Set<KlausurRef> angemeldeteKlausurenRefs) {
-        //TODO von klausur in klausurdata
-        return null;
+    public Set<Klausur> getKlausurenByRefs(Set<KlausurRef> klausurenRef) {
+        Set<Long> IDs = klausurenRef.stream().map(klausurRef -> klausurRef.getLsfID()).collect(Collectors.toSet());
+        Set<KlausurDTO> DTOs = new HashSet<>();
+
+        DTOs.addAll((Collection<? extends KlausurDTO>) crudKlausur.findAllById(IDs));
+
+        return DTOs.stream().map(k -> transferDTOToKlausur(k)).collect(Collectors.toSet());
     }
 
     @Override
-    public boolean validiereLsfIdCache(Klausur klausur) {
-        //TODO validiere lsfid
-        return false;
+    public Set<KlausurData> getKlausurenDataByRefs(Set<KlausurRef> angemeldeteKlausurenRefs) {
+        Set<Long> IDs = angemeldeteKlausurenRefs.stream().map(klausurRef -> klausurRef.getLsfID()).collect(Collectors.toSet());
+        Set<KlausurDTO> DTOs = new HashSet<>();
+
+        DTOs.addAll((Collection<? extends KlausurDTO>) crudKlausur.findAllById(IDs));
+
+        return DTOs.stream().map(k -> transferDTOToKlausur(k).getKlausurData()).collect(Collectors.toSet());
     }
 
-    private Student transferDTOToKlausur(StudentDTO dto) {
-        return new Student(dto.getGithubID(), dto.getResturlaub());
+    private Klausur transferDTOToKlausur(KlausurDTO dto) {
+        return new Klausur( dto.getVeranstaltung(), dto.getLsfID(), dto.isPraesenz(), dto.getDate().toString(), dto.getBeginn().toString(), dto.getEnd().toString());
 
     }
 
-    private StudentDTO transferKlausurToDTO(Klausur s){
-        return new StudentDTO(s.getGithubID(), s.getResturlaub());
+    private KlausurDTO transferKlausurToDTO(Klausur s){
+        return new KlausurDTO(s.getLsfid(), s.getName(), s.isPraesenz(), s.getDatum(), s.getBeginn(), s.getEnd());
     }
 
 }

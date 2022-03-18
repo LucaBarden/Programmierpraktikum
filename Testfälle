@@ -1,0 +1,76 @@
+KlausurTests
+    Speicherung
+        -- Fehler wenn klausur gespeichert werden soll mit ungültiger Zeitspanne
+        -- Fehler wenn Klauusr gespeichert werden soll, die nicht nach heute stattfindet
+    Liste laden
+        - Beim laden von allen Klausuren werden nur die Klausuren nach Heute geladen
+
+StudentTests
+    Klausuranmeldung
+        - Fehler wenn Student sich an einer bereits angemeldeten Klausur anmelden will
+        - Fehler wenn Klausur am selben Tag ist wie Anmeldung
+        - Kein Fehler wenn Student sich an einer neuen Klausur anmelden will
+        -- Urlaub wird erstattet, bei Klausuranmeldung von 8:30 bis 10 Uhr online
+        -- Urlaub wird erstattet, bei Klausuranmeldung von 9:30 bis 11 Uhr online
+        -- Urlaub wird erstattet, bei Klausuranmeldung von 11 bis 12:30 Uhr Präsenz
+    Klausurstornierung
+            - Nur Klausuren nach Heute sind stornierbar
+            -- Gesamter Urlaub an dem Tag an dem eine Klausur storniert wird wird erstattet
+    Urlaubsanmeldung
+        - Fehler wenn start Urlaub vor Praktikumszeit ist
+        - Fehler wenn start von Urlaub nach Praktikumszeit ist (unnötig)
+        - Fehler wenn ende von urlaub nach Praktikumszeit ist
+        - Fehler wenn Start und Endzeit gleich sind
+        - Fehler wenn kein vielfaches von 15
+        - Fehler wenn zu wenig Resturlaub
+        - Fehler wenn noch kein Urlaub oder Klausur und neuer Urlaub nicht unter 2.5 std ist oder den ganzen Tag
+        - Fehler wenn keine Klausur aber schon zwei Urlaubsblöcke am selben Tag sind
+        - Fehler wenn keine Klausur am selben Tag und keine 90 min zwischen zwei Urlaubsblöcken
+        - Fehler wenn keine Klausur am selben Tag und kein Urlaub am Anfang des Praktikums ist
+        - Fehler wenn keine Klausur am selben Tag und kein Urlaub am Ende des Praktikums ist
+        - Erstatteter Urlaub ist korrekt wenn Urlaub mit Klausur am anfang überlappt
+        - Erstatteter Urlaub ist korrekt wenn Klausur am selben Tag zwischen Urlaub ist
+        - Erstatteter Urlaub ist korrekt wenn Urlaub zwischen zwei Klausuren ist
+        - Erstatteter Urlaub ist korrekt wenn Urlaub nach zwei klausuren ist
+        - Kein Fehler wenn nur ein Urlaubsblock und keine Klausur
+        - Kein Fehler wenn Urlaub nach Onlineklausur genommen wird
+
+
+TODO: checkAufGrundregeln: simpler machen indem getestet wird ob sowohl start und end Urlaubszeit im Praktikum liegen
+TODO: Display name von urlaubNeuNichtAmEnde anpassen
+TODO: Display names und errormessages anpassen
+
+Controllertests
+    - Routing tests
+    -- index() ruft speicherStudent vernünftig auf
+    -- student(): lädt alle angemeldeten Klausuren und zeigt sie an
+    -- student(): lädt alle Urlaube und zeigt sie an
+    -- student(): gültige Klausuren sind stornierbar
+    -- student(): ungültige Klausuren sind nicht stornierbar
+    -- student(): gültige Urlaube sind stornierbar
+    -- student(): ungültige Urlaube sind nicht stornierbar
+    -- student(): Resturlaub wird vernünftig angezeigt
+    -- urlaubErstellen(): ruft speicherUrlaub vernünftig auf
+    -- urlaubErstellen(): zeigt Fehler an wenn Urlaub ungültig ist
+    -- klausurErstellen(): ruft klausurSpeichern vernünftig auf
+    -- klausurErstellen(): zeigt Fehler an wenn Klausur nicht gültig ist
+    -- klausurAnmelden(): lädt alle Klausuren und zeigt sie an
+    -- klausurAnmelden(): ruft klausurAnmelden vernünftig auf
+    -- klausurAnmelden(): zeigt Fehler bei ungültigen Anmeldung an
+
+
+
+Datenbanktests
+    -- ladeAlleKlausuren()
+    -- validiereLsfIdCache()
+    -- speicherKlausur()
+    -- getKlausurenByRefs()
+
+    -- getKlausurenVonStudent()
+    -- getUrlaubeVonStudent
+    -- speicherKlausurAnmeldung
+    -- findeAngemeldeteKlausuren()
+    -- speicherStudent()
+    -- findByID
+
+TODO: DB Methodennamen Refactorn

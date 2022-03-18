@@ -60,4 +60,6 @@ public class KlausurDTO {
                 ", end=" + end +
                 '}';
     }
+
+
 }

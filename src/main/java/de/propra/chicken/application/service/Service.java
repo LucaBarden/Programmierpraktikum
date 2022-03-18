@@ -58,13 +58,7 @@ public class Service {
     }
 
     private void validiereKlausur(Klausur klausur) throws Exception {
-        if (!klausurRepo.validiereLsfIdCache(klausur)) {
-            try {
-                validiereLsfIdInternet(klausur);
-            } catch (Exception ex) {
-                throw ex;
-            }
-        }
+        validiereLsfIdInternet(klausur);
     }
 
     private void validiereLsfIdInternet(Klausur klausur) throws Exception {

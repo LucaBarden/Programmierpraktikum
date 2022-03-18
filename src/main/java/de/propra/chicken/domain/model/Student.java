@@ -11,8 +11,8 @@ public class Student {
 
     private final long githubID;
     private int resturlaub;
-
     private Set<Urlaub> urlaube = new HashSet<>();
+
     private Set<KlausurRef> klausuren = new HashSet<>();
 
     public Student(long githubID) {
