@@ -56,13 +56,15 @@ public class Service {
             KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
             student.addKlausur(klausurRef);
             studentRepo.speicherKlausurAnmeldung(student);
-            logger.info(String.valueOf(githubID) + "hat sich zur Klausur" + klausur.getName()+"(" + klausur.getLsfid()+")");
+            logger.info(principal.getAttribute("name") + "hat sich zur Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " angemeldet");
         } catch (Exception ex) {
             throw ex;
         }
     }
 
     public void saveKlausur(Klausur klausur, OAuth2User principal) throws Exception {
+        logger.info(principal.getAttribute("name") + "(" + String.valueOf(principal.getAttribute("id"))
+                + ") " + "hat die Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " erstellt");
         speicherKlausur(klausur);
     }
 
@@ -103,8 +105,8 @@ public class Service {
 
 
     public void speicherStudent(Student student) {
-        Student studentTmp = studentRepo.findByID(student.getGithubID());
-        if (studentTmp == null) {
+        logger.info("User " + String.valueOf(student.getGithubID()));
+        if(!studentRepo.existsById(student.getGithubID())){
             studentRepo.speicherStudent(student);
         }
     }
@@ -118,6 +120,7 @@ public class Service {
 
             student.addUrlaube(gueltigerUrlaub);
             studentRepo.speicherStudent(student);
+            logger.info(principal.getAttribute("name") + "(" + String.valueOf(principal.getAttribute("id")) + ") hat Urlaub eingetragen");
         } catch (Exception ex) {
             throw ex;
         }

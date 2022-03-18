@@ -82,7 +82,7 @@ public class WebController {
         try {
             service.saveKlausur(klausur, principal);
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
         return "redirect:/klausur";
     }
