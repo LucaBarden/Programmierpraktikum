@@ -17,45 +17,52 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
 
-    @Override
-    public Set<Urlaub> getUrlaubeVonStudent(Student student) {
-        return crudStudent.getUrlaube(student.getGithubID());
-    }
 
-    @Override
-    public Student speicherKlausurAnmeldung(Student student) {
-        return transferDTOToStudent(crudStudent.save(student.getDto()));
-    }
-
+    //Works
     @Override
     public Set<KlausurData> findAngemeldeteKlausuren(long githubID) {
         return crudStudent.findAngemeldeteKlausuren(githubID);
     }
 
+
     //Works
     @Override
     public Student speicherStudent(Student student) {
-        return transferDTOToStudent(crudStudent.speicherStudent(student.getDto()));
+        StudentDTO dto = student.getDto();
+        if(crudStudent.existsById(student.getGithubID())) {
+            dto.setIsNew(false);
+        }
+        StudentDTO newDto = crudStudent.save(dto);
+        Set<KlausurRef> refs = crudStudent.findAngemeldeteKlausurenIds(student.getGithubID());
+        return transferDTOToStudent(newDto, refs);
     }
 
+
+    //Works
     @Override
-    public Student findByID(long githubID) {
-        return transferDTOToStudent(crudStudent.findByGithubID(githubID));
+    public Student findByID(long githubID) throws Exception {
+        StudentDTO dto = crudStudent.findStudentDTOByGithubID(githubID).orElseThrow(() -> new Exception("Dieser Student existiert nicht"));
+        Set<KlausurRef> refs = crudStudent.findAngemeldeteKlausurenIds(dto.getId());
+        return transferDTOToStudent(dto, refs);
     }
 
+    //Works
     @Override
     public Set<KlausurRef> getAngemeldeteKlausurenIds(long githubID) {
         return crudStudent.findAngemeldeteKlausurenIds(githubID);
     }
 
+    //Works
     @Override
     public boolean existsById(long githubID) {
         return crudStudent.existsById(githubID);
     }
 
-    private Student transferDTOToStudent(StudentDTO dto) {
-        return new Student(dto.getGithubID(), dto.getResturlaub());
-
+    private Student transferDTOToStudent(StudentDTO dto, Set<KlausurRef> refs) {
+        Student student = new Student(dto.getGithubID(), dto.getResturlaub());
+        student.setUrlaube(dto.getUrlaube());
+        student.setKlausuren(refs);
+        return student;
     }
 
 

@@ -21,11 +21,16 @@ public class KlausurRepositoryImpl implements KlausurRepository {
         this.crudKlausur = crudKlausur;
     }
 
+
     //Works
     @Override
-    public void speicherKlausur(Klausur klausur) {
+    public Klausur speicherKlausur(Klausur klausur) {
         KlausurDTO dto = transferKlausurToDTO(klausur);
-        crudKlausur.save(dto);
+        if(crudKlausur.existsById(dto.getLsfID())) {
+            dto.setIsNew(false);
+        }
+        return transferDTOToKlausur(crudKlausur.save(dto));
+
     }
 
 

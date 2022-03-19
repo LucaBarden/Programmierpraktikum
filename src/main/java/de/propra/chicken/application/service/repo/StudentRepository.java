@@ -7,15 +7,11 @@ import java.util.Set;
 
 public interface StudentRepository {
 
-    Set<Urlaub> getUrlaubeVonStudent(Student student);
-
-    Student speicherKlausurAnmeldung(Student student);
-
     Set<KlausurData> findAngemeldeteKlausuren(long githubID);
 
     Student speicherStudent(Student student);
 
-    Student findByID(long githubID);
+    Student findByID(long githubID) throws Exception;
 
     Set<KlausurRef> getAngemeldeteKlausurenIds(long githubID);
 

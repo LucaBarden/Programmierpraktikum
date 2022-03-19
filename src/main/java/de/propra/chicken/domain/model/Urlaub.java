@@ -10,6 +10,8 @@ import java.util.Objects;
 
 public class Urlaub {
 
+    @Id
+    private int id;
     private LocalDate tag;
     private LocalTime beginn;
     private LocalTime end;

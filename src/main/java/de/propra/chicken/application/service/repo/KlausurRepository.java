@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface KlausurRepository {
 
-    void speicherKlausur(Klausur klausur);
+    Klausur speicherKlausur(Klausur klausur);
 
     Set<Klausur> ladeAlleKlausuren();
 

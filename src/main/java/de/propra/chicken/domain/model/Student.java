@@ -17,6 +17,16 @@ public class Student {
 
     private Set<KlausurRef> klausuren = new HashSet<>();
 
+    @Override
+    public String toString() {
+        return "Student{" +
+                "githubID=" + githubID +
+                ", resturlaub=" + resturlaub +
+                ", urlaube=" + urlaube +
+                ", klausuren=" + klausuren +
+                '}';
+    }
+
     public Student(long githubID) {
         this.githubID = githubID;
         this.resturlaub = 240;
@@ -85,7 +95,7 @@ public class Student {
     }
 
     public StudentDTO getDto() {
-        return new StudentDTO(this.urlaube.stream().map(u -> new UrlaubDTO(u.getTag().toString(), u.getBeginn().toString(), u.getEnd().toString())).collect(Collectors.toSet()), this.resturlaub, this.githubID);
+        return new StudentDTO(this.githubID, this.resturlaub, this.urlaube.stream().map(u -> new UrlaubDTO(u.getTag().toString(), u.getBeginn().toString(), u.getEnd().toString())).collect(Collectors.toSet()), this.klausuren);
     }
 
 }
