@@ -8,8 +8,10 @@ import java.util.*;
 @Service
 public class KlausurService {
 
+    private static String BEGINN_PRAKTIKUM = "08:30";
+    private static String ENDE_PRAKTIKUM   = "12:30";
 
-    public  Set<Klausur> validiereAlleKlausuren(Set<Klausur> alleKlausuren) {
+    public  Set<Klausur> klausurIstNochImAnmeldezeitraum(Set<Klausur> alleKlausuren) {
         Set<Klausur> gueltigeKlausuren = new HashSet<>();
         for(Klausur klausur : alleKlausuren) {
             if(klausur.getDatum().isAfter(LocalDate.now())) {
@@ -32,4 +34,8 @@ public class KlausurService {
         return stornierbar;
     }
 
+    public void validiereKlausur(Klausur klausur) throws Exception {
+        //Klausur muss mind. 60min dauern
+        //Klausurende + puffer muss nach PR
+    }
 }

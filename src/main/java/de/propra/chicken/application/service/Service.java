@@ -1,6 +1,5 @@
 package de.propra.chicken.application.service;
 
-import ch.qos.logback.classic.BasicConfigurator;
 import de.propra.chicken.application.service.repo.KlausurRepository;
 import de.propra.chicken.domain.model.*;
 import de.propra.chicken.application.service.repo.StudentRepository;
@@ -9,7 +8,6 @@ import de.propra.chicken.domain.service.KlausurService;
 import org.jsoup.Jsoup;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.FileHandler;
@@ -22,6 +20,9 @@ public class Service {
     private final KlausurRepository klausurRepo;
     private final StudentService studentService;
     private final KlausurService klausurService;
+
+    private static String BEGINN_PRAKTIKUM = "08:30";
+    private static String ENDE_PRAKTIKUM   = "12:30";
 
     Logger logger = Logger.getLogger("de.propra.chicken.application.service.Service");
     FileHandler fileHandler;
@@ -78,6 +79,7 @@ public class Service {
 
     private void validiereKlausur(Klausur klausur) throws Exception {
         validiereLsfIdInternet(klausur);
+        klausurService.validiereKlausur(klausur);
     }
 
     private void validiereLsfIdInternet(Klausur klausur) throws Exception {
@@ -90,7 +92,7 @@ public class Service {
 
     public Set<Klausur> ladeAlleKlausuren() {
         Set<Klausur> alleKlausuren = klausurRepo.ladeAlleKlausuren();
-        return klausurService.validiereAlleKlausuren(alleKlausuren);
+        return klausurService.klausurIstNochImAnmeldezeitraum(alleKlausuren);
     }
 
     public Map<Klausur, Boolean> ladeAngemeldeteKlausuren(long githubID) {
@@ -113,7 +115,7 @@ public class Service {
         try {
             Student student = studentRepo.findByID(githubID);
             Set<KlausurData> angemeldeteKlausuren = studentRepo.findAngemeldeteKlausuren(githubID);
-            Set<Urlaub> gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, angemeldeteKlausuren);
+            Set<Urlaub> gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, angemeldeteKlausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
             gueltigerUrlaub = studentService.ueberschneidendenUrlaubMergen(gueltigerUrlaub);
 
             student.addUrlaube(gueltigerUrlaub);

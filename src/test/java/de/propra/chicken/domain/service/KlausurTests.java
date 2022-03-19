@@ -32,7 +32,7 @@ public class KlausurTests {
         Set<Klausur> alleKlausuren = arrange();
         KlausurService klausurService = new KlausurService();
         //act
-        Set<Klausur> gueltigeKlausuren = klausurService.validiereAlleKlausuren(alleKlausuren);
+        Set<Klausur> gueltigeKlausuren = klausurService.klausurIstNochImAnmeldezeitraum(alleKlausuren);
         Set<Long> lsfIDs = new TreeSet<>();
         for(Klausur klausur : gueltigeKlausuren) {
             lsfIDs.add(klausur.getLsfid());

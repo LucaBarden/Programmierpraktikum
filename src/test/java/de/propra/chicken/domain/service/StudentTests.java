@@ -1,16 +1,11 @@
 package de.propra.chicken.domain.service;
 
-import de.propra.chicken.application.service.Service;
-import de.propra.chicken.application.service.repo.KlausurRepository;
-import de.propra.chicken.application.service.repo.StudentRepository;
 import de.propra.chicken.domain.model.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.anyOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,6 +13,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class StudentTests {
+
+    private static final String BEGINN_PRAKTIKUM = "08:30";
+    private static final String ENDE_PRAKTIKUM   = "12:30";
 
     @Test
     @DisplayName("Der Student wirft einen Fehler, wenn er sich bei einer bereits angemeldeten Klausur anmelden möchte")
@@ -74,15 +72,8 @@ public class StudentTests {
         Student student = new Student(123);
         Urlaub urlaub = new Urlaub("1999-01-01", "08:00", "09:00");
         Set<KlausurData> klausuren = new HashSet<>();
-        Set<Urlaub> gueltigerUrlaub;
-        Exception thrown = null;
 
-        try {
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren);
-        } catch (Exception e) {
-            thrown = e;
-        }
-
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
         assertThat(thrown.getMessage()).isEqualTo("Der Urlaub muss im Praktikumszeitraum liegen");
     }
 
@@ -93,15 +84,8 @@ public class StudentTests {
         Student student = new Student(123);
         Urlaub urlaub = new Urlaub("1999-01-01", "10:00", "09:00");
         Set<KlausurData> klausuren = new HashSet<>();
-        Set<Urlaub> gueltigerUrlaub;
-        Exception thrown = null;
 
-        try {
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren);
-        } catch (Exception e) {
-            thrown = e;
-        }
-
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
         assertThat(thrown.getMessage()).isEqualTo("Die Startzeit kann nicht nach der Endzeit liegen");
     }
 
@@ -112,15 +96,8 @@ public class StudentTests {
         Student student = new Student(123);
         Urlaub urlaub = new Urlaub("1999-01-01", "10:00", "10:00");
         Set<KlausurData> klausuren = new HashSet<>();
-        Set<Urlaub> gueltigerUrlaub;
-        Exception thrown = null;
 
-        try {
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren);
-        } catch (Exception e) {
-            thrown = e;
-        }
-
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
         assertThat(thrown.getMessage()).isEqualTo("Die Startzeit und Endzeit sind gleich!!");
     }
 
@@ -131,15 +108,8 @@ public class StudentTests {
         Student student = new Student(123);
         Urlaub urlaub = new Urlaub("1999-01-01", "10:53", "12:00");
         Set<KlausurData> klausuren = new HashSet<>();
-        Set<Urlaub> gueltigerUrlaub;
-        Exception thrown = null;
 
-        try {
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren);
-        } catch (Exception e) {
-            thrown = e;
-        }
-
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
         assertThat(thrown.getMessage()).isEqualTo("Die Start- und Endzeit muss ein Vielfaches von 15 Minuten sein");
     }
 
@@ -151,15 +121,8 @@ public class StudentTests {
         student.setResturlaub(15);
         Urlaub urlaub = new Urlaub("1999-01-01", "10:00", "10:30");
         Set<KlausurData> klausuren = new HashSet<>();
-        Set<Urlaub> gueltigerUrlaub;
-        Exception thrown = null;
 
-        try {
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren);
-        } catch (Exception e) {
-            thrown = e;
-        }
-
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
         assertThat(thrown.getMessage()).isEqualTo("Es ist zu wenig Resturlaub übrig");
     }
 
@@ -170,15 +133,8 @@ public class StudentTests {
         Student student = new Student(123);
         Urlaub urlaub = new Urlaub("1999-01-01", "08:30", "11:30");
         Set<KlausurData> klausuren = new HashSet<>();
-        Set<Urlaub> gueltigerUrlaub;
-        Exception thrown = null;
 
-        try {
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren);
-        } catch (Exception e) {
-            thrown = e;
-        }
-
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
         assertThat(thrown.getMessage()).isEqualTo("Der Urlaub ist weder den ganzen Tag lang noch weniger als 2.5 Stunden lang");
     }
 
@@ -195,15 +151,8 @@ public class StudentTests {
         student.setUrlaube(urlaube);
         Urlaub urlaub = new Urlaub("1999-01-01", "08:30", "11:30");
         Set<KlausurData> klausuren = new HashSet<>();
-        Set<Urlaub> gueltigerUrlaub;
-        Exception thrown = null;
 
-        try {
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren);
-        } catch (Exception e) {
-            thrown = e;
-        }
-
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
         assertThat(thrown.getMessage()).isEqualTo("Es wurden bereits zwei Urlaubsblöcke genommen");
     }
 
@@ -220,7 +169,7 @@ public class StudentTests {
         Urlaub urlaub = new Urlaub("1999-01-01", "12:00", "12:30");
         Set<KlausurData> klausuren = new HashSet<>();
 
-        assertDoesNotThrow(() -> studentService.validiereUrlaub(student, urlaub, klausuren));
+        assertDoesNotThrow(() -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
     }
 
     @Test
@@ -234,10 +183,8 @@ public class StudentTests {
         student.setUrlaube(urlaube);
         Urlaub urlaub = new Urlaub("1999-01-01", "11:00", "12:30");
         Set<KlausurData> klausuren = new HashSet<>();
-        Set<Urlaub> gueltigerUrlaub;
 
-        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren));
-
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
         assertThat(thrown.getMessage()).isEqualTo("Man muss mindestens 90 Minuten zwischen den beiden Urlaubsblöcken arbeiten");
     }
 
@@ -252,15 +199,8 @@ public class StudentTests {
         student.setUrlaube(urlaube);
         Urlaub urlaub = new Urlaub("1999-01-01", "12:00", "12:30");
         Set<KlausurData> klausuren = new HashSet<>();
-        Set<Urlaub> gueltigerUrlaub;
-        Exception thrown = null;
 
-        try {
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren);
-        } catch (Exception e) {
-            thrown = e;
-        }
-
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
         assertThat(thrown.getMessage()).isEqualTo("Der bereits gebuchte Urlaub ist weder am Anfang noch am Ende des Tages");
     }
 
@@ -275,15 +215,8 @@ public class StudentTests {
         student.setUrlaube(urlaube);
         Urlaub urlaub = new Urlaub("1999-01-01", "12:00", "12:15");
         Set<KlausurData> klausuren = new HashSet<>();
-        Set<Urlaub> gueltigerUrlaub;
-        Exception thrown = null;
 
-        try {
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren);
-        } catch (Exception e) {
-            thrown = e;
-        }
-
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
         assertThat(thrown.getMessage()).isEqualTo("Der neue Urlaub muss am Ende des Tages liegen");
     }
 
@@ -300,10 +233,9 @@ public class StudentTests {
         klausuren.add(klausurData);
 
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
-        Exception thrown = null;
 
         try { //wenn eine Klausur am selben Tag ist werden keine Fehler geworfen, sondern der gültige Urlaub zurückgegeben
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren);
+            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -328,7 +260,7 @@ public class StudentTests {
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
 
         try { //wenn eine Klausur am selben Tag ist werden keine Fehler geworfen, sondern der gültige Urlaub zurückgegeben
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren);
+            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -355,7 +287,7 @@ public class StudentTests {
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
 
         try { //wenn eine Klausur am selben Tag ist werden keine Fehler geworfen, sondern der gültige Urlaub zurückgegeben
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren);
+            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -383,7 +315,7 @@ public class StudentTests {
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
 
         try { //wenn eine Klausur am selben Tag ist werden keine Fehler geworfen, sondern der gültige Urlaub zurückgegeben
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren);
+            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -411,7 +343,7 @@ public class StudentTests {
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
 
         try { //wenn eine Klausur am selben Tag ist werden keine Fehler geworfen, sondern der gültige Urlaub zurückgegeben
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren);
+            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -443,7 +375,7 @@ public class StudentTests {
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
 
         try { //wenn eine Klausur am selben Tag ist werden keine Fehler geworfen, sondern der gültige Urlaub zurückgegeben
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren);
+            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -465,7 +397,7 @@ public class StudentTests {
         Urlaub urlaub2 = new Urlaub("1000-01-01", "10:30", "11:30");
         urlaube.add(urlaub1);
         urlaube.add(urlaub2);
-        Set<Urlaub> gueltigeUrlaube = new HashSet<>();
+        Set<Urlaub> gueltigeUrlaube;
 
         gueltigeUrlaube = studentService.ueberschneidendenUrlaubMergen(urlaube);
         Urlaub result = new Urlaub("1000-01-01", "10:00", "11:30");
@@ -483,7 +415,7 @@ public class StudentTests {
         Urlaub urlaub2 = new Urlaub("1000-01-01", "11:00", "12:00");
         urlaube.add(urlaub1);
         urlaube.add(urlaub2);
-        Set<Urlaub> gueltigeUrlaube = new HashSet<>();
+        Set<Urlaub> gueltigeUrlaube;
 
         gueltigeUrlaube = studentService.ueberschneidendenUrlaubMergen(urlaube);
         Urlaub result = new Urlaub("1000-01-01", "10:00", "12:00");
@@ -501,7 +433,7 @@ public class StudentTests {
         Urlaub urlaub2 = new Urlaub("1000-01-01", "10:00", "12:00");
         urlaube.add(urlaub1);
         urlaube.add(urlaub2);
-        Set<Urlaub> gueltigeUrlaube = new HashSet<>();
+        Set<Urlaub> gueltigeUrlaube;
 
         gueltigeUrlaube = studentService.ueberschneidendenUrlaubMergen(urlaube);
         Urlaub result = new Urlaub("1000-01-01", "10:00", "12:00");
@@ -519,7 +451,7 @@ public class StudentTests {
         Urlaub urlaub2 = new Urlaub("1000-01-01", "11:30", "12:00");
         urlaube.add(urlaub1);
         urlaube.add(urlaub2);
-        Set<Urlaub> gueltigeUrlaube = new HashSet<>();
+        Set<Urlaub> gueltigeUrlaube;
 
         gueltigeUrlaube = studentService.ueberschneidendenUrlaubMergen(urlaube);
         Urlaub result = new Urlaub("1000-01-01", "10:00", "11:00");
@@ -540,7 +472,7 @@ public class StudentTests {
         urlaube.add(urlaub1);
         urlaube.add(urlaub2);
         urlaube.add(urlaub3);
-        Set<Urlaub> gueltigeUrlaube = new HashSet<>();
+        Set<Urlaub> gueltigeUrlaube;
 
         gueltigeUrlaube = studentService.ueberschneidendenUrlaubMergen(urlaube);
         Urlaub result = new Urlaub("1000-01-01", "08:30", "10:00");

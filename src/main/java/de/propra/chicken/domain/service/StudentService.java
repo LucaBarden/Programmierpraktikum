@@ -11,8 +11,8 @@ import java.util.Set;
 @Service
 public class StudentService {
 
-    private static String BEGINN_PRAKTIKUM = "08:30";
-    private static String ENDE_PRAKTIKUM   = "12:30";
+    //private static String BEGINN_PRAKTIKUM = "08:30";
+    //private static String ENDE_PRAKTIKUM   = "12:30";
 
     public Set<Urlaub> validiereKlausurAnmeldung(KlausurRef anzumeldendeKlausur, KlausurData klausurData, Set<KlausurData> angemeldeteKlausuren, Student student, Set<KlausurRef> angemeldeteKlausurenRefs) throws Exception {
         //TODO: urlaube erstatten (wenn überlappt)
@@ -30,11 +30,11 @@ public class StudentService {
         return null;
     }
 
-    public Set<Urlaub> validiereUrlaub(Student student, Urlaub urlaub, Set<KlausurData> klausuren) throws Exception {
+    public Set<Urlaub> validiereUrlaub(Student student, Urlaub urlaub, Set<KlausurData> klausuren, String beginn, String ende) throws Exception {
 
         Set<Urlaub> zuErstattendeZeiten = new HashSet<>();
 
-        student.checkAufGrundregeln(urlaub, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
+        student.checkAufGrundregeln(urlaub, beginn, ende);
 
         Set<Urlaub> urlaubeSelberTag = student.urlaubSelberTag(urlaub);
         Set<KlausurData> klausurSelberTag = klausurSelberTag(urlaub, klausuren);
@@ -42,10 +42,10 @@ public class StudentService {
         //eine oder mehrere Klausuren am selben Tag: Urlaub darf frei eingeteilt werden
         //& überschneidende Urlaubszeit wird erstattet (keine Exceptions)
         if (!klausurSelberTag.isEmpty()) {
-            klausurenAmSelbenTag(zuErstattendeZeiten, klausurSelberTag);
+            klausurenAmSelbenTag(zuErstattendeZeiten, klausurSelberTag, beginn, ende);
         //keine Klausur am selben Tag
         } else {
-            keineKlausurSelberTag(urlaub, urlaubeSelberTag);
+            keineKlausurSelberTag(urlaub, urlaubeSelberTag, beginn, ende);
         }
         return berechneGueltigeUrlaube(urlaub, zuErstattendeZeiten);
     }
@@ -61,7 +61,7 @@ public class StudentService {
     }
 
 
-    private void klausurenAmSelbenTag(Set<Urlaub> zuErstattenderUrlaube, Set<KlausurData> klausurSelberTag) {
+    private void klausurenAmSelbenTag(Set<Urlaub> zuErstattenderUrlaube, Set<KlausurData> klausurSelberTag, String beginn, String ende) {
         for(KlausurData k : klausurSelberTag) {
             String klausurTag            = k.tag().toString();
             LocalTime anfangsZeitKlausur = k.von();
@@ -70,30 +70,30 @@ public class StudentService {
             if(k.isPraesenz()) {
                 //puffer ist die Zeit in Minuten, die man vor und nach einer Klausur freigestellt wird
                 int puffer = 120; //bei einer Präsenzklausur wird man je 2 Stunden = 120 Min. vorher und nachher freigestellt
-                erstattungsZeiten(zuErstattenderUrlaube, klausurTag, anfangsZeitKlausur, endZeitKlausur, puffer);
+                erstattungsZeiten(zuErstattenderUrlaube, klausurTag, anfangsZeitKlausur, endZeitKlausur, puffer, beginn, ende);
             } else { // nicht in Präsenz
                 int puffer = 30; //bei einer Onlineklausur wird man je 30 Min vorher und nachher freigestellt
-                erstattungsZeiten(zuErstattenderUrlaube, klausurTag, anfangsZeitKlausur, endZeitKlausur, puffer);
+                erstattungsZeiten(zuErstattenderUrlaube, klausurTag, anfangsZeitKlausur, endZeitKlausur, puffer, beginn, ende);
             }
         }
     }
 
-    private void erstattungsZeiten(Set<Urlaub> zuErstattendeZeiten, String klausurTag, LocalTime anfangsZeitDerKlausur, LocalTime endZeitDerKlausur, int puffer) {
+    private void erstattungsZeiten(Set<Urlaub> zuErstattendeZeiten, String klausurTag, LocalTime anfangsZeitDerKlausur, LocalTime endZeitDerKlausur, int puffer, String beginn, String ende) {
         //die Klausur fängt vor (Praktikumsbeginn + puffer) an: Urlaub wird ab Praktikumsbeginn erstattet
-        if (anfangsZeitDerKlausur.isBefore(LocalTime.parse(BEGINN_PRAKTIKUM).plusMinutes(puffer))) {
+        if (anfangsZeitDerKlausur.isBefore(LocalTime.parse(beginn).plusMinutes(puffer))) {
             //die Klausur endet nach (Praktikumsende - puffer): Urlaub wird bis Praktikumsende erstattet
-            if (endZeitDerKlausur.isAfter(LocalTime.parse(ENDE_PRAKTIKUM).minusMinutes(puffer))) {
-                zuErstattendeZeiten.add(new Urlaub(klausurTag, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
+            if (endZeitDerKlausur.isAfter(LocalTime.parse(ende).minusMinutes(puffer))) {
+                zuErstattendeZeiten.add(new Urlaub(klausurTag, beginn, ende));
             //die Klausur endet vor (Praktikumsende - puffer): Urlaub wird ab (Klausurende + puffer) erstattet
             } else {
-                zuErstattendeZeiten.add(new Urlaub(klausurTag, BEGINN_PRAKTIKUM, endZeitDerKlausur.plusMinutes(puffer).toString()));
+                zuErstattendeZeiten.add(new Urlaub(klausurTag, beginn, endZeitDerKlausur.plusMinutes(puffer).toString()));
             }
 
         //die Klausur fängt nach (Praktikumsbeginn + puffer) an: Urlaub wird ab (Klausurbeginn - puffer) erstattet
         } else { // nach 9 Beginn
             //die Klausur endet nach (Praktikumsende - puffer): Urlaub wird bis Praktikumsende erstattet
-            if (endZeitDerKlausur.isAfter(LocalTime.parse(ENDE_PRAKTIKUM).minusMinutes(puffer))) {
-                zuErstattendeZeiten.add(new Urlaub(klausurTag, anfangsZeitDerKlausur.minusMinutes(puffer).toString(), ENDE_PRAKTIKUM));
+            if (endZeitDerKlausur.isAfter(LocalTime.parse(ende).minusMinutes(puffer))) {
+                zuErstattendeZeiten.add(new Urlaub(klausurTag, anfangsZeitDerKlausur.minusMinutes(puffer).toString(), ende));
             //die Klausur endet vor (Praktikumsende - puffer): Urlaub wird ab (Klausurende + puffer) erstattet
             } else {
                 zuErstattendeZeiten.add(new Urlaub(klausurTag, anfangsZeitDerKlausur.minusMinutes(puffer).toString(), endZeitDerKlausur.plusMinutes(puffer).toString()));
@@ -101,7 +101,7 @@ public class StudentService {
         }
     }
 
-    private void keineKlausurSelberTag(Urlaub urlaub, Set<Urlaub> urlaubeSelberTag) throws Exception {
+    private void keineKlausurSelberTag(Urlaub urlaub, Set<Urlaub> urlaubeSelberTag, String beginn, String ende) throws Exception {
         //der anzulegende Urlaub ist der erste Urlaubsblock an dem Tag
         if (urlaubeSelberTag.isEmpty()) {
             //den ganzen Tag frei oder max 2,5 Stunden sind erlaubt
@@ -111,7 +111,7 @@ public class StudentService {
             //schon 1 Urlaub am selben Tag
         } else if (urlaubeSelberTag.size() == 1) {
             //die zwei Urlaubsblöcke müssen am Anfang und Ende liegen mit mind. 90 Min Arbeitszeit dazwischen
-            regelnFuerZweiBloecke(urlaub, urlaubeSelberTag);
+            regelnFuerZweiBloecke(urlaub, urlaubeSelberTag, beginn, ende);
             //schon mehr als ein Urlaub am selben Tag
         } else{
             //kein weiterer Urlaub kann gebucht werden
@@ -119,22 +119,22 @@ public class StudentService {
         }
     }
 
-    private void regelnFuerZweiBloecke(Urlaub urlaub, Set<Urlaub> urlaubeSelberTag) throws Exception {
+    private void regelnFuerZweiBloecke(Urlaub urlaub, Set<Urlaub> urlaubeSelberTag, String beginn, String ende) throws Exception {
         Urlaub amSelbenTag = urlaubeSelberTag.stream().toList().get(0);
         //der zuvor gebuchte Urlaub liegt am Anfang der Praktikumszeit
-        if (amSelbenTag.getBeginn().compareTo(LocalTime.parse(BEGINN_PRAKTIKUM)) == 0) {
+        if (amSelbenTag.getBeginn().compareTo(LocalTime.parse(beginn)) == 0) {
             if (Duration.between(amSelbenTag.getEnd(), urlaub.getBeginn()).toMinutes() < 90) {
                 throw new Exception("Man muss mindestens 90 Minuten zwischen den beiden Urlaubsblöcken arbeiten");
             }
-            if (!(urlaub.getEnd().compareTo(LocalTime.parse(ENDE_PRAKTIKUM)) == 0)) {
+            if (!(urlaub.getEnd().compareTo(LocalTime.parse(ende)) == 0)) {
                 throw new Exception("Der neue Urlaub muss am Ende des Tages liegen");
             }
         //der zuvor gebuchte Urlaub liegt am Ende der Praktikumszeit
-        } else if (amSelbenTag.getEnd().compareTo(LocalTime.parse(ENDE_PRAKTIKUM)) == 0) {
+        } else if (amSelbenTag.getEnd().compareTo(LocalTime.parse(ende)) == 0) {
             if (Duration.between(urlaub.getEnd(), amSelbenTag.getBeginn()).toMinutes() < 90) { //min. 90 arbeiten
                 throw new Exception("Man muss mindestens 90 Minuten zwischen den beiden Urlaubsblöcken arbeiten");
             }
-            if (!(urlaub.getBeginn().compareTo(LocalTime.parse(BEGINN_PRAKTIKUM)) == 0)) {
+            if (!(urlaub.getBeginn().compareTo(LocalTime.parse(beginn)) == 0)) {
                 throw new Exception("Der neue Urlaub muss am Anfang des Tages liegen");
             }
             //der zuvor gebuchte Urlaub ist weder am Anfang noch am Ende des Tages
