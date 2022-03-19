@@ -2,7 +2,6 @@ package de.propra.chicken.db;
 
 import de.propra.chicken.domain.model.KlausurData;
 import de.propra.chicken.domain.model.KlausurRef;
-import de.propra.chicken.domain.model.Student;
 import de.propra.chicken.domain.model.Urlaub;
 import de.propra.chicken.domain.dto.StudentDTO;
 import org.springframework.data.jdbc.repository.query.Query;
@@ -28,4 +27,7 @@ public interface CRUDStudent extends CrudRepository<StudentDTO, Long> {
     boolean existsById(@Param("id") long id);
 
     StudentDTO findByGithubID(long id);
+
+    @Query("INSERT INTO student(github_id, resturlaub) VALUES( )")
+    StudentDTO speicherStudent(StudentDTO dto);
 }

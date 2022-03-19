@@ -55,6 +55,9 @@ public class KlausurRepositoryImpl implements KlausurRepository {
         return DTOs.stream().map(k -> transferDTOToKlausur(k).getKlausurData()).collect(Collectors.toSet());
     }
 
+    public Klausur findeKlausurByID(long id) {
+        return transferDTOToKlausur(crudKlausur.findeKlausurByID(id));
+    }
     private Set<KlausurDTO> findeKlausurenByID(Set<KlausurRef> angemeldeteKlausurenRefs) {
         Set<Long> IDs = angemeldeteKlausurenRefs.stream().map(klausurRef -> klausurRef.getLsfID()).collect(Collectors.toSet());
         Set<KlausurDTO> DTOs = new HashSet<>();

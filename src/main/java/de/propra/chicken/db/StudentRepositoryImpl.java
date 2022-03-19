@@ -35,7 +35,7 @@ public class StudentRepositoryImpl implements StudentRepository {
     //Works
     @Override
     public Student speicherStudent(Student student) {
-        return transferDTOToStudent(crudStudent.save(student.getDto()));
+        return transferDTOToStudent(crudStudent.speicherStudent(student.getDto()));
     }
 
     @Override

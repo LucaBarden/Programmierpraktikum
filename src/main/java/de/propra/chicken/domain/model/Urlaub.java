@@ -1,7 +1,7 @@
 package de.propra.chicken.domain.model;
 
 
-import de.propra.chicken.domain.dto.UrlaubDTO;
+import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -62,7 +62,4 @@ public class Urlaub {
         return Objects.hash(tag, beginn, end);
     }
 
-    public UrlaubDTO getDTO(long githubID) {
-        return new UrlaubDTO(tag, beginn, end, githubID);
-    }
 }
