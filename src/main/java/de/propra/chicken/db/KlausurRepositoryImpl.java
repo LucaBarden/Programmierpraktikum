@@ -5,6 +5,7 @@ import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.KlausurData;
 import de.propra.chicken.domain.model.KlausurRef;
 import de.propra.chicken.domain.dto.KlausurDTO;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashSet;
@@ -19,6 +20,10 @@ public class KlausurRepositoryImpl implements KlausurRepository {
 
     public KlausurRepositoryImpl(CRUDKlausur crudKlausur) {
         this.crudKlausur = crudKlausur;
+    }
+
+    public KlausurRepositoryImpl() {
+
     }
 
 

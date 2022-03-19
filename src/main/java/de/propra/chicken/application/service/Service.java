@@ -55,7 +55,7 @@ public class Service {
             //student = studentService.erstatteUrlaube(zuErstattendeUrlaube);
             KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
             student.addKlausur(klausurRef);
-            studentRepo.speicherKlausurAnmeldung(student);
+            studentRepo.speicherStudent(student);
             logger.info(principal.getAttribute("login") + "hat sich zur Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " angemeldet");
         } catch (Exception ex) {
             throw ex;
@@ -126,7 +126,4 @@ public class Service {
         }
     }
 
-    public void test(Student student) {
-        studentRepo.speicherStudent(student);
-    }
 }

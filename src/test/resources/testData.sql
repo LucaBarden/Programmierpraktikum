@@ -1,0 +1,1 @@
+INSERT INTO klausur(name, lsf_id, praesenz, datum, beginn, end) VALUES('RA', 12345, true, '1999-01.01', '08:30', '12:30')

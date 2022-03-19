@@ -42,3 +42,4 @@ out/
 *.lock
 
 *.bin
+/src/test/resources/testEnv

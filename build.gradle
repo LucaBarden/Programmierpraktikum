@@ -14,6 +14,7 @@ repositories {
 }
 
 dependencies {
+    implementation ('com.h2database:h2')
     implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
@@ -22,6 +23,7 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'junit:junit:4.13.1'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
