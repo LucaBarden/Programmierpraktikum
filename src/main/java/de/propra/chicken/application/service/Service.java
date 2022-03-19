@@ -114,7 +114,7 @@ public class Service {
             Student student = studentRepo.findByID(githubID);
             Set<KlausurData> angemeldeteKlausuren = studentRepo.findAngemeldeteKlausuren(githubID);
             Set<Urlaub> gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, angemeldeteKlausuren);
-            gueltigerUrlaub = ueberschneidendenUrlaubMergen(gueltigerUrlaub);
+            gueltigerUrlaub = studentService.ueberschneidendenUrlaubMergen(gueltigerUrlaub);
 
             student.addUrlaube(gueltigerUrlaub);
             studentRepo.speicherStudent(student);
@@ -122,77 +122,6 @@ public class Service {
         } catch (Exception ex) {
             throw ex;
         }
-    }
-
-    public Set<Urlaub> ueberschneidendenUrlaubMergen(Set<Urlaub> urlaube) {
-        if(urlaube.size() == 0) return urlaube;
-
-        Set<Urlaub> zuPruefendeUrlaube = new HashSet<>();
-        zuPruefendeUrlaube.addAll(urlaube);
-        Set<Urlaub> stashUrlaube = new HashSet<>();
-        boolean aenderung = true;
-
-        while(aenderung) {
-            aenderung = false;
-            for (Urlaub neu : zuPruefendeUrlaube) {
-                if(aenderung) break;
-                stashUrlaube.addAll(zuPruefendeUrlaube);
-                for (Urlaub alt : zuPruefendeUrlaube) {
-                    if (alt.getBeginn().equals(neu.getBeginn())) {
-                        //if (alt.getEnd().equals(neu.getEnd())) {
-                            //1: beide Urlaube sind gleich, einer wird übernommen, wegen Set gibt es sowieso keine Duplikationen
-                        //} else
-                        if (alt.getEnd().isAfter(neu.getEnd())) {
-                            //2: der alte Urlaub wird übernommen
-                            stashUrlaube.remove(neu);
-                            aenderung = true;
-                        } else if (alt.getEnd().isBefore(neu.getEnd())) {
-                            //3: der neue Urlaub wird übernommen
-                            stashUrlaube.remove(alt);
-                            aenderung = true;
-                        }
-                    } else if (alt.getBeginn().isAfter(neu.getBeginn()) && (alt.getBeginn().isBefore(neu.getEnd()) || alt.getBeginn().equals(neu.getEnd()))) {
-                        if (alt.getEnd().equals(neu.getEnd())) {
-                            //4: der neue Urlaub wird übernommen
-                            stashUrlaube.remove(alt);
-                            aenderung = true;
-                        } else if (alt.getEnd().isAfter(neu.getEnd())) {
-                            //5: Start vom neuen und Ende vom alten Urlaub
-                            stashUrlaube.remove(alt);
-                            stashUrlaube.remove(neu);
-                            stashUrlaube.add(new Urlaub(neu.getTag().toString(), neu.getBeginn().toString(), alt.getEnd().toString()));
-                            aenderung = true;
-                            break;
-                        } else if (alt.getEnd().isBefore(neu.getEnd())) {
-                            //6: der neue Urlaub wird übernommen
-                            stashUrlaube.remove(alt);
-                            aenderung = true;
-                        }
-                    } else if (alt.getBeginn().isBefore(neu.getBeginn()) && (neu.getBeginn().isBefore(alt.getEnd()) || neu.getBeginn().equals(alt.getEnd()))) {
-                        if (alt.getEnd().equals(neu.getEnd())) {
-                            //7: der alte Urlaub wird übernommen
-                            stashUrlaube.remove(neu);
-                            aenderung = true;
-                        } else if (alt.getEnd().isAfter(neu.getEnd())) {
-                            //8: der alte Urlaub wird übernommen
-                            stashUrlaube.remove(neu);
-                            aenderung = true;
-                        } else if (alt.getEnd().isBefore(neu.getEnd())) {
-                            //9: Start vom alten und Ende vom neuen Urlaub
-                            stashUrlaube.remove(alt);
-                            stashUrlaube.remove(neu);
-                            stashUrlaube.add(new Urlaub(neu.getTag().toString(), alt.getBeginn().toString(), neu.getEnd().toString()));
-                            aenderung = true;
-                            break;
-                        }
-                    }
-                    //else: die alten und der neue Urlaub überschneiden sich nicht: beide sind gültig, nichts tun
-                }
-            }
-            zuPruefendeUrlaube = stashUrlaube;
-            stashUrlaube = new HashSet<>();
-        }
-        return zuPruefendeUrlaube;
     }
 
     public void test(Student student) {

@@ -1,5 +1,8 @@
 package de.propra.chicken.domain.service;
 
+import de.propra.chicken.application.service.Service;
+import de.propra.chicken.application.service.repo.KlausurRepository;
+import de.propra.chicken.application.service.repo.StudentRepository;
 import de.propra.chicken.domain.model.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.anyOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -450,6 +454,144 @@ public class StudentTests {
         System.out.println(gueltigerUrlaub);
         assertThat(gueltigerUrlaub.size()).isEqualTo(1);
         assertThat(gueltigerUrlaub).contains(urlaub1);
+    }
+
+    @Test
+    @DisplayName("zwei überschneidende Urlaubsblöcke werden gemerged")
+    void urlaubsanmeldungZweiUrlaubsbloeckeUeberschneidend() {
+        StudentService studentService = new StudentService();
+        Set<Urlaub> urlaube = new HashSet<>();
+        Urlaub urlaub1 = new Urlaub("1000-01-01", "10:00", "11:00");
+        Urlaub urlaub2 = new Urlaub("1000-01-01", "10:30", "11:30");
+        urlaube.add(urlaub1);
+        urlaube.add(urlaub2);
+        Set<Urlaub> gueltigeUrlaube = new HashSet<>();
+
+        gueltigeUrlaube = studentService.ueberschneidendenUrlaubMergen(urlaube);
+        Urlaub result = new Urlaub("1000-01-01", "10:00", "11:30");
+
+        assertThat(gueltigeUrlaube).hasSize(1);
+        assertThat(gueltigeUrlaube).contains(result);
+    }
+
+    @Test
+    @DisplayName("zwei Urlaubsblöcke direkt hintereinander werden gemerged")
+    void urlaubsanmeldungZweiUrlaubsbloeckeHintereinander() {
+        StudentService studentService = new StudentService();
+        Set<Urlaub> urlaube = new HashSet<>();
+        Urlaub urlaub1 = new Urlaub("1000-01-01", "10:00", "11:00");
+        Urlaub urlaub2 = new Urlaub("1000-01-01", "11:00", "12:00");
+        urlaube.add(urlaub1);
+        urlaube.add(urlaub2);
+        Set<Urlaub> gueltigeUrlaube = new HashSet<>();
+
+        gueltigeUrlaube = studentService.ueberschneidendenUrlaubMergen(urlaube);
+        Urlaub result = new Urlaub("1000-01-01", "10:00", "12:00");
+
+        assertThat(gueltigeUrlaube).hasSize(1);
+        assertThat(gueltigeUrlaube).contains(result);
+    }
+
+    @Test
+    @DisplayName("zwei Urlaubsblöcke überschneiden sich, der eine enthält den anderen komplett")
+    void urlaubsanmeldungZweiUrlaubsbloeckeEinerLaenger() {
+        StudentService studentService = new StudentService();
+        Set<Urlaub> urlaube = new HashSet<>();
+        Urlaub urlaub1 = new Urlaub("1000-01-01", "10:00", "11:00");
+        Urlaub urlaub2 = new Urlaub("1000-01-01", "10:00", "12:00");
+        urlaube.add(urlaub1);
+        urlaube.add(urlaub2);
+        Set<Urlaub> gueltigeUrlaube = new HashSet<>();
+
+        gueltigeUrlaube = studentService.ueberschneidendenUrlaubMergen(urlaube);
+        Urlaub result = new Urlaub("1000-01-01", "10:00", "12:00");
+
+        assertThat(gueltigeUrlaube).hasSize(1);
+        assertThat(gueltigeUrlaube).contains(result);
+    }
+
+    @Test
+    @DisplayName("zwei Urlaubsblöcke überschneiden sich nicht")
+    void urlaubsanmeldungZweiUrlaubsbloeckeKeineUeberschneidung() {
+        StudentService studentService = new StudentService();
+        Set<Urlaub> urlaube = new HashSet<>();
+        Urlaub urlaub1 = new Urlaub("1000-01-01", "10:00", "11:00");
+        Urlaub urlaub2 = new Urlaub("1000-01-01", "11:30", "12:00");
+        urlaube.add(urlaub1);
+        urlaube.add(urlaub2);
+        Set<Urlaub> gueltigeUrlaube = new HashSet<>();
+
+        gueltigeUrlaube = studentService.ueberschneidendenUrlaubMergen(urlaube);
+        Urlaub result = new Urlaub("1000-01-01", "10:00", "11:00");
+        Urlaub result2 = new Urlaub("1000-01-01", "11:30", "12:00");
+
+        assertThat(gueltigeUrlaube).hasSize(2);
+        assertThat(gueltigeUrlaube).contains(result, result2);
+    }
+
+    @Test
+    @DisplayName("drei Urlaubsblöcke direkt nacheinander zu einem Block")
+    void urlaubsanmeldungDreiUrlaubsbloeckeNacheinander() {
+        StudentService studentService = new StudentService();
+        Set<Urlaub> urlaube = new HashSet<>();
+        Urlaub urlaub1 = new Urlaub("1000-01-01", "08:30", "08:45");
+        Urlaub urlaub2 = new Urlaub("1000-01-01", "08:45", "09:30");
+        Urlaub urlaub3 = new Urlaub("1000-01-01", "09:30", "10:00");
+        urlaube.add(urlaub1);
+        urlaube.add(urlaub2);
+        urlaube.add(urlaub3);
+        Set<Urlaub> gueltigeUrlaube = new HashSet<>();
+
+        gueltigeUrlaube = studentService.ueberschneidendenUrlaubMergen(urlaube);
+        Urlaub result = new Urlaub("1000-01-01", "08:30", "10:00");
+
+        assertThat(gueltigeUrlaube).hasSize(1);
+        assertThat(gueltigeUrlaube).contains(result);
+    }
+
+    @Test
+    @DisplayName("drei Urlaubsblöcke, keine Überschneidungen")
+    void urlaubsanmeldungDreiUrlaubsbloeckeKeineUeberschneidung() {
+        StudentService studentService = new StudentService();
+        Set<Urlaub> urlaube = new HashSet<>();
+        Urlaub urlaub1 = new Urlaub("1000-01-01", "08:30", "09:30");
+        Urlaub urlaub2 = new Urlaub("1000-01-01", "09:45", "10:00");
+        Urlaub urlaub3 = new Urlaub("1000-01-01", "11:00", "11:30");
+        urlaube.add(urlaub1);
+        urlaube.add(urlaub2);
+        urlaube.add(urlaub3);
+        Set<Urlaub> gueltigeUrlaube;
+
+        gueltigeUrlaube = studentService.ueberschneidendenUrlaubMergen(urlaube);
+        Urlaub result = new Urlaub("1000-01-01", "08:30", "09:30");
+        Urlaub result2 = new Urlaub("1000-01-01", "09:45", "10:00");
+        Urlaub result3 = new Urlaub("1000-01-01", "11:00", "11:30");
+
+        assertThat(gueltigeUrlaube).hasSize(3);
+        assertThat(gueltigeUrlaube).contains(result, result2, result3);
+    }
+
+    @Test
+    @DisplayName("vier Urlaubsblöcke, je zwei überschneiden sich")
+    void urlaubsanmeldungVierUrlaubsbloeckeZweiUeberschneidungen() {
+        StudentService studentService = new StudentService();
+        Set<Urlaub> urlaube = new HashSet<>();
+        Urlaub urlaub1 = new Urlaub("1000-01-01", "08:30", "09:30");
+        Urlaub urlaub2 = new Urlaub("1000-01-01", "09:00", "10:00");
+        Urlaub urlaub3 = new Urlaub("1000-01-01", "11:00", "11:30");
+        Urlaub urlaub4 = new Urlaub("1000-01-01", "11:15", "12:00");
+        urlaube.add(urlaub1);
+        urlaube.add(urlaub2);
+        urlaube.add(urlaub3);
+        urlaube.add(urlaub4);
+        Set<Urlaub> gueltigeUrlaube;
+
+        gueltigeUrlaube = studentService.ueberschneidendenUrlaubMergen(urlaube);
+        Urlaub result = new Urlaub("1000-01-01", "08:30", "10:00");
+        Urlaub result2 = new Urlaub("1000-01-01", "11:00", "12:00");
+
+        assertThat(gueltigeUrlaube).hasSize(2);
+        assertThat(gueltigeUrlaube).contains(result, result2);
     }
 
 
