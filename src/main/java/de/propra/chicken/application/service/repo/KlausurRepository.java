@@ -15,4 +15,6 @@ public interface KlausurRepository {
     Set<Klausur> getKlausurenByRefs(Set<KlausurRef> klausuren);
 
     Set<KlausurData> getKlausurenDataByRefs(Set<KlausurRef> angemeldeteKlausurenRefs);
+
+    Klausur findeKlausurByID(long id);
 }
