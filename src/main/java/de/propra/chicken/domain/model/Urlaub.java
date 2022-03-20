@@ -3,6 +3,7 @@ package de.propra.chicken.domain.model;
 
 import org.springframework.data.annotation.Id;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -32,6 +33,10 @@ public class Urlaub {
 
     public LocalTime getEnd() {
         return end;
+    }
+
+    public long duration() {
+        return Duration.between(beginn, end).toMinutes();
     }
 
 

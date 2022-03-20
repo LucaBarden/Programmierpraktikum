@@ -60,6 +60,10 @@ public class Student {
 
     }
 
+    public long  summeAllerUrlaube(){
+        return this.urlaube.stream().map(a -> Duration.between(a.getBeginn(), a.getEnd()).toMinutes()).reduce(0L, (a,b) -> a+b);
+    }
+
     public void setResturlaub(int resturlaub) {
         this.resturlaub = resturlaub;
     }
