@@ -22,24 +22,12 @@ public class Service {
     private final KlausurService klausurService;
     private static final Logger logger = Logger.getLogger("de.propra.chicken.application.service.Service");
 
-    /*
-    in .env file:
-    STARTUHRZEIT_PRAKTIKUM=08:30
-    ENDUHRZEIT_PRAKTIKUM=12:30
-    STARTDATUM_PRAKTIKUM=2022-03-07
-    ENDDATUM_PRAKTIKUM=2022-03-25
-     */
-    /*
+
     private static String BEGINN     = System.getenv("STARTUHRZEIT_PRAKTIKUM");
     private static String ENDE       = System.getenv("ENDUHRZEIT_PRAKTIKUM");
     private static String STARTDATUM = System.getenv("STARTDATUM_PRAKTIKUM");
     private static String ENDDATUM   = System.getenv("ENDDATUM_PRAKTIKUM");
-    */
 
-    private static String BEGINN     = "08:30";
-    private static String ENDE       = "12:30";
-    private static String STARTDATUM = "2022-03-07";
-    private static String ENDDATUM   = "2022-03-25";
 
 
     static {

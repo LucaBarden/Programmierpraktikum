@@ -94,6 +94,9 @@ public class Student {
 
     public Set<Urlaub> urlaubSelberTag(LocalDate datum) {
         Set<Urlaub> uSelberTag = new HashSet<>();
+
+        //urlaube.stream().filter(a -> a.getTag().compareTo(datum) == 0).forEach(uSelberTag::add);
+
         for (Urlaub tmpUrlaub : urlaube) {
             if (tmpUrlaub.getTag().compareTo(datum) == 0) {
                 uSelberTag.add(tmpUrlaub);

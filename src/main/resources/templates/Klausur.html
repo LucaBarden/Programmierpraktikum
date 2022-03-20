@@ -24,7 +24,7 @@
         <form name="klausur_anmelden" method="post" th:action="@{/klausurAnmelden}">
             <select class="form-control" name="id" id="klausur-select">
                 <th:block th:each="k : ${klausuren}">
-                    <option th:value="${k.getLsfid()}" th:text="${k.toString()}"></option>
+                    <option alt="Klausur Auswählen" th:value="${k.getLsfid()}" th:text="${k.toString()}"></option>
                 </th:block>
 
             </select>
@@ -39,7 +39,7 @@
                 <strong>Natürlich müssen Sie dann auch am Praktikum teilnehmen.</strong> <br>
                 Ggf. überprüfen wir die Teilnahme an der Klausur über die entsprechenden Teilnehmerlisten
                 <br>
-                <button name="klausuranmeldung_abschicken" type="submit" class="btn btn-primary mt-2">Eintragen</button>
+                <button alt="Klausuranmeldung abschicken" name="klausuranmeldung_abschicken" type="submit" class="btn btn-primary mt-2">Eintragen</button>
         </form>
         </p>
     </div>

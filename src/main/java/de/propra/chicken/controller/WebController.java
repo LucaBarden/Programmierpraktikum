@@ -44,8 +44,7 @@ public class WebController {
 
         model.addAttribute("student", student);
         model.addAttribute("klausuren", service.ladeAngemeldeteKlausuren(student.getGithubID()));
-//        model.addAttribute("urlaube", student.getUrlaube());
-
+        model.addAttribute("urlaube", student.getUrlaube());
 
         return "Student";
     }
@@ -68,6 +67,19 @@ public class WebController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return "redirect:/student";
+    }
+
+    @Secured("ROLE_USER")
+    @PostMapping("urlaubStornieren")
+    public String urlaubStornieren(String tag, String beginn, String end){
+
+        System.out.println(tag);
+        System.out.println(beginn);
+        System.out.println(end);
+        
+
 
         return "redirect:/student";
     }
