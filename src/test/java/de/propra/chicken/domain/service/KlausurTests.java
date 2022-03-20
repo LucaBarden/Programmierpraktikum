@@ -1,6 +1,7 @@
 package de.propra.chicken.domain.service;
 
 import de.propra.chicken.domain.model.Klausur;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +12,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class KlausurTests {
 
+    private static final String BEGINN_PRAKTIKUM = "08:30";
+    private static final String ENDE_PRAKTIKUM   = "12:30";
 
     Set<Klausur> arrange(){
         Set<Klausur> alleKlausuren = new HashSet<>();
@@ -65,13 +68,23 @@ public class KlausurTests {
                 assertThat(stornierbareKlausuren.get(klausur)).isEqualTo(false);
             }
         }
-
     }
 
+    @Test
+    @Disabled
+    @DisplayName("Klausurvalidierung: ")
+    void klausurValidierung() {
+        KlausurService klausurService = new KlausurService();
+        Klausur klausur = new Klausur("RA", 1234, true, "1000-11-12", "11:00", "12:00");
+        String beginn     = "";
+        String ende       = "";
+        String startdatum = "";
+        String enddatum   = "";
 
+        //klausurService.validiereKlausur(klausur, beginn, ende, startdatum, enddatum);
 
-
-
+        //assertThat
+    }
 
 }
 

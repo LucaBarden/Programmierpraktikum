@@ -11,9 +11,6 @@ import java.util.Set;
 @Service
 public class StudentService {
 
-    //private static String BEGINN_PRAKTIKUM = "08:30";
-    //private static String ENDE_PRAKTIKUM   = "12:30";
-
     public Set<Urlaub> validiereKlausurAnmeldung(KlausurRef anzumeldendeKlausur, KlausurData klausurData, Set<KlausurData> angemeldeteKlausuren, Student student, Set<KlausurRef> angemeldeteKlausurenRefs) throws Exception {
         //TODO: urlaube erstatten (wenn überlappt)
         //Die klausur ist mindestens einen Tag später
@@ -31,23 +28,51 @@ public class StudentService {
     }
 
     public Set<Urlaub> validiereUrlaub(Student student, Urlaub urlaub, Set<KlausurData> klausuren, String beginn, String ende) throws Exception {
-
+        //TODO: String startdatum und String enddatum als Parameter übergeben und überprüfen, ob Urlaubsdatum im Praktikumszeitraum liegt (in Student.checkAufGrundregeln())
         Set<Urlaub> zuErstattendeZeiten = new HashSet<>();
 
-        student.checkAufGrundregeln(urlaub, beginn, ende);
+        checkAufGrundregeln(student.getResturlaub(), urlaub, beginn, ende);
 
         Set<Urlaub> urlaubeSelberTag = student.urlaubSelberTag(urlaub);
         Set<KlausurData> klausurSelberTag = klausurSelberTag(urlaub, klausuren);
+        Set<Urlaub> neueUrlaube = new HashSet<>();
 
         //eine oder mehrere Klausuren am selben Tag: Urlaub darf frei eingeteilt werden
         //& überschneidende Urlaubszeit wird erstattet (keine Exceptions)
         if (!klausurSelberTag.isEmpty()) {
             klausurenAmSelbenTag(zuErstattendeZeiten, klausurSelberTag, beginn, ende);
+            zuErstattendeZeiten.addAll(urlaubeSelberTag);
+            Set<Urlaub> urlaube = new HashSet<>();
+            urlaube.add(urlaub);
+            neueUrlaube = berechneGueltigeUrlaube(urlaube, zuErstattendeZeiten);
         //keine Klausur am selben Tag
         } else {
             keineKlausurSelberTag(urlaub, urlaubeSelberTag, beginn, ende);
+            neueUrlaube.add(urlaub);
         }
-        return berechneGueltigeUrlaube(urlaub, zuErstattendeZeiten);
+        return neueUrlaube;
+    }
+
+    public void checkAufGrundregeln(int resturlaub, Urlaub urlaub, String beginn, String ende) throws Exception {
+        //Fehler: Startzeit ist nach Endzeit
+        if(urlaub.getBeginn().isAfter(urlaub.getEnd())) {
+            throw new Exception("Die Startzeit kann nicht nach der Endzeit liegen");
+        }
+        //Fehler: Startzeit und Endzeit sind gleich
+        if(urlaub.getBeginn().equals(urlaub.getEnd())) {
+            throw new Exception("Die Startzeit und Endzeit sind gleich!!");
+        }
+        //Fehler: keine ganzen Viertelstunden & Startzeiten 00, 15, 30, 45
+        if (!(urlaub.getBeginn().getMinute() % 15 == 0) || !(urlaub.getEnd().getMinute() % 15 == 0)) {
+            throw new Exception("Die Start- und Endzeit muss ein Vielfaches von 15 Minuten sein");
+        }
+        //Fehler: Resturlaub < Urlaubszeit
+        if (resturlaub < Duration.between(urlaub.getBeginn(), urlaub.getEnd()).toMinutes()) {
+            throw new Exception("Es ist zu wenig Resturlaub übrig");
+        }
+        if(urlaub.getBeginn().isBefore(LocalTime.parse(beginn)) || urlaub.getEnd().isAfter(LocalTime.parse(ende))) {
+            throw new Exception("Der Urlaub muss im Praktikumszeitraum liegen");
+        }
     }
 
     private Set<KlausurData> klausurSelberTag(Urlaub urlaub, Set<KlausurData> klausuren) {
@@ -88,7 +113,6 @@ public class StudentService {
             } else {
                 zuErstattendeZeiten.add(new Urlaub(klausurTag, beginn, endZeitDerKlausur.plusMinutes(puffer).toString()));
             }
-
         //die Klausur fängt nach (Praktikumsbeginn + puffer) an: Urlaub wird ab (Klausurbeginn - puffer) erstattet
         } else { // nach 9 Beginn
             //die Klausur endet nach (Praktikumsende - puffer): Urlaub wird bis Praktikumsende erstattet
@@ -143,10 +167,10 @@ public class StudentService {
         }
     }
 
-    private Set<Urlaub> berechneGueltigeUrlaube(Urlaub urlaub, Set<Urlaub> zuErstattenderUrlaube) throws InterruptedException {
+    private Set<Urlaub> berechneGueltigeUrlaube(Set<Urlaub> urlaub, Set<Urlaub> zuErstattenderUrlaube) throws InterruptedException {
         Set<Urlaub> zuPruefendeUrlaube = new HashSet<>();
         Set<Urlaub> stashUrlaube = new HashSet<>();
-        zuPruefendeUrlaube.add(urlaub);
+        zuPruefendeUrlaube.addAll(urlaub);
         boolean aenderung = true;
 
         while(aenderung) {
@@ -209,74 +233,4 @@ public class StudentService {
         return zuPruefendeUrlaube;
     }
 
-    public Set<Urlaub> ueberschneidendenUrlaubMergen(Set<Urlaub> urlaube) {
-        if(urlaube.size() == 0) return urlaube;
-
-        Set<Urlaub> zuPruefendeUrlaube = new HashSet<>();
-        zuPruefendeUrlaube.addAll(urlaube);
-        Set<Urlaub> stashUrlaube = new HashSet<>();
-        boolean aenderung = true;
-
-        while(aenderung) {
-            aenderung = false;
-            for (Urlaub neu : zuPruefendeUrlaube) {
-                if(aenderung) break;
-                stashUrlaube.addAll(zuPruefendeUrlaube);
-                for (Urlaub alt : zuPruefendeUrlaube) {
-                    if (alt.getBeginn().equals(neu.getBeginn())) {
-                        //if (alt.getEnd().equals(neu.getEnd())) {
-                        //1: beide Urlaube sind gleich, einer wird übernommen, wegen Set gibt es sowieso keine Duplikationen
-                        //} else
-                        if (alt.getEnd().isAfter(neu.getEnd())) {
-                            //2: der alte Urlaub wird übernommen
-                            stashUrlaube.remove(neu);
-                            aenderung = true;
-                        } else if (alt.getEnd().isBefore(neu.getEnd())) {
-                            //3: der neue Urlaub wird übernommen
-                            stashUrlaube.remove(alt);
-                            aenderung = true;
-                        }
-                    } else if (alt.getBeginn().isAfter(neu.getBeginn()) && (alt.getBeginn().isBefore(neu.getEnd()) || alt.getBeginn().equals(neu.getEnd()))) {
-                        if (alt.getEnd().equals(neu.getEnd())) {
-                            //4: der neue Urlaub wird übernommen
-                            stashUrlaube.remove(alt);
-                            aenderung = true;
-                        } else if (alt.getEnd().isAfter(neu.getEnd())) {
-                            //5: Start vom neuen und Ende vom alten Urlaub
-                            stashUrlaube.remove(alt);
-                            stashUrlaube.remove(neu);
-                            stashUrlaube.add(new Urlaub(neu.getTag().toString(), neu.getBeginn().toString(), alt.getEnd().toString()));
-                            aenderung = true;
-                            break;
-                        } else if (alt.getEnd().isBefore(neu.getEnd())) {
-                            //6: der neue Urlaub wird übernommen
-                            stashUrlaube.remove(alt);
-                            aenderung = true;
-                        }
-                    } else if (alt.getBeginn().isBefore(neu.getBeginn()) && (neu.getBeginn().isBefore(alt.getEnd()) || neu.getBeginn().equals(alt.getEnd()))) {
-                        if (alt.getEnd().equals(neu.getEnd())) {
-                            //7: der alte Urlaub wird übernommen
-                            stashUrlaube.remove(neu);
-                            aenderung = true;
-                        } else if (alt.getEnd().isAfter(neu.getEnd())) {
-                            //8: der alte Urlaub wird übernommen
-                            stashUrlaube.remove(neu);
-                            aenderung = true;
-                        } else if (alt.getEnd().isBefore(neu.getEnd())) {
-                            //9: Start vom alten und Ende vom neuen Urlaub
-                            stashUrlaube.remove(alt);
-                            stashUrlaube.remove(neu);
-                            stashUrlaube.add(new Urlaub(neu.getTag().toString(), alt.getBeginn().toString(), neu.getEnd().toString()));
-                            aenderung = true;
-                            break;
-                        }
-                    }
-                    //else: die alten und der neue Urlaub überschneiden sich nicht: beide sind gültig, nichts tun
-                }
-            }
-            zuPruefendeUrlaube = stashUrlaube;
-            stashUrlaube = new HashSet<>();
-        }
-        return zuPruefendeUrlaube;
-    }
 }

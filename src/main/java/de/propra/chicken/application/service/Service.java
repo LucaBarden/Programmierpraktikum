@@ -20,10 +20,26 @@ public class Service {
     private final KlausurRepository klausurRepo;
     private final StudentService studentService;
     private final KlausurService klausurService;
-
-    private static String BEGINN_PRAKTIKUM = "08:30";
-    private static String ENDE_PRAKTIKUM   = "12:30";
     private static final Logger logger = Logger.getLogger("de.propra.chicken.application.service.Service");
+
+    /*
+    in .env file:
+    STARTUHRZEIT_PRAKTIKUM=08:30
+    ENDUHRZEIT_PRAKTIKUM=12:30
+    STARTDATUM_PRAKTIKUM=2022-03-07
+    ENDDATUM_PRAKTIKUM=2022-03-25
+     */
+    /*
+    private static String BEGINN     = System.getenv("STARTUHRZEIT_PRAKTIKUM");
+    private static String ENDE       = System.getenv("ENDUHRZEIT_PRAKTIKUM");
+    private static String STARTDATUM = System.getenv("STARTDATUM_PRAKTIKUM");
+    private static String ENDDATUM   = System.getenv("ENDDATUM_PRAKTIKUM");
+    */
+
+    private static String BEGINN     = "08:30";
+    private static String ENDE       = "12:30";
+    private static String STARTDATUM = "2022-03-07";
+    private static String ENDDATUM   = "2022-03-25";
 
 
     static {
@@ -72,7 +88,7 @@ public class Service {
 
     private void validiereKlausur(Klausur klausur) throws Exception {
         validiereLsfIdInternet(klausur);
-        klausurService.validiereKlausur(klausur);
+        klausurService.validiereKlausur(klausur, BEGINN, ENDE, STARTDATUM, ENDDATUM);
     }
 
     private void validiereLsfIdInternet(Klausur klausur) throws Exception {
@@ -108,11 +124,11 @@ public class Service {
         try {
             Student student = studentRepo.findByID(githubID);
             Set<KlausurData> angemeldeteKlausuren = studentRepo.findAngemeldeteKlausuren(githubID);
-            Set<Urlaub> gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, angemeldeteKlausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
-            gueltigerUrlaub = studentService.ueberschneidendenUrlaubMergen(gueltigerUrlaub);
-
-            student.addUrlaube(gueltigerUrlaub);
-            System.out.println(student);
+            Set<Urlaub> gueltigerNeuerUrlaub = studentService.validiereUrlaub(student, urlaub, angemeldeteKlausuren, BEGINN, ENDE);
+            student.addUrlaube(gueltigerNeuerUrlaub);
+            gueltigerNeuerUrlaub = student.ueberschneidendenUrlaubMergen();
+            //System.out.println(student);
+            student.setUrlaube(gueltigerNeuerUrlaub);
             studentRepo.speicherStudent(student);
             logger.info(principal.getAttribute("login") + "(" + principal.getAttribute("id") + ") hat Urlaub eingetragen");
         } catch (Exception ex) {
