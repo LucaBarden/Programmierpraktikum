@@ -18,4 +18,5 @@ public interface CRUDKlausur extends CrudRepository<KlausurDTO, Long> {
 
 
 
+
 }

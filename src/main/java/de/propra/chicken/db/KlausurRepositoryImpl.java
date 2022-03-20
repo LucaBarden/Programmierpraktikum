@@ -5,6 +5,7 @@ import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.KlausurData;
 import de.propra.chicken.domain.model.KlausurRef;
 import de.propra.chicken.domain.dto.KlausurDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Repository
 public class KlausurRepositoryImpl implements KlausurRepository {
-
+    @Autowired
     private CRUDKlausur crudKlausur;
 
     public KlausurRepositoryImpl(CRUDKlausur crudKlausur) {

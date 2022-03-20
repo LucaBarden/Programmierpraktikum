@@ -40,10 +40,6 @@
         </tr>
         </tfoot>
     </table>
-    <h2 id="klausur">Klausuren</h2>
-    <p class="alert alert-warning">Sie sind für keine Klausuren
-        angemeldet.</p>
-
 
     <div class="text-center pt-5">
 
@@ -53,18 +49,39 @@
         <a th:href="@{/klausur}">
             <button class="btn btn-success mx-5 p-3">Klausur anmelden</button>
         </a>
-        <div class="container" th:if="${user}">
-            <form th:action="@{/logout}" method="get">
-                <button type="submit" class="btn btn-danger mx-5 p-3">Abmelden</button>
-            </form>
-        </div>
-        <div class="container" th:unless="${user}">
-            <form th:action="@{/login}" method="post">
-                <button type="submit" class="btn btn-secondary mx-5 p-3">Anmelden</button>
-            </form>
-        </div>
 
     </div>
+
+    <h2>Klausuren</h2>
+
+    <p>Sie sind für folgende Klausuren angemeldet:</p>
+    <table name="angemeldete_klausuren" class="table mb-5">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Veranstaltung und Klausurzeit</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="k : ${klausuren}">
+            <td></td>
+            <td th:text="${k.getKey().toString()}"></td>
+            <td></td>
+            <td th:if="${k.getValue()}">
+                <form method="post"
+                      th:action="@{/klausurStornieren}">
+                    <input type="hidden" th:name="ref" th:value="${k.getKey().getKlausurRef().getLsfID()}">
+                    <button class="btn btn-danger">Stornieren</button>
+                </form>
+            </td>
+        </tr>
+
+
+
+
+
     <script src="/js/bootstrap.bundle.js"></script>
 </div>
 

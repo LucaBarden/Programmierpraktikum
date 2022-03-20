@@ -6,16 +6,12 @@ import de.propra.chicken.domain.model.Student;
 import de.propra.chicken.domain.model.Urlaub;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 
 @Controller
@@ -29,10 +25,7 @@ public class WebController {
 
     @Secured("ROLE_USER")
     @GetMapping("/")
-    public String index(Model model, @AuthenticationPrincipal OAuth2User principal) {
-        model.addAttribute("user",
-                principal != null ? principal.getAttribute("login") : null
-        );
+    public String index(@AuthenticationPrincipal OAuth2User principal) {
         System.out.println(principal.getAttributes());
         return "redirect:/student";
     }
@@ -40,17 +33,27 @@ public class WebController {
     @Secured("ROLE_USER")
     @GetMapping("/student")
     public String student(Model model, @AuthenticationPrincipal OAuth2User principal) {
-        model.addAttribute("user",
-                principal != null ? principal.getAttribute("login") : null
-        );
         service.speicherStudent(new Student(Long.parseLong(principal.getAttribute("id").toString())));
+        Student student = null;
+        try {
+            student = service.findStudentByGithubID(Long.parseLong(principal.getAttribute("id").toString()));
+            System.out.println(student);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        model.addAttribute("student", student);
+        model.addAttribute("klausuren", service.ladeAngemeldeteKlausuren(student.getGithubID()));
+//        model.addAttribute("urlaube", student.getUrlaube());
+
+
         return "Student";
     }
 
     @Secured("ROLE_USER")
     @GetMapping("/urlaub")
     public String urlaub(Model model, @AuthenticationPrincipal OAuth2User principal) {
-        model.addAttribute("urlaub", new Urlaub(LocalDate.now().toString(), "08:30", "12:00"));
+        model.addAttribute("urlaub", new Urlaub(LocalDate.now().toString(), "08:30", "12:30"));
         service.speicherStudent(new Student(Long.parseLong(principal.getAttribute("id").toString())));
         return "Urlaub";
     }
@@ -98,26 +101,22 @@ public class WebController {
 
     @Secured("ROLE_USER")
     @PostMapping("/klausurAnmelden")
-    public String klausurAnmelden() {
+    public String klausurAnmelden(long id, @AuthenticationPrincipal OAuth2User principal) {
+        try {
+            service.klausurAnmeldung(id, principal);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return "redirect:/student";
     }
 
+    @Secured("ROLE_USER")
+    @PostMapping("/klausurStornieren")
+    public String klausurStornieren(@RequestParam("ref") long id, @AuthenticationPrincipal OAuth2User principal){
+        service.storniereKlausurAnmeldung(id, principal);
 
-    @RequestMapping("/user")
-    @ResponseBody
-    public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
-        return principal.getAttributes();
+        return "redirect:/student";
     }
-
-    @GetMapping("/tokeninfo")
-    @ResponseBody
-    public Map<String, Object> tokeninfo(@RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient authorizedClient) {
-        OAuth2AccessToken gitHubAccessToken = authorizedClient.getAccessToken();
-        return Map.of("token", gitHubAccessToken);
-    }
-
-    //TODO Am Ende die zwei Mappings wieder löschen
-    //TODO security ändern
 
     @Secured("ROLE_ORGA")
     @GetMapping("/orga")

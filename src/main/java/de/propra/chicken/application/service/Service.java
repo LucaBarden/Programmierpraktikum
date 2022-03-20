@@ -23,19 +23,13 @@ public class Service {
 
     private static String BEGINN_PRAKTIKUM = "08:30";
     private static String ENDE_PRAKTIKUM   = "12:30";
-
-    Logger logger = Logger.getLogger("de.propra.chicken.application.service.Service");
-    FileHandler fileHandler;
+    private static final Logger logger = Logger.getLogger("de.propra.chicken.application.service.Service");
 
 
-    public Service(StudentRepository studentRepo, KlausurRepository klausurRepo, StudentService studentService, KlausurService klausurService) {
-        this.studentRepo = studentRepo;
-        this.klausurRepo = klausurRepo;
-        this.studentService = studentService;
-        this.klausurService = klausurService;
-
+    static {
         try {
-            fileHandler = new FileHandler("./output.log");
+            FileHandler fileHandler;
+            fileHandler = new FileHandler("output.log", true);
             logger.addHandler(fileHandler);
             SimpleFormatter formatter = new SimpleFormatter();
             fileHandler.setFormatter(formatter);
@@ -44,7 +38,16 @@ public class Service {
         }
     }
 
-    public void klausurAnmelden(Klausur klausur, long githubID, OAuth2User principal) throws Exception {
+    public Service(StudentRepository studentRepo, KlausurRepository klausurRepo, StudentService studentService, KlausurService klausurService) {
+        this.studentRepo = studentRepo;
+        this.klausurRepo = klausurRepo;
+        this.studentService = studentService;
+        this.klausurService = klausurService;
+
+
+    }
+
+    private void klausurAnmelden(Klausur klausur, long githubID, OAuth2User principal) throws Exception {
         //student.setKlausuren(studentRepo.getKlausurenVonStudent(student));
         Student student = studentRepo.findByID(githubID);
         try {
@@ -56,7 +59,7 @@ public class Service {
             KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
             student.addKlausur(klausurRef);
             studentRepo.speicherStudent(student);
-            logger.info(principal.getAttribute("login") + "hat sich zur Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " angemeldet");
+            logger.info(principal.getAttribute("login") + " hat sich zur Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " angemeldet");
         } catch (Exception ex) {
             throw ex;
         }
@@ -65,16 +68,6 @@ public class Service {
     public void saveKlausur(Klausur klausur, OAuth2User principal) throws Exception {
         speicherKlausur(klausur);
         logger.info(principal.getAttribute("login") + "(" + principal.getAttribute("id") + ") " + "hat die Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " erstellt");
-    }
-
-    public void speicherKlausur(Klausur klausur) throws Exception {
-        try {
-            validiereKlausur(klausur);
-            klausurRepo.speicherKlausur(klausur);
-        } catch (Exception ex) {
-            throw ex;
-        }
-
     }
 
     private void validiereKlausur(Klausur klausur) throws Exception {
@@ -119,6 +112,7 @@ public class Service {
             gueltigerUrlaub = studentService.ueberschneidendenUrlaubMergen(gueltigerUrlaub);
 
             student.addUrlaube(gueltigerUrlaub);
+            System.out.println(student);
             studentRepo.speicherStudent(student);
             logger.info(principal.getAttribute("login") + "(" + principal.getAttribute("id") + ") hat Urlaub eingetragen");
         } catch (Exception ex) {
@@ -126,4 +120,25 @@ public class Service {
         }
     }
 
+    public void speicherKlausur(Klausur klausur) throws Exception {
+        try {
+            validiereKlausur(klausur);
+            klausurRepo.speicherKlausur(klausur);
+        } catch (Exception ex) {
+            throw ex;
+        }
+
+    }
+    public void klausurAnmeldung(long id, OAuth2User principal) throws Exception {
+        Klausur klausur = klausurRepo.findeKlausurByID(id);
+        klausurAnmelden(klausur, Long.parseLong(principal.getAttribute("id").toString()), principal);
+    }
+    public Student findStudentByGithubID(long id) throws Exception {
+        return studentRepo.findByID(id);
+    }
+
+    public void storniereKlausurAnmeldung(long id, OAuth2User principal) {
+        Klausur klausur = klausurRepo.findeKlausurByID(id);
+        logger.info(principal.getAttribute("login").toString() + " hat die Klausur " + klausur + " und damit auch möglichen verbundenen Urlaub an dem Tag storniert");
+    }
 }
