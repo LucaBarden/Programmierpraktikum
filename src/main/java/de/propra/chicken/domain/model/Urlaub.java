@@ -34,13 +34,6 @@ public class Urlaub {
         return end;
     }
 
-    public void setBeginn(LocalTime beginn) {
-        this.beginn = beginn;
-    }
-
-    public void setEnd(LocalTime end) {
-        this.end = end;
-    }
 
     @Override
     public boolean equals(Object o) {
