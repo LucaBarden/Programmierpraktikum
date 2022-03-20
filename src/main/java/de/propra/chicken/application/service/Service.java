@@ -5,6 +5,7 @@ import de.propra.chicken.domain.model.*;
 import de.propra.chicken.application.service.repo.StudentRepository;
 import de.propra.chicken.domain.service.StudentService;
 import de.propra.chicken.domain.service.KlausurService;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.jsoup.Jsoup;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.io.IOException;
@@ -22,11 +23,13 @@ public class Service {
     private final KlausurService klausurService;
     private static final Logger logger = Logger.getLogger("de.propra.chicken.application.service.Service");
 
+    private static final Dotenv dotenv = Dotenv.load();
 
-    private static String BEGINN     = System.getenv("STARTUHRZEIT_PRAKTIKUM");
-    private static String ENDE       = System.getenv("ENDUHRZEIT_PRAKTIKUM");
-    private static String STARTDATUM = System.getenv("STARTDATUM_PRAKTIKUM");
-    private static String ENDDATUM   = System.getenv("ENDDATUM_PRAKTIKUM");
+
+    private static String BEGINN     = dotenv.get("STARTUHRZEIT_PRAKTIKUM");
+    private static String ENDE       = dotenv.get("ENDUHRZEIT_PRAKTIKUM");
+    private static String STARTDATUM = dotenv.get("STARTDATUM_PRAKTIKUM");
+    private static String ENDDATUM   = dotenv.get("ENDDATUM_PRAKTIKUM");
 
 
 
