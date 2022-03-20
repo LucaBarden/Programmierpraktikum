@@ -1,3 +1,4 @@
+
 package de.propra.chicken.domain.service;
 
 import de.propra.chicken.domain.model.*;
@@ -22,14 +23,12 @@ public class StudentServiceTests {
     public void test1() {
         //arrange
         Student student = new Student(123456);
-        KlausurData klausur = new KlausurData(LocalDate.now().plusDays(2), LocalTime.of(10,0,0), LocalTime.of(11,30,0), false);
+        Klausur klausur = new Klausur("RA", 44445, false, LocalDate.now().plusDays(2).toString(), LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
         KlausurRef klausurRef = new KlausurRef(44445);
         StudentService studentService = new StudentService();
-        Set<KlausurData> angemeldeteKlausuren = Set.of(klausur);
-        Set<KlausurRef> angemeldeteKlausurRefs = Set.of(klausurRef);
         student.addKlausur(klausurRef);
 
-        Exception thrown =assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausurRef, klausur, angemeldeteKlausuren, student, angemeldeteKlausurRefs));
+        Exception thrown =assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausur, student, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
         assertThat(thrown.getMessage()).isEqualTo("Du bist bereits bei der Klausur angemeldet");
     }
 
@@ -39,7 +38,7 @@ public class StudentServiceTests {
         //arrange
         Student student = new Student(123456);
         KlausurData klausur = new KlausurData( LocalDate.now().plusDays(2), LocalTime.of(10,0,0), LocalTime.of(11,30,0),false);
-        KlausurData klausur2 = new KlausurData( LocalDate.now().plusDays(2), LocalTime.of(10,0,0), LocalTime.of(11,30,0), false);
+        Klausur klausur2 = new Klausur("RA", 54654, false, LocalDate.now().plusDays(2).toString(), LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
         KlausurRef klausurRef = new KlausurRef(44445);
         KlausurRef klausurRef2 = new KlausurRef(54654);
 
@@ -48,7 +47,7 @@ public class StudentServiceTests {
         Set<KlausurRef> angemeldeteKlausurenRef = Set.of(klausurRef);
         student.addKlausur(klausurRef);
 
-        assertDoesNotThrow(() -> studentService.validiereKlausurAnmeldung(klausurRef2, klausur2, angemeldeteKlausuren, student,angemeldeteKlausurenRef));
+        assertDoesNotThrow(() -> studentService.validiereKlausurAnmeldung(klausur2,student,BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
     }
 
     @Test
@@ -61,7 +60,7 @@ public class StudentServiceTests {
         KlausurData klausurData = klausur.getKlausurData();
         StudentService studentService = new StudentService();
 
-        Exception thrown = assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausurRef, klausurData, new HashSet<>(), student, new HashSet<>() ));
+        Exception thrown = assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausur, student, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM ));
         assertThat(thrown.getMessage()).isEqualTo("Klausur findet heute statt. Anmeldung nicht mehr moeglich");
     }
 
@@ -397,6 +396,135 @@ public class StudentServiceTests {
         System.out.println(gueltigerUrlaub);
         assertThat(gueltigerUrlaub.size()).isEqualTo(1);
         assertThat(gueltigerUrlaub).contains(urlaub1);
+    }
+
+    @Test
+    @DisplayName("bereits für einen Urlaub angemeldet, der sich mit neu zu anmeldender Klausur überschneidet, also wird Teil des Urlaubs zurückgeben")
+    void klasusurAnmeldungTest() throws Exception {
+        StudentService studentService = new StudentService();
+        Student student = new Student(234);
+        Set<Urlaub> urlaube = new HashSet<>();
+        Urlaub urlaub1 = new Urlaub("2022-10-10", "08:30", "12:30");
+        urlaube.add(urlaub1);
+        student.setUrlaube(urlaube);
+        KlausurRef lsfID = new KlausurRef(12345);
+        Klausur klausur = new Klausur("RA", 12345, false, "2022-10-10", "08:30", "10:00");
+        Urlaub uebrigerUrlaub = new Urlaub("2022-10-10", "10:30", "12:30");
+
+        Set<Urlaub> gueltigerUrlaub = studentService.validiereKlausurAnmeldung(klausur, student,  BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
+
+        assertThat(gueltigerUrlaub).hasSize(1);
+        assertThat(gueltigerUrlaub).contains(uebrigerUrlaub);
+
+    }
+
+    @Test
+    @DisplayName("bereits angemeldeter Urlaub wird gelöscht, nachdem man sich für eine Klausur angemeldet hat, die sich mit Urlaub überschneidet")
+    void klausurAnmeldungTest1() throws Exception{
+        StudentService studentService = new StudentService();
+        Student student = new Student(234);
+        Set<Urlaub> urlaube = new HashSet<>();
+        Urlaub urlaub1 = new Urlaub("2022-10-10", "08:30", "10:30");
+        urlaube.add(urlaub1);
+        student.setUrlaube(urlaube);
+        Klausur klausur= new Klausur("RA", 12345, true, "2022-10-10", "08:30", "10:00");
+
+        Set<Urlaub> gueltigerUrlaub = studentService.validiereKlausurAnmeldung(klausur, student,BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
+
+        assertThat(gueltigerUrlaub).hasSize(0);
+
+    }
+
+
+    @Test
+    @DisplayName("bereits für zwei Urlaube angemeldet,  nachdem man sich für eine Klausur angemeldet hat, werden beide gekürzt")
+    void klausurAnmeldungTest2() throws Exception {
+        StudentService studentService = new StudentService();
+        Student student = new Student(234);
+        Set<Urlaub> urlaube = new HashSet<>();
+        Urlaub urlaub1 = new Urlaub("2022-10-10", "08:30", "09:30");
+        urlaube.add(urlaub1);
+        Urlaub urlaub2 = new Urlaub("2022-10-10", "11:00", "12:30");
+        urlaube.add(urlaub2);
+        student.setUrlaube(urlaube);
+        Klausur klausur= new Klausur("RA",12345, false, "2022-10-10", "09:30", "11:00");
+        Urlaub result = new Urlaub("2022-10-10", "08:30", "09:00");
+        Urlaub result2 = new Urlaub("2022-10-10", "11:30", "12:30");
+
+        Set<Urlaub> gueltigeUrlaube = studentService.validiereKlausurAnmeldung(klausur, student, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
+
+        assertThat(gueltigeUrlaube).hasSize(2);
+        assertThat(gueltigeUrlaube).contains(result, result2);
+
+
+    }
+
+    @Test
+    @DisplayName("bereits für zwei Urlaube angemeldet,  nachdem man sich für eine Klausur angemeldet hat, wird einer gelöscht und der andere gekürzt")
+    void klausurAnmeldungTest3() throws Exception {
+        StudentService studentService = new StudentService();
+        Student student = new Student(234);
+        Set<Urlaub> urlaube = new HashSet<>();
+        Urlaub urlaub1 = new Urlaub("2022-10-10", "08:30", "09:30");
+        urlaube.add(urlaub1);
+        Urlaub urlaub2 = new Urlaub("2022-10-10", "11:00", "12:30");
+        urlaube.add(urlaub2);
+        student.setUrlaube(urlaube);
+        Klausur klausur = new Klausur("RA",12345,true,"2022-10-10", "11:00", "12:00");
+        Urlaub result = new Urlaub("2022-10-10", "08:30", "09:00");
+
+        Set<Urlaub> gueltigeUrlaube = studentService.validiereKlausurAnmeldung(klausur, student,  BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
+
+        assertThat(gueltigeUrlaube).hasSize(1);
+        assertThat(gueltigeUrlaube).contains(result);
+
+
+    }
+
+
+    @Test
+    @DisplayName("bereits für zwei Urlaube angemeldet,  nachdem man sich für eine Klausur angemeldet hat, werden beide gelöscht")
+    void klausurAnmeldungTest4() throws Exception {
+        StudentService studentService = new StudentService();
+        Student student = new Student(234);
+        Set<Urlaub> urlaube = new HashSet<>();
+        Urlaub urlaub1 = new Urlaub("2022-10-10", "08:30", "09:30");
+        urlaube.add(urlaub1);
+        Urlaub urlaub2 = new Urlaub("2022-10-10", "11:00", "12:30");
+        urlaube.add(urlaub2);
+        student.setUrlaube(urlaube);
+        KlausurRef lsfID = new KlausurRef(12345);
+        Klausur klausur = new Klausur("RA",12345, true,"2022-10-10","10:30", "12:00");
+
+        Set<Urlaub> gueltigeUrlaube = studentService.validiereKlausurAnmeldung(klausur ,student,  BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
+
+        assertThat(gueltigeUrlaube).hasSize(0);
+
+
+    }
+    @Test
+    @DisplayName("bereits für zwei Urlaube und eine Klausur angemeldet,  nachdem man sich für eine Klausur angemeldet hat, wird Urlaub gelöscht und einer gekürzt")
+    void klausurAnmeldungTest5() throws Exception {
+        StudentService studentService = new StudentService();
+        Student student = new Student(234);
+        Set<Urlaub> urlaube = new HashSet<>();
+        Urlaub urlaub1 = new Urlaub("2022-10-10", "08:30", "09:00");
+        urlaube.add(urlaub1);
+        Urlaub urlaub2 = new Urlaub("2022-10-10", "11:00", "12:30");
+        urlaube.add(urlaub2);
+        student.setUrlaube(urlaube);
+        Set<KlausurRef> bereitsAngemeldeteKlausuren = Set.of(new KlausurRef(6789));
+        Set<KlausurData> angemeldeteKlausurenData = Set.of(new KlausurData(LocalDate.of(2022, 10, 10), LocalTime.of(9,30), LocalTime.of(10,30),false));
+        KlausurRef lsfID = new KlausurRef(12345);
+        Klausur klausur = new Klausur("RA", 12345,true,"2022-10-10", "11:00", "12:00");
+        Urlaub result = new Urlaub("2022-10-10", "08:30", "09:00");
+
+        Set<Urlaub> gueltigeUrlaube = studentService.validiereKlausurAnmeldung(klausur ,student, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
+
+        assertThat(gueltigeUrlaube).hasSize(1);
+        assertThat(gueltigeUrlaube).contains(result);
+
+
     }
 
 }

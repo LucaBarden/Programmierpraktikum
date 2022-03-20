@@ -68,10 +68,10 @@ public class Service {
         Student student = studentRepo.findByID(githubID);
         try {
             Set<KlausurRef> angemeldeteKlausurenRefs = studentRepo.getAngemeldeteKlausurenIds(student.getGithubID());
-            Set<KlausurData> angemeldeteKlausuren = klausurRepo.getKlausurenDataByRefs(angemeldeteKlausurenRefs);
-            Set<Urlaub> zuErstattendeUrlaube = studentService.validiereKlausurAnmeldung(new KlausurRef(klausur.getLsfid()), new KlausurData(klausur.getDatum(), klausur.getBeginn(), klausur.getEnd(), klausur.isPraesenz()),
-                    angemeldeteKlausuren, student, angemeldeteKlausurenRefs);
+            Set<Urlaub> gueltigeUrlaubeFuerTag = studentService.validiereKlausurAnmeldung(klausur, student, BEGINN, ENDE);
             //student = studentService.erstatteUrlaube(zuErstattendeUrlaube);
+         //   student.aendereUrlaube(Set<Urlaub> gueltigeUrlaubeFuerTag);
+            student.aendereUrlaube(gueltigeUrlaubeFuerTag, klausur.getDatum());
             KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
             student.addKlausur(klausurRef);
             studentRepo.speicherStudent(student);

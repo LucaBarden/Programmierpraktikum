@@ -4,6 +4,7 @@ import de.propra.chicken.db.dto.StudentDTO;
 import de.propra.chicken.db.dto.UrlaubDTO;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -48,6 +49,17 @@ public class Student {
         return resturlaub;
     }
 
+    public void aendereUrlaube(Set<Urlaub> gueltigeUrlaube, LocalDate datum){
+        Set <Urlaub> selberTagUrlaub = urlaubSelberTag(datum);
+        for(Urlaub u: urlaube){
+            if(u.getTag().compareTo(datum) == 0){
+                urlaube.remove(u);
+            }
+        }
+        urlaube.addAll(gueltigeUrlaube);
+
+    }
+
     public void setResturlaub(int resturlaub) {
         this.resturlaub = resturlaub;
     }
@@ -69,10 +81,10 @@ public class Student {
     }
 
 
-    public Set<Urlaub> urlaubSelberTag(Urlaub urlaub) {
+    public Set<Urlaub> urlaubSelberTag(LocalDate datum) {
         Set<Urlaub> uSelberTag = new HashSet<>();
         for (Urlaub tmpUrlaub : urlaube) {
-            if (tmpUrlaub.getTag().compareTo(urlaub.getTag()) == 0) {
+            if (tmpUrlaub.getTag().compareTo(datum) == 0) {
                 uSelberTag.add(tmpUrlaub);
             }
         }
