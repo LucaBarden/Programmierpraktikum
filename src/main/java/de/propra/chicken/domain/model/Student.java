@@ -44,6 +44,10 @@ public class Student {
         return klausuren;
     }
 
+    public int getResturlaub() {
+        return resturlaub;
+    }
+
     public void setResturlaub(int resturlaub) {
         this.resturlaub = resturlaub;
     }
@@ -75,30 +79,42 @@ public class Student {
         return uSelberTag;
     }
 
-    public void checkAufGrundregeln(Urlaub urlaub, String beginn, String ende) throws Exception {
-        //Fehler: Startzeit ist nach Endzeit
-        if(urlaub.getBeginn().isAfter(urlaub.getEnd())) {
-            throw new Exception("Die Startzeit kann nicht nach der Endzeit liegen");
-        }
-        //Fehler: Startzeit und Endzeit sind gleich
-        if(urlaub.getBeginn().equals(urlaub.getEnd())) {
-            throw new Exception("Die Startzeit und Endzeit sind gleich!!");
-        }
-        //Fehler: keine ganzen Viertelstunden & Startzeiten 00, 15, 30, 45
-        if (!(urlaub.getBeginn().getMinute() % 15 == 0) || !(urlaub.getEnd().getMinute() % 15 == 0)) {
-            throw new Exception("Die Start- und Endzeit muss ein Vielfaches von 15 Minuten sein");
-        }
-        //Fehler: Resturlaub < Urlaubszeit
-        if (this.resturlaub < Duration.between(urlaub.getBeginn(), urlaub.getEnd()).toMinutes()) {
-            throw new Exception("Es ist zu wenig Resturlaub übrig");
-        }
-        if(urlaub.getBeginn().isBefore(LocalTime.parse(beginn)) || urlaub.getEnd().isAfter(LocalTime.parse(ende))) {
-            throw new Exception("Der Urlaub muss im Praktikumszeitraum liegen");
-        }
-    }
-
     public StudentDTO getDto() {
         return new StudentDTO(this.githubID, this.resturlaub, this.urlaube.stream().map(u -> new UrlaubDTO(u.getTag().toString(), u.getBeginn().toString(), u.getEnd().toString())).collect(Collectors.toSet()), this.klausuren);
     }
 
+    public Set<Urlaub> ueberschneidendenUrlaubMergen() {
+        if (urlaube.size() == 0) return urlaube;
+
+        Set<Urlaub> zuPruefendeUrlaube = new HashSet<>();
+        zuPruefendeUrlaube.addAll(urlaube);
+        Set<Urlaub> stashUrlaube = new HashSet<>();
+        boolean aenderung = true;
+
+        while (aenderung) {
+            aenderung = false;
+            for (Urlaub neu : zuPruefendeUrlaube) {
+                if (aenderung) break;
+                stashUrlaube.addAll(zuPruefendeUrlaube);
+                for (Urlaub alt : zuPruefendeUrlaube) {
+                    if (alt.getBeginn().equals(neu.getEnd())) {
+                        stashUrlaube.remove(alt);
+                        stashUrlaube.remove(neu);
+                        stashUrlaube.add(new Urlaub(neu.getTag().toString(), neu.getBeginn().toString(), alt.getEnd().toString()));
+                        aenderung = true;
+                        break;
+                    } else if (neu.getBeginn().equals(alt.getEnd())) {
+                        stashUrlaube.remove(alt);
+                        stashUrlaube.remove(neu);
+                        stashUrlaube.add(new Urlaub(neu.getTag().toString(), alt.getBeginn().toString(), neu.getEnd().toString()));
+                        aenderung = true;
+                        break;
+                    }
+                }
+                zuPruefendeUrlaube = stashUrlaube;
+                stashUrlaube = new HashSet<>();
+            }
+        }
+        return zuPruefendeUrlaube;
+    }
 }
