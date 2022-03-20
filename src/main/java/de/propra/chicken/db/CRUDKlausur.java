@@ -1,6 +1,6 @@
 package de.propra.chicken.db;
 
-import de.propra.chicken.domain.dto.KlausurDTO;
+import de.propra.chicken.db.dto.KlausurDTO;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

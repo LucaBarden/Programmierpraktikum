@@ -1,4 +1,4 @@
-package de.propra.chicken.domain.dto;
+package de.propra.chicken.db.dto;
 
 
 import org.springframework.data.annotation.Id;

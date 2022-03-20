@@ -1,7 +1,6 @@
-package de.propra.chicken.domain.dto;
+package de.propra.chicken.db.dto;
 
 import de.propra.chicken.domain.model.Urlaub;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDate;

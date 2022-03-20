@@ -1,11 +1,13 @@
 package de.propra.chicken.db;
 
 import de.propra.chicken.application.service.repo.StudentRepository;
+import de.propra.chicken.db.dto.UrlaubDTO;
 import de.propra.chicken.domain.model.*;
-import de.propra.chicken.domain.dto.StudentDTO;
+import de.propra.chicken.db.dto.StudentDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
 public class StudentRepositoryImpl implements StudentRepository {
@@ -28,7 +30,7 @@ public class StudentRepositoryImpl implements StudentRepository {
     //Works
     @Override
     public Student speicherStudent(Student student) {
-        StudentDTO dto = student.getDto();
+        StudentDTO dto = getDto(student);
         if(crudStudent.existsById(student.getGithubID())) {
             dto.setIsNew(false);
         }
@@ -63,6 +65,11 @@ public class StudentRepositoryImpl implements StudentRepository {
         student.setUrlaube(dto.getUrlaube());
         student.setKlausuren(refs);
         return student;
+    }
+
+
+    public StudentDTO getDto(Student student) {
+        return new StudentDTO(student.getGithubID(), student.getResturlaub(), student.getUrlaube().stream().map(u -> new UrlaubDTO(u.getTag().toString(), u.getBeginn().toString(), u.getEnd().toString())).collect(Collectors.toSet()), student.getKlausuren());
     }
 
 

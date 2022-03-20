@@ -2,8 +2,7 @@ package de.propra.chicken.db;
 
 import de.propra.chicken.domain.model.KlausurData;
 import de.propra.chicken.domain.model.KlausurRef;
-import de.propra.chicken.domain.model.Urlaub;
-import de.propra.chicken.domain.dto.StudentDTO;
+import de.propra.chicken.db.dto.StudentDTO;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
