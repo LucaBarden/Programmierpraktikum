@@ -133,4 +133,13 @@ public class Student {
         }
         return zuPruefendeUrlaube;
     }
+
+    public void zieheUrlaubsdauerAb(Set<Urlaub> gueltigerNeuerUrlaub) {
+        int abzuziehen = 0;
+        for(Urlaub urlaub : gueltigerNeuerUrlaub) {
+            abzuziehen += urlaub.duration();
+        }
+        this.resturlaub = resturlaub - abzuziehen;
+    }
+
 }

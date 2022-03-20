@@ -31,7 +31,7 @@ public class ServiceTest {
         KlausurService klausurService = new KlausurService();
         StudentService studentService = mock(StudentService.class);
         Service service = new Service(studentRepo, klausurRepo,studentService, klausurService);
-        doNothing().when(klausurRepo).speicherKlausur(any());
+        when(klausurRepo.speicherKlausur(any())).thenReturn(null);
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             service.speicherKlausur(new Klausur("Test", 123, false, LocalDate.now().toString(), LocalTime.now().toString(), LocalTime.now().plusHours(1).toString()));
@@ -47,10 +47,10 @@ public class ServiceTest {
         KlausurService klausurService = new KlausurService();
         StudentService studentService = mock(StudentService.class);
         Service service = new Service(studentRepo, klausurRepo, studentService, klausurService);
-        doNothing().when(klausurRepo).speicherKlausur(any());
+        when(klausurRepo.speicherKlausur(any())).thenReturn(null);
 
         assertDoesNotThrow(() ->
-            service.speicherKlausur(new Klausur("Test", 225282, false, LocalDate.now().toString(), LocalTime.now().toString(), LocalTime.now().plusHours(1).toString())));
+            service.speicherKlausur(new Klausur("Test", 225282, false, LocalDate.now().plusDays(2).toString(), LocalTime.now().toString(), LocalTime.now().plusHours(1).toString())));
     }
 
     @Test

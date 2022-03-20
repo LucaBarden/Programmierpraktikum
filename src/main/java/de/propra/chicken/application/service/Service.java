@@ -126,8 +126,8 @@ public class Service {
             Set<KlausurData> angemeldeteKlausuren = studentRepo.findAngemeldeteKlausuren(githubID);
             Set<Urlaub> gueltigerNeuerUrlaub = studentService.validiereUrlaub(student, urlaub, angemeldeteKlausuren, BEGINN, ENDE);
             student.addUrlaube(gueltigerNeuerUrlaub);
+            student.zieheUrlaubsdauerAb(gueltigerNeuerUrlaub);
             gueltigerNeuerUrlaub = student.ueberschneidendenUrlaubMergen();
-            //System.out.println(student);
             student.setUrlaube(gueltigerNeuerUrlaub);
             studentRepo.speicherStudent(student);
             logger.info(principal.getAttribute("login") + "(" + principal.getAttribute("id") + ") hat Urlaub eingetragen");
