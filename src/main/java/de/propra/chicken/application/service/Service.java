@@ -88,7 +88,7 @@ public class Service {
 
     private void validiereKlausur(Klausur klausur) throws Exception {
         validiereLsfIdInternet(klausur);
-        klausurService.validiereKlausur(klausur, BEGINN, ENDE, STARTDATUM, ENDDATUM);
+        klausurService.validiereKlausur(klausur);
     }
 
     private void validiereLsfIdInternet(Klausur klausur) throws Exception {

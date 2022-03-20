@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class KlausurServiceTests {
 
@@ -71,19 +72,25 @@ public class KlausurServiceTests {
     }
 
     @Test
-    @Disabled
-    @DisplayName("Klausurvalidierung: ")
-    void klausurValidierung() {
+    @DisplayName("Klausurvalidierung: Start nach Ende")
+    void klausurValidierungStartNachEnde() {
         KlausurService klausurService = new KlausurService();
-        Klausur klausur = new Klausur("RA", 1234, true, "1000-11-12", "11:00", "12:00");
-        String beginn     = "";
-        String ende       = "";
-        String startdatum = "";
-        String enddatum   = "";
+        Klausur klausur = new Klausur("RA", 1234, true, "1000-11-12", "11:00", "10:00");
 
-        //klausurService.validiereKlausur(klausur, beginn, ende, startdatum, enddatum);
+        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur));
 
-        //assertThat
+        assertThat(thrown.getMessage()).isEqualTo("Die Startzeit kann nicht nach der Endzeit liegen");
+    }
+
+    @Test
+    @DisplayName("Klausurvalidierung: Start gleich Ende")
+    void klausurValidierungStartGleichEnde() {
+        KlausurService klausurService = new KlausurService();
+        Klausur klausur = new Klausur("RA", 1234, true, "1000-11-12", "11:00", "11:00");
+
+        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur));
+
+        assertThat(thrown.getMessage()).isEqualTo("Die Startzeit und Endzeit sind gleich!!");
     }
 
 }
