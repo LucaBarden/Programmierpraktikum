@@ -1,4 +1,4 @@
-package de.propra.chicken;
+package de.propra.chicken.db;
 
 import de.propra.chicken.db.CRUDKlausur;
 import de.propra.chicken.db.CRUDStudent;
@@ -26,7 +26,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @JdbcTest
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {CRUDStudent.class, CRUDKlausur.class})
+@ContextConfiguration(classes = {CRUDKlausur.class, CRUDKlausur.class})
 @TestPropertySource(locations = {"classpath:testEnv"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class KlausurRepositoryImplTest {

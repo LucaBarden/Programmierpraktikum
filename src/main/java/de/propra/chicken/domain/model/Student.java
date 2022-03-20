@@ -1,7 +1,7 @@
 package de.propra.chicken.domain.model;
 
-import de.propra.chicken.domain.dto.StudentDTO;
-import de.propra.chicken.domain.dto.UrlaubDTO;
+import de.propra.chicken.db.dto.StudentDTO;
+import de.propra.chicken.db.dto.UrlaubDTO;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -79,8 +79,8 @@ public class Student {
         return uSelberTag;
     }
 
-    public StudentDTO getDto() {
-        return new StudentDTO(this.githubID, this.resturlaub, this.urlaube.stream().map(u -> new UrlaubDTO(u.getTag().toString(), u.getBeginn().toString(), u.getEnd().toString())).collect(Collectors.toSet()), this.klausuren);
+    public Set<Urlaub> getUrlaube() {
+        return urlaube;
     }
 
     public Set<Urlaub> ueberschneidendenUrlaubMergen() {
