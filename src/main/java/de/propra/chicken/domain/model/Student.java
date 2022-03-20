@@ -40,6 +40,10 @@ public class Student {
         return githubID;
     }
 
+    public Set<KlausurRef> getKlausuren() {
+        return klausuren;
+    }
+
     public void setResturlaub(int resturlaub) {
         this.resturlaub = resturlaub;
     }
