@@ -178,7 +178,7 @@ public class StudentService {
             throw new Exception("Der bereits gebuchte Urlaub ist weder am Anfang noch am Ende des Tages");
         }
     }
-    
+
 
 
     private Set<Urlaub> berechneGueltigeUrlaube(Set<Urlaub> urlaub, Set<Urlaub> zuErstattenderUrlaube) throws InterruptedException {

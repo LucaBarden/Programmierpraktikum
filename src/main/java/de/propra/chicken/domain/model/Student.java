@@ -50,14 +50,21 @@ public class Student {
     }
 
     public void aendereUrlaube(Set<Urlaub> gueltigeUrlaube, LocalDate datum){
-        Set <Urlaub> selberTagUrlaub = urlaubSelberTag(datum);
         for(Urlaub u: urlaube){
             if(u.getTag().compareTo(datum) == 0){
                 urlaube.remove(u);
+                erstatteUrlaubsdauer(u);
             }
         }
         urlaube.addAll(gueltigeUrlaube);
 
+    }
+
+    public void erstatteUrlaubsdauer(Urlaub veralteterUrlaub) {
+        int erstatten = 0;
+        erstatten += veralteterUrlaub.duration();
+
+        this.resturlaub = resturlaub + erstatten;
     }
 
     public long  summeAllerUrlaube(){
