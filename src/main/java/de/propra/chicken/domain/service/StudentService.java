@@ -13,7 +13,6 @@ import java.util.Set;
 @Service
 public class StudentService {
 
-
     public Set<Urlaub> validiereKlausurAnmeldung(Klausur klausur,  Student student,String beginn, String ende ) throws Exception {
 
         //TODO: urlaube erstatten (wenn überlappt)
@@ -86,7 +85,9 @@ public class StudentService {
         if(urlaub.getBeginn().isBefore(LocalTime.parse(beginn)) || urlaub.getEnd().isAfter(LocalTime.parse(ende))) {
             throw new Exception("Der Urlaub muss im Praktikumszeitraum liegen");
         }
-
+        if(urlaub.getTag().isBefore(LocalDate.now().plusDays(1))) {
+            throw new Exception("Man kann Urlaub spätestens einen Tag vorher buchen.");
+        }
     }
 
     private Set<KlausurData> klausurSelberTag(Urlaub urlaub, Set<KlausurData> klausuren) {
@@ -99,7 +100,6 @@ public class StudentService {
         return kSelberTag;
     }
 
-
     private void klausurenAmSelbenTag(Set<Urlaub> zuErstattenderUrlaube, Set<KlausurData> klausurSelberTag, String beginn, String ende) {
         for(KlausurData k : klausurSelberTag) {
             String klausurTag            = k.tag().toString();
@@ -107,34 +107,36 @@ public class StudentService {
             LocalTime endZeitKlausur     = k.bis();
 
             if(k.isPraesenz()) {
-                //puffer ist die Zeit in Minuten, die man vor und nach einer Klausur freigestellt wird
-                int puffer = 120; //bei einer Präsenzklausur wird man je 2 Stunden = 120 Min. vorher und nachher freigestellt
-                erstattungsZeiten(zuErstattenderUrlaube, klausurTag, anfangsZeitKlausur, endZeitKlausur, puffer, beginn, ende);
-            } else { // nicht in Präsenz
-                int puffer = 30; //bei einer Onlineklausur wird man je 30 Min vorher und nachher freigestellt
-                erstattungsZeiten(zuErstattenderUrlaube, klausurTag, anfangsZeitKlausur, endZeitKlausur, puffer, beginn, ende);
+                int pufferBefore = 120;
+                int pufferAfter  = 120;
+                erstattungsZeiten(zuErstattenderUrlaube, klausurTag, anfangsZeitKlausur, endZeitKlausur, pufferBefore, pufferAfter, beginn, ende);
+
+            } else {
+                int pufferBefore = 30;
+                int pufferAfter  = 0;
+                erstattungsZeiten(zuErstattenderUrlaube, klausurTag, anfangsZeitKlausur, endZeitKlausur, pufferBefore, pufferAfter, beginn, ende);
             }
         }
     }
 
-    private void erstattungsZeiten(Set<Urlaub> zuErstattendeZeiten, String klausurTag, LocalTime anfangsZeitDerKlausur, LocalTime endZeitDerKlausur, int puffer, String beginn, String ende) {
+    private void erstattungsZeiten(Set<Urlaub> zuErstattendeZeiten, String klausurTag, LocalTime anfangsZeitDerKlausur, LocalTime endZeitDerKlausur, int pufferBefore, int pufferAfter, String beginn, String ende) {
         //die Klausur fängt vor (Praktikumsbeginn + puffer) an: Urlaub wird ab Praktikumsbeginn erstattet
-        if (anfangsZeitDerKlausur.isBefore(LocalTime.parse(beginn).plusMinutes(puffer))) {
+        if (anfangsZeitDerKlausur.isBefore(LocalTime.parse(beginn).plusMinutes(pufferBefore))) {
             //die Klausur endet nach (Praktikumsende - puffer): Urlaub wird bis Praktikumsende erstattet
-            if (endZeitDerKlausur.isAfter(LocalTime.parse(ende).minusMinutes(puffer))) {
+            if (endZeitDerKlausur.isAfter(LocalTime.parse(ende).minusMinutes(pufferAfter))) {
                 zuErstattendeZeiten.add(new Urlaub(klausurTag, beginn, ende));
-            //die Klausur endet vor (Praktikumsende - puffer): Urlaub wird ab (Klausurende + puffer) erstattet
+            //die Klausur endet vor (Praktikumsende - puffer): Urlaub wird bis (Klausurende + puffer) erstattet
             } else {
-                zuErstattendeZeiten.add(new Urlaub(klausurTag, beginn, endZeitDerKlausur.plusMinutes(puffer).toString()));
+                zuErstattendeZeiten.add(new Urlaub(klausurTag, beginn, endZeitDerKlausur.plusMinutes(pufferAfter).toString()));
             }
         //die Klausur fängt nach (Praktikumsbeginn + puffer) an: Urlaub wird ab (Klausurbeginn - puffer) erstattet
-        } else { // nach 9 Beginn
+        } else {
             //die Klausur endet nach (Praktikumsende - puffer): Urlaub wird bis Praktikumsende erstattet
-            if (endZeitDerKlausur.isAfter(LocalTime.parse(ende).minusMinutes(puffer))) {
-                zuErstattendeZeiten.add(new Urlaub(klausurTag, anfangsZeitDerKlausur.minusMinutes(puffer).toString(), ende));
-            //die Klausur endet vor (Praktikumsende - puffer): Urlaub wird ab (Klausurende + puffer) erstattet
+            if (endZeitDerKlausur.isAfter(LocalTime.parse(ende).minusMinutes(pufferAfter))) {
+                zuErstattendeZeiten.add(new Urlaub(klausurTag, anfangsZeitDerKlausur.minusMinutes(pufferBefore).toString(), ende));
+            //die Klausur endet vor (Praktikumsende - puffer): Urlaub wird bis (Klausurende + puffer) erstattet
             } else {
-                zuErstattendeZeiten.add(new Urlaub(klausurTag, anfangsZeitDerKlausur.minusMinutes(puffer).toString(), endZeitDerKlausur.plusMinutes(puffer).toString()));
+                zuErstattendeZeiten.add(new Urlaub(klausurTag, anfangsZeitDerKlausur.minusMinutes(pufferBefore).toString(), endZeitDerKlausur.plusMinutes(pufferAfter).toString()));
             }
         }
     }
@@ -181,12 +183,8 @@ public class StudentService {
         }
     }
 
-
-
-    private Set<Urlaub> berechneGueltigeUrlaube(Set<Urlaub> urlaub, Set<Urlaub> zuErstattenderUrlaube) throws InterruptedException {
-        Set<Urlaub> zuPruefendeUrlaube = new HashSet<>();
-
-        zuPruefendeUrlaube.addAll(urlaub);
+    private Set<Urlaub> berechneGueltigeUrlaube(Set<Urlaub> urlaub, Set<Urlaub> zuErstattenderUrlaube) {
+        Set<Urlaub> zuPruefendeUrlaube = new HashSet<>(urlaub);
         boolean aenderung = true;
             while (aenderung) {
                 aenderung = false;
@@ -248,14 +246,13 @@ public class StudentService {
                     }
                 }
             }
-
         return zuPruefendeUrlaube;
     }
 
 
     public Map<Urlaub, Boolean> stornierbareUrlaube(Set<Urlaub> urlaube) {
-        Map<Urlaub, Boolean> stornierbar = new HashMap<>();
         //prüft, ob der Urlaub noch im stornierbaren Zeitraum ist
+        Map<Urlaub, Boolean> stornierbar = new HashMap<>();
         for(Urlaub urlaub : urlaube) {
             if(urlaub.getTag().isAfter(LocalDate.now())) {
                 stornierbar.put(urlaub, true);
