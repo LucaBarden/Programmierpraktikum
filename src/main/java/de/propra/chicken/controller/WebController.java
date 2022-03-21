@@ -65,13 +65,16 @@ public class WebController {
 
     @Secured("ROLE_USER")
     @PostMapping("/urlaubErstellen")
-    public String urlaubErstellen(Urlaub urlaub, @AuthenticationPrincipal OAuth2User principal) {
+    public String urlaubErstellen(Urlaub urlaub, @AuthenticationPrincipal OAuth2User principal, Model model) {
         System.out.println(urlaub);
         try {
             service.speicherUrlaub(urlaub, Long.parseLong(principal.getAttribute("id").toString()), principal);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            model.addAttribute("error", true);
+            model.addAttribute("errortxt", e.getMessage());
+            return urlaub(model, principal);
         }
 
         return "redirect:/student";
@@ -136,7 +139,11 @@ public class WebController {
     @Secured("ROLE_USER")
     @PostMapping("/klausurStornieren")
     public String klausurStornieren(@RequestParam("ref") long id, @AuthenticationPrincipal OAuth2User principal){
-        service.storniereKlausurAnmeldung(id, principal);
+        try {
+            service.storniereKlausurAnmeldung(id, principal);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return "redirect:/student";
     }
 

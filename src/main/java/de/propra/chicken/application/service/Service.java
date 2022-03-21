@@ -23,7 +23,7 @@ public class Service {
     private final KlausurRepository klausurRepo;
     private final StudentService studentService;
     private final KlausurService klausurService;
-    private static final Logger logger = Logger.getLogger("de.propra.chicken.application.service.Service");
+    private static final Logger logger = Logger.getLogger("chicken.Service");
 
     private static final Dotenv dotenv = Dotenv.load();
 
@@ -148,11 +148,8 @@ public class Service {
     }
 
     public void storniereKlausurAnmeldung(long id, OAuth2User principal) throws Exception {
-
-            Klausur klausur = klausurRepo.findeKlausurByID(id);
-
-
-        logger.info(principal.getAttribute("login").toString() + " hat die Klausur " + klausur + " und damit auch möglichen verbundenen Urlaub an dem Tag storniert");
+        Klausur klausur = klausurRepo.findeKlausurByID(id);
+        logger.info(principal.getAttribute("login").toString() + " hat die " + klausur + " und damit auch möglichen verbundenen Urlaub an dem Tag storniert");
     }
 
     public void urlaubStornieren(OAuth2User principal, String tag, String beginn, String end) throws Exception {

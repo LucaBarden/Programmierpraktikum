@@ -39,9 +39,13 @@
 
 
             <button alt="Urlaub eintragen" name="urlaubsanmeldung_abschicken" class="btn btn-primary btn-lg btn-block" type="submit">Eintragen</button>
+            <button alt="Zurück zur Startseite"  class="btn btn-secondary btn-lg btn-block" onclick="location.href='/student'" type="button">Zurück zur Startseite</button>
 
 
         </form>
+        <div th:if="${error}">
+            <p class="alert alert-warning" th:text="${errortxt}"></p>
+        </div>
     </div>
 </div>
 
