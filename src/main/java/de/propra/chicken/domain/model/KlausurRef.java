@@ -6,7 +6,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.Objects;
 
-@Table("klausur_student")
+@Table("KLAUSUR_STUDENT")
 public class KlausurRef {
 
 
@@ -16,7 +16,7 @@ public class KlausurRef {
     }
 
     @Id
-    @Column("klausur")
+    @Column("KLAUSUR")
     private long lsfID;
 
     public KlausurRef(long lsfID) {
