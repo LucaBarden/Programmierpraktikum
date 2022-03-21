@@ -160,6 +160,7 @@ public class Student {
     }
 
     public void entferneUrlaubeAnEinemTag(LocalDate datum){
+        urlaube.stream().filter(a -> a.getTag().equals(datum)).forEach(this::erstatteUrlaubsdauer);
         urlaube = urlaube.stream().filter(a -> !(a.getTag().equals(datum))).collect(Collectors.toSet());
     }
 
