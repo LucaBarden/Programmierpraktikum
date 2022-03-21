@@ -399,6 +399,34 @@ public class StudentServiceTests {
     }
 
     @Test
+    @DisplayName("Urlaubsvalidierung: eine Onlineklausur und einen Urlaub am selben Tag")
+    void urlaubKlausurUndUrlaubAmSelbenTAg() {
+        //TODO: Test fixen
+        StudentService studentService = new StudentService();
+        Student student = new Student(123);
+
+        Urlaub urlaub = new Urlaub("2022-03-24", "08:30", "09:30");
+        Urlaub neuerUrlaub = new Urlaub("2022-03-24", "09:15", "10:00");
+        Set<Urlaub> urlaube = new HashSet<>();
+        urlaube.add(urlaub);
+        student.addUrlaube(urlaube);
+
+        Set<KlausurData> klausuren = new HashSet<>();
+        KlausurData klausurData1 = new KlausurData(LocalDate.parse("2022-03-24"), LocalTime.parse("10:00"), LocalTime.parse("11:00"), false);
+        klausuren.add(klausurData1);
+
+        Set<Urlaub> gueltigerUrlaub = new HashSet<>();
+
+        try { //wenn eine Klausur am selben Tag ist werden keine Fehler geworfen, sondern der gültige Urlaub zurückgegeben
+            gueltigerUrlaub = studentService.validiereUrlaub(student, neuerUrlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        assertThat(gueltigerUrlaub.size()).isEqualTo(0);
+    }
+
+    @Test
     @DisplayName("bereits für einen Urlaub angemeldet, der sich mit neu zu anmeldender Klausur überschneidet, also wird Teil des Urlaubs erstattet")
     void klasusurAnmeldungTest() {
         StudentService studentService = new StudentService();
