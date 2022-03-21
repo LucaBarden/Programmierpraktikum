@@ -27,14 +27,14 @@ public class StudentService {
                 throw new Exception("Du bist bereits bei der Klausur angemeldet");
             }
         }
-        //die urlaube, die man wieder bekommen würde durch neue Klausur:
+        //die urlaube, die man wieder bekommen würde durch neue Klausur: Zeitraum der Klausur mit puffer:
         Set<Urlaub> zuErstattendMoeglicheUrlaube = new HashSet<>();
-        //TODO: hinterher wieder weg machen
+        //TODO: hinterher wieder weg machen, kann man mit klausur als Parameter übergeben
         KlausurData klausurData = klausur.getKlausurData();
 
         klausurenAmSelbenTag(zuErstattendMoeglicheUrlaube, Set.of(klausurData), beginn, ende);
         Set<Urlaub> urlaubeSelberTag = student.urlaubSelberTag(klausurData.tag());
-
+        
         return berechneGueltigeUrlaube(urlaubeSelberTag, zuErstattendMoeglicheUrlaube) ;
     }
 

@@ -50,12 +50,15 @@ public class Student {
     }
 
     public void aendereUrlaube(Set<Urlaub> gueltigeUrlaube, LocalDate datum){
-        for(Urlaub u: urlaube){
+        Set<Urlaub> alteUrlaube = new HashSet<>();
+        alteUrlaube.addAll(urlaube);
+        for(Urlaub u: alteUrlaube){
             if(u.getTag().compareTo(datum) == 0){
                 urlaube.remove(u);
                 erstatteUrlaubsdauer(u);
             }
         }
+        zieheUrlaubsdauerAb(gueltigeUrlaube);
         urlaube.addAll(gueltigeUrlaube);
 
     }
@@ -63,7 +66,6 @@ public class Student {
     public void erstatteUrlaubsdauer(Urlaub veralteterUrlaub) {
         int erstatten = 0;
         erstatten += veralteterUrlaub.duration();
-
         this.resturlaub = resturlaub + erstatten;
     }
 

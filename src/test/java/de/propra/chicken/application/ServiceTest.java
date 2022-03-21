@@ -58,6 +58,7 @@ public class ServiceTest {
     public void klausurAnmeldungTest() {
 
     }
+
 }
 
 

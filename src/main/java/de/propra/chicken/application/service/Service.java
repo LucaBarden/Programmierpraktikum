@@ -55,11 +55,9 @@ public class Service {
     }
 
     private void klausurAnmelden(Klausur klausur, long githubID, OAuth2User principal) throws Exception {
-        //student.setKlausuren(studentRepo.getKlausurenVonStudent(student));
         Student student = studentRepo.findByID(githubID);
         try {
             Set<Urlaub> gueltigeUrlaubeFuerTag = studentService.validiereKlausurAnmeldung(klausur, student, BEGINN, ENDE);
-            student.zieheUrlaubsdauerAb(gueltigeUrlaubeFuerTag);
             student.aendereUrlaube(gueltigeUrlaubeFuerTag, klausur.getDatum());
             KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
             student.addKlausur(klausurRef);

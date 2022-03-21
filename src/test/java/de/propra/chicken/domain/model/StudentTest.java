@@ -4,6 +4,7 @@ import de.propra.chicken.domain.service.StudentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -155,4 +156,46 @@ public class StudentTest {
         assertThat(gueltigeUrlaube).hasSize(2);
         assertThat(gueltigeUrlaube).contains(result, result2);
     }*/
+
+    @Test
+    @DisplayName("Ein Student hat zwei Urlaube, einer ist zur gleichen Zeit wie eine Klausur(also der uebergebene Tag), wird also herausgelöscht")
+    void aendereUrlaube1Test(){
+        Student student = new Student(123);
+        Urlaub urlaub1 = new Urlaub("2022-02-02", "08:30", "10:00");
+        Urlaub urlaub2 = new Urlaub("2022-03-03", "08:30", "09:00");
+        Set<Urlaub> alteUrlaube = new HashSet<>();
+        alteUrlaube.add(urlaub1);
+        alteUrlaube.add(urlaub2);
+        student.setUrlaube(alteUrlaube);
+        student.zieheUrlaubsdauerAb(alteUrlaube);
+
+        student.aendereUrlaube(new HashSet<>(), LocalDate.of(2022,2,2));
+
+        assertThat(student.getResturlaub()).isEqualTo(210);
+        assertThat(student.getUrlaube()).contains(urlaub2);
+        assertThat(student.getUrlaube()).hasSize(1);
+    }
+    @Test
+    @DisplayName("Ein Student hat zwei Urlaube, einer ist zur gleichen Zeit wie eine Klausur(also der uebergebene Tag), wird also herausgelöscht")
+    void aendereUrlaube2Test(){
+        Student student = new Student(123);
+        Urlaub urlaub1 = new Urlaub("2022-02-02", "08:30", "10:00"); //1.5
+        Urlaub urlaub2 = new Urlaub("2022-02-02","11:30", "12:30"); //1
+        Urlaub urlaub3 = new Urlaub("2022-03-03", "08:30", "10:00"); //1.5
+        Urlaub gueltigeUrlaub = new Urlaub("2022-02-02", "08:30", "09:00");
+        Set<Urlaub> alteUrlaube = new HashSet<>();
+        alteUrlaube.add(urlaub1);
+        alteUrlaube.add(urlaub2);
+        alteUrlaube.add(urlaub3);
+        Set<Urlaub> gueltigeUrlaube = new HashSet<>();
+        gueltigeUrlaube.add(gueltigeUrlaub);
+        student.setUrlaube(alteUrlaube);
+        student.zieheUrlaubsdauerAb(alteUrlaube);
+        System.out.println(student.toString());
+        student.aendereUrlaube(gueltigeUrlaube, LocalDate.of(2022,2,2));
+
+        assertThat(student.getResturlaub()).isEqualTo(120);
+        assertThat(student.getUrlaube()).contains(urlaub3, gueltigeUrlaub);
+        assertThat(student.getUrlaube()).hasSize(2);
+    }
 }

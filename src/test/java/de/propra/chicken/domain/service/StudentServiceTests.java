@@ -399,8 +399,8 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("bereits für einen Urlaub angemeldet, der sich mit neu zu anmeldender Klausur überschneidet, also wird Teil des Urlaubs zurückgeben")
-    void klasusurAnmeldungTest() throws Exception {
+    @DisplayName("bereits für einen Urlaub angemeldet, der sich mit neu zu anmeldender Klausur überschneidet, also wird Teil des Urlaubs erstattet")
+    void klasusurAnmeldungTest() {
         StudentService studentService = new StudentService();
         Student student = new Student(234);
         Set<Urlaub> urlaube = new HashSet<>();
@@ -410,9 +410,12 @@ public class StudentServiceTests {
         KlausurRef lsfID = new KlausurRef(12345);
         Klausur klausur = new Klausur("RA", 12345, false, "2022-10-10", "08:30", "10:00");
         Urlaub uebrigerUrlaub = new Urlaub("2022-10-10", "10:30", "12:30");
-
-        Set<Urlaub> gueltigerUrlaub = studentService.validiereKlausurAnmeldung(klausur, student,  BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
-
+        Set<Urlaub> gueltigerUrlaub = new HashSet<>();
+        try{
+             gueltigerUrlaub = studentService.validiereKlausurAnmeldung(klausur, student,  BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM);
+         } catch (Exception e) {
+                e.printStackTrace();
+        }
         assertThat(gueltigerUrlaub).hasSize(1);
         assertThat(gueltigerUrlaub).contains(uebrigerUrlaub);
 
