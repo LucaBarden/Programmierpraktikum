@@ -4,8 +4,6 @@ import de.propra.chicken.application.service.repo.KlausurRepository;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.KlausurData;
 import de.propra.chicken.domain.model.KlausurRef;
-import de.propra.chicken.db.dto.KlausurDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashSet;
@@ -16,16 +14,13 @@ import java.util.stream.Collectors;
 @Repository
 public class KlausurRepositoryImpl implements KlausurRepository {
 
-    @Autowired
+
     private CRUDKlausur crudKlausur;
 
     public KlausurRepositoryImpl(CRUDKlausur crudKlausur) {
         this.crudKlausur = crudKlausur;
     }
 
-    public KlausurRepositoryImpl() {
-
-    }
 
 
     //Works
@@ -55,7 +50,7 @@ public class KlausurRepositoryImpl implements KlausurRepository {
     @Override
     public Set<Klausur> getKlausurenByRefs(Set<KlausurRef> klausurenRef) {
         Set<KlausurDTO> DTOs = findeKlausurenByID(klausurenRef);
-        return DTOs.stream().map(k -> transferDTOToKlausur(k)).collect(Collectors.toSet());
+        return DTOs.stream().map(this::transferDTOToKlausur).collect(Collectors.toSet());
     }
 
     //Works
@@ -66,26 +61,25 @@ public class KlausurRepositoryImpl implements KlausurRepository {
         return DTOs.stream().map(k -> transferDTOToKlausur(k).getKlausurData()).collect(Collectors.toSet());
     }
 
-    public Klausur findeKlausurByID(long id) {
-        return transferDTOToKlausur(crudKlausur.findeKlausurByID(id));
+    public Klausur findeKlausurByID(long id) throws Exception {
+        return crudKlausur.findeKlausurByID(id).map(this::transferDTOToKlausur).orElseThrow(() -> new Exception("Diese Klausur Existiert nicht"));
     }
     private Set<KlausurDTO> findeKlausurenByID(Set<KlausurRef> angemeldeteKlausurenRefs) {
-        Set<Long> IDs = angemeldeteKlausurenRefs.stream().map(klausurRef -> klausurRef.getLsfID()).collect(Collectors.toSet());
+        Set<Long> IDs = angemeldeteKlausurenRefs.stream().map(KlausurRef::getLsfID).collect(Collectors.toSet());
         Set<KlausurDTO> DTOs = new HashSet<>();
 
         for (Long id : IDs) {
-            KlausurDTO klausurDTOS = crudKlausur.findeKlausurByID(id);
-            DTOs.add(klausurDTOS);
+            crudKlausur.findeKlausurByID(id).ifPresent(DTOs::add);
         }
         return DTOs;
     }
 
-    private Klausur transferDTOToKlausur(KlausurDTO dto) {
-        return new Klausur( dto.getName(), dto.getLsfID(), dto.isPraesenz(), dto.getDatum().toString(), dto.getBeginn().toString(), dto.getEnd().toString());
+    Klausur transferDTOToKlausur(KlausurDTO dto) {
+        return new Klausur( dto.getName(), dto.getLsfID(), dto.isPraesenz(), dto.getDatum().toString(), dto.getBeginn().toString(), dto.getEnde().toString());
 
     }
 
-    private KlausurDTO transferKlausurToDTO(Klausur s){
+    KlausurDTO transferKlausurToDTO(Klausur s){
         return new KlausurDTO(s.getLsfid(), s.getName(), s.isPraesenz(), s.getDatum(), s.getBeginn(),s.getEnd());
     }
 

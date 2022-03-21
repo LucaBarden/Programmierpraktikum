@@ -1,9 +1,7 @@
 package de.propra.chicken.db;
 
 import de.propra.chicken.application.service.repo.StudentRepository;
-import de.propra.chicken.db.dto.UrlaubDTO;
 import de.propra.chicken.domain.model.*;
-import de.propra.chicken.db.dto.StudentDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
@@ -11,6 +9,7 @@ import java.util.stream.Collectors;
 
 @Repository
 public class StudentRepositoryImpl implements StudentRepository {
+
 
     private final CRUDStudent crudStudent;
 
@@ -42,7 +41,7 @@ public class StudentRepositoryImpl implements StudentRepository {
 
     //Works
     @Override
-    public Student findByID(long githubID) throws Exception {
+    public Student findByID(long githubID) throws Exception{
         StudentDTO dto = crudStudent.findStudentDTOByGithubID(githubID).orElseThrow(() -> new Exception("Dieser Student existiert nicht"));
         Set<KlausurRef> refs = crudStudent.findAngemeldeteKlausurenIds(dto.getId());
         return transferDTOToStudent(dto, refs);

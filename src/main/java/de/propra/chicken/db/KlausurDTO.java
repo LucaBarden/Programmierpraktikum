@@ -1,4 +1,4 @@
-package de.propra.chicken.db.dto;
+package de.propra.chicken.db;
 
 
 import org.springframework.data.annotation.Id;
@@ -9,7 +9,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Table("klausur")
+@Table("KLAUSUR")
 public class KlausurDTO implements Persistable {
 
     @Id
@@ -18,18 +18,18 @@ public class KlausurDTO implements Persistable {
     private boolean praesenz;
     private LocalDate datum;
     private LocalTime beginn;
-    private LocalTime end;
+    private LocalTime ende;
 
     @Transient
     private boolean isNew = true;
 
-    public KlausurDTO(Long lsf_id, String name, boolean praesenz, LocalDate datum, LocalTime beginn, LocalTime end) {
+    public KlausurDTO(Long lsf_id, String name, boolean praesenz, LocalDate datum, LocalTime beginn, LocalTime ende) {
         this.lsf_id = lsf_id;
         this.name = name;
         this.praesenz = praesenz;
         this.datum = datum;
         this.beginn = beginn;
-        this.end = end;
+        this.ende = ende;
     }
 
     public Long getLsfID() {
@@ -52,8 +52,8 @@ public class KlausurDTO implements Persistable {
         return beginn;
     }
 
-    public LocalTime getEnd() {
-        return end;
+    public LocalTime getEnde() {
+        return ende;
     }
 
     public void setIsNew(boolean isNew) {
@@ -68,7 +68,7 @@ public class KlausurDTO implements Persistable {
                 ", praesenz=" + praesenz +
                 ", date=" + datum +
                 ", beginn=" + beginn +
-                ", end=" + end +
+                ", ende=" + ende +
                 '}';
     }
 

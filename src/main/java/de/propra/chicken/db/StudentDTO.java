@@ -1,4 +1,4 @@
-package de.propra.chicken.db.dto;
+package de.propra.chicken.db;
 import de.propra.chicken.domain.model.KlausurRef;
 import de.propra.chicken.domain.model.Urlaub;
 import org.springframework.data.annotation.Id;
@@ -12,11 +12,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Table("student")
+@Table("STUDENT")
 public class StudentDTO implements Persistable {
 
     @Id
-    @Column("student_id")
+    @Column("STUDENT_ID")
     private long githubID;
     private int resturlaub;
     private Set<UrlaubDTO> urlaube;

@@ -1,14 +1,9 @@
 package de.propra.chicken.domain.model;
 
-import de.propra.chicken.db.dto.StudentDTO;
-import de.propra.chicken.db.dto.UrlaubDTO;
-
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Student {
 

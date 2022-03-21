@@ -1,30 +1,63 @@
 package de.propra.chicken.db;
+import de.propra.chicken.domain.model.Klausur;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
+import static org.junit.jupiter.api.Assertions.*;
 
-@JdbcTest
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@DataJdbcTest
 @ActiveProfiles("test")
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {CRUDKlausur.class, CRUDKlausur.class})
-@TestPropertySource(locations = {"classpath:testEnv"})
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Sql({"classpath:testCreate.sql"})
 public class KlausurRepositoryImplTest {
 
-    @Autowired
-    CRUDKlausur db;
+    CRUDKlausur crud;
+    KlausurRepositoryImpl db;
+
+    public KlausurRepositoryImplTest(@Autowired CRUDKlausur crud) {
+        this.crud = crud;
+        this.db = new KlausurRepositoryImpl(crud);
+    }
 
     @Test
-    @Sql({"classpath:db/migration/V1__init.sql"})
-    @DisplayName("MyTest")
+    @DisplayName("Testet, ob eine Klausur korrekt gespeichert wird, wenn noch keine existiert")
     void test1() {
+        Klausur klausur = new Klausur("RA", 12335, true, "1999-01-01", "08:30", "09:30");
+
+        db.speicherKlausur(klausur);
+
+        Optional<Klausur> result = crud.findeKlausurByID(klausur.getLsfid()).map(db::transferDTOToKlausur);
+        assertThat(result).isNotEmpty();
+        assertThat(result.get()).isEqualTo(klausur);
+    }
+
+    @Test
+    @Sql({"classpath:testData.sql"})
+    @DisplayName("Testet, ob eine Klausur richtig abgerufen wird, wenn mehrere existieren")
+    void test2() throws Exception {
+
+        Klausur klausur;
+        klausur = db.findeKlausurByID(54321);
+
+        assertThat(klausur.getLsfid()).isEqualTo(54321);
+    }
+
+    @Test
+    @Sql({"classpath:testData.sql"})
+    @DisplayName("Testet, ob eine Klausur richtig abgerufen wird, wenn mehrere existieren")
+    void test3() throws Exception {
+
+        Klausur klausur;
+        klausur = db.findeKlausurByID(54321);
+
+        assertThat(klausur.getLsfid()).isEqualTo(54321);
     }
 }

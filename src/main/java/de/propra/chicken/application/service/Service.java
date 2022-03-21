@@ -57,8 +57,8 @@ public class Service {
     }
 
     private void klausurAnmelden(Klausur klausur, long githubID, OAuth2User principal) throws Exception {
-        Student student = studentRepo.findByID(githubID);
         try {
+            Student student = studentRepo.findByID(githubID);
             Set<Urlaub> gueltigeUrlaubeFuerTag = studentService.validiereKlausurAnmeldung(klausur, student, BEGINN, ENDE);
             student.aendereUrlaube(gueltigeUrlaubeFuerTag, klausur.getDatum());
             KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
@@ -147,8 +147,11 @@ public class Service {
         return studentRepo.findByID(id);
     }
 
-    public void storniereKlausurAnmeldung(long id, OAuth2User principal) {
-        Klausur klausur = klausurRepo.findeKlausurByID(id);
+    public void storniereKlausurAnmeldung(long id, OAuth2User principal) throws Exception {
+
+            Klausur klausur = klausurRepo.findeKlausurByID(id);
+
+
         logger.info(principal.getAttribute("login").toString() + " hat die Klausur " + klausur + " und damit auch möglichen verbundenen Urlaub an dem Tag storniert");
     }
 

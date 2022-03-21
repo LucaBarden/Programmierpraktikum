@@ -6,7 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -28,7 +29,7 @@ public class StudentServiceTests {
         StudentService studentService = new StudentService();
         student.addKlausur(klausurRef);
 
-        Exception thrown =assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausur, student, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
+        Exception thrown = assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausur, student, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
         assertThat(thrown.getMessage()).isEqualTo("Du bist bereits bei der Klausur angemeldet");
     }
 
