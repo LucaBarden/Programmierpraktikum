@@ -12,28 +12,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class StudentTest {
 
-    /*@Test
-    @DisplayName("zwei überschneidende Urlaubsblöcke werden gemerged")
-    void urlaubsanmeldungZweiUrlaubsbloeckeUeberschneidend() {
-        Student student = new Student(123);
-        Set<Urlaub> urlaube = new HashSet<>();
-        Urlaub urlaub1 = new Urlaub("1000-01-01", "10:00", "11:00");
-        Urlaub urlaub2 = new Urlaub("1000-01-01", "10:30", "11:30");
-        urlaube.add(urlaub1);
-        urlaube.add(urlaub2);
-        student.addUrlaube(urlaube);
-        Set<Urlaub> gueltigeUrlaube;
-
-        gueltigeUrlaube = student.ueberschneidendenUrlaubMergen();
-        Urlaub result = new Urlaub("1000-01-01", "10:00", "11:30");
-
-        assertThat(gueltigeUrlaube).hasSize(1);
-        assertThat(gueltigeUrlaube).contains(result);
-    }*/
-
     @Test
-    @DisplayName("zwei Urlaubsblöcke direkt hintereinander werden gemerged")
-    void urlaubsanmeldungZweiUrlaubsbloeckeHintereinander() {
+    @DisplayName("zwei Urlaubsblöcke direkt hintereinander werden zu einem Block gemerged")
+    void mergenZweiUrlaubsbloeckeHintereinander() {
         Student student = new Student(123);
         Set<Urlaub> urlaube = new HashSet<>();
         Urlaub urlaub1 = new Urlaub("1000-01-01", "10:00", "11:00");
@@ -50,28 +31,9 @@ public class StudentTest {
         assertThat(gueltigeUrlaube).contains(result);
     }
 
-    /*@Test
-    @DisplayName("zwei Urlaubsblöcke überschneiden sich, der eine enthält den anderen komplett")
-    void urlaubsanmeldungZweiUrlaubsbloeckeEinerLaenger() {
-        Student student = new Student(123);
-        Set<Urlaub> urlaube = new HashSet<>();
-        Urlaub urlaub1 = new Urlaub("1000-01-01", "10:00", "11:00");
-        Urlaub urlaub2 = new Urlaub("1000-01-01", "10:00", "12:00");
-        urlaube.add(urlaub1);
-        urlaube.add(urlaub2);
-        student.addUrlaube(urlaube);
-        Set<Urlaub> gueltigeUrlaube;
-
-        gueltigeUrlaube = student.ueberschneidendenUrlaubMergen();
-        Urlaub result = new Urlaub("1000-01-01", "10:00", "12:00");
-
-        assertThat(gueltigeUrlaube).hasSize(1);
-        assertThat(gueltigeUrlaube).contains(result);
-    }*/
-
     @Test
-    @DisplayName("zwei Urlaubsblöcke überschneiden sich nicht")
-    void urlaubsanmeldungZweiUrlaubsbloeckeKeineUeberschneidung() {
+    @DisplayName("zwei Urlaubsblöcke nicht hintereinander, werden nicht verändert")
+    void zweiUrlaubsbloeckeKeinMergen() {
         Student student = new Student(123);
         Set<Urlaub> urlaube = new HashSet<>();
         Urlaub urlaub1 = new Urlaub("1000-01-01", "10:00", "11:00");
@@ -90,13 +52,13 @@ public class StudentTest {
     }
 
     @Test
-    @DisplayName("drei Urlaubsblöcke direkt nacheinander zu einem Block")
-    void urlaubsanmeldungDreiUrlaubsbloeckeNacheinander() {
+    @DisplayName("drei Urlaubsblöcke direkt nacheinander werden zu einem Block gemerged")
+    void dreiUrlaubsbloeckeMergen() {
         Student student = new Student(123);
         Set<Urlaub> urlaube = new HashSet<>();
-        Urlaub urlaub1 = new Urlaub("1000-01-01", "08:30", "08:45");
-        Urlaub urlaub2 = new Urlaub("1000-01-01", "08:45", "09:30");
-        Urlaub urlaub3 = new Urlaub("1000-01-01", "09:30", "10:00");
+        Urlaub urlaub1 = new Urlaub("1000-01-01", "09:00", "10:00");
+        Urlaub urlaub2 = new Urlaub("1000-01-01", "10:00", "11:00");
+        Urlaub urlaub3 = new Urlaub("1000-01-01", "11:00", "12:00");
         urlaube.add(urlaub1);
         urlaube.add(urlaub2);
         urlaube.add(urlaub3);
@@ -104,15 +66,15 @@ public class StudentTest {
         Set<Urlaub> gueltigeUrlaube;
 
         gueltigeUrlaube = student.ueberschneidendenUrlaubMergen();
-        Urlaub result = new Urlaub("1000-01-01", "08:30", "10:00");
+        Urlaub result = new Urlaub("1000-01-01", "09:00", "12:00");
 
         assertThat(gueltigeUrlaube).hasSize(1);
         assertThat(gueltigeUrlaube).contains(result);
     }
 
     @Test
-    @DisplayName("drei Urlaubsblöcke, keine Überschneidungen")
-    void urlaubsanmeldungDreiUrlaubsbloeckeKeineUeberschneidung() {
+    @DisplayName("drei Urlaubsblöcke nicht hintereinander, werden nicht verändert")
+    void dreiUrlaubsbloeckeKeinMergen() {
         Student student = new Student(123);
         Set<Urlaub> urlaube = new HashSet<>();
         Urlaub urlaub1 = new Urlaub("1000-01-01", "08:30", "09:30");
@@ -133,15 +95,15 @@ public class StudentTest {
         assertThat(gueltigeUrlaube).contains(result, result2, result3);
     }
 
-    /*@Test
-    @DisplayName("vier Urlaubsblöcke, je zwei überschneiden sich")
-    void urlaubsanmeldungVierUrlaubsbloeckeZweiUeberschneidungen() {
+    @Test
+    @DisplayName("je zwei Urlaubsblöcke direkt nacheinander werden zu je einem Block gemerged")
+    void vierUrlaubsbloeckeZweiMergen() {
         Student student = new Student(123);
         Set<Urlaub> urlaube = new HashSet<>();
-        Urlaub urlaub1 = new Urlaub("1000-01-01", "08:30", "09:30");
-        Urlaub urlaub2 = new Urlaub("1000-01-01", "09:00", "10:00");
+        Urlaub urlaub1 = new Urlaub("1000-01-01", "08:30", "09:00");
+        Urlaub urlaub2 = new Urlaub("1000-01-01", "09:00", "09:30");
         Urlaub urlaub3 = new Urlaub("1000-01-01", "11:00", "11:30");
-        Urlaub urlaub4 = new Urlaub("1000-01-01", "11:15", "12:00");
+        Urlaub urlaub4 = new Urlaub("1000-01-01", "11:30", "12:00");
         urlaube.add(urlaub1);
         urlaube.add(urlaub2);
         urlaube.add(urlaub3);
@@ -150,12 +112,12 @@ public class StudentTest {
         Set<Urlaub> gueltigeUrlaube;
 
         gueltigeUrlaube = student.ueberschneidendenUrlaubMergen();
-        Urlaub result = new Urlaub("1000-01-01", "08:30", "10:00");
+        Urlaub result = new Urlaub("1000-01-01", "08:30", "09:30");
         Urlaub result2 = new Urlaub("1000-01-01", "11:00", "12:00");
 
         assertThat(gueltigeUrlaube).hasSize(2);
         assertThat(gueltigeUrlaube).contains(result, result2);
-    }*/
+    }
 
     @Test
     @DisplayName("Ein Student hat zwei Urlaube, einer ist zur gleichen Zeit wie eine Klausur(also der uebergebene Tag), wird also herausgelöscht")

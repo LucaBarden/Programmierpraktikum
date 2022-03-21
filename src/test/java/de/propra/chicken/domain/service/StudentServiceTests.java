@@ -65,7 +65,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: den ganzen Tag Urlaub nehmen")
+    @DisplayName("Urlaubsvalidierung: den ganzen Tag Urlaub nehmen ist gültig")
     void urlaubDenGanzenTag() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -76,7 +76,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: Urlaub liegt vor dem Praktikumszeitraum")
+    @DisplayName("Urlaubsvalidierung: Urlaub liegt vor dem Praktikumszeitraum: Exception wird geworfen")
     void urlaubZuFrueh() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -88,7 +88,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: Start ist nach End")
+    @DisplayName("Urlaubsvalidierung: Start des Urlaubs ist nach End: Exception wird geworfen")
     void urlaubStartAfterEnd() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -100,7 +100,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: Start- und Endzeit gleich")
+    @DisplayName("Urlaubsvalidierung: Start- und Endzeit des Urlaubs gleich: Exception wird geworfen")
     void urlaubStartEqualsEnd() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -112,7 +112,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: kein Vielfaches von 15")
+    @DisplayName("Urlaubsvalidierung: Urlaubszeit ist kein Vielfaches von 15 Minuten: Exception wird geworfen")
     void urlaubKeineViertelstunde() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -124,7 +124,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: zu wenig Resturlaub")
+    @DisplayName("Urlaubsvalidierung: zu wenig Resturlaub um diesen Urlaub zu buchen: Exception wird geworfen")
     void urlaubResturlaub() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -137,7 +137,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: keine Klausur und kein Urlaub am selben Tag: zu lang")
+    @DisplayName("Urlaubsvalidierung: der Urlaub ist weder den ganzen Tag lang noch weniger als 2.5h: Exception werfen")
     void urlaubZuLang() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -149,7 +149,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: keine Klausur am selben Tag: es gibt schon zwei Urlaubsblöcke an diesem Tag")
+    @DisplayName("Urlaubsvalidierung: es gibt schon zwei Urlaubsblöcke an diesem Tag: Exception werfen")
     void urlaubZuVielUrlaub() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -167,7 +167,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: keine Klausur am selben Tag: zwei gültige Blöcke")
+    @DisplayName("Urlaubsvalidierung: zwei gültige Blöcke: keine Exception wird geworfen")
     void urlaubZweiGueltigeBloecke() {
         //TODO
         StudentService studentService = new StudentService();
@@ -183,7 +183,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: keine Klausur am selben Tag: es werden keine 90min gearbeitet zwischen den Blöcken")
+    @DisplayName("Urlaubsvalidierung: es werden keine 90min gearbeitet zwischen den Urlaubsblöcken: Exception wird geworfen")
     void urlaub90MinArbeiten() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -199,7 +199,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: keine Klausur am selben Tag: kein Block liegt am Anfang des Praktikums")
+    @DisplayName("Urlaubsvalidierung: die beiden Urlaubsblöcke liegen nicht am Anfang und am Ende: Exception wird geworfen")
     void urlaubBereitsGebuchtNichtAmAnfang() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -215,7 +215,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: keine Klausur am selben Tag: kein Block liegt am Anfang des Praktikums")
+    @DisplayName("Urlaubsvalidierung: die beiden Urlaubsblöcke liegen nicht am Anfang und am Ende: Exception wird geworfen")
     void urlaubNeuNichtAmEnde() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -231,7 +231,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: eine Präsenzklausur am selben Tag, vorher 15 min Urlaub nehmen")
+    @DisplayName("Urlaubsvalidierung: eine Präsenzklausur am selben Tag, vorher 30 min Urlaub nehmen; 15 min davon werden erstattet")
     void urlaubPraesenzklausur() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -256,7 +256,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: eine Onlineklausur am selben Tag, den ganzen Tag Urlaub nehmen: zwei Urlaubsblöcke werden erstellt")
+    @DisplayName("Urlaubsvalidierung: eine Onlineklausur am selben Tag, den ganzen Tag Urlaub nehmen: zwei Urlaubsblöcke werden erstellt, dazwischen liegt die Klausur und der Urlaub wird erstattet")
     void urlaubOnlineklausurGanzenTag() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -283,7 +283,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: eine Onlineklausur am selben Tag, nachher Urlaub nehmen")
+    @DisplayName("Urlaubsvalidierung: eine Onlineklausur am selben Tag, nachher Urlaub nehmen; Anfang des Urlaubs wird aufgrund von einer Überschneidung mit der Klausur erstattet")
     void urlaubOnlineklausurSpaeter() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -309,7 +309,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: zwei Onlineklausuren am selben Tag, dazwischen Urlaub nehmen")
+    @DisplayName("Urlaubsvalidierung: zwei Onlineklausuren am selben Tag, dazwischen Urlaub nehmen; der Urlaub wird vorne und hinten gekürzt aufgrund von Überschneidung mit der Klausur")
     void urlaubZweiOnlineKlausuren() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -337,7 +337,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: zwei Onlineklausuren am selben Tag, den ganzen Tag Urlaub nehmen")
+    @DisplayName("Urlaubsvalidierung: zwei Onlineklausuren am selben Tag, den ganzen Tag Urlaub nehmen; der Urlaub wird in drei Blöcke aufgeteilt")
     void urlaubZweiOnlineKlausurenUrlaubSplit() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -369,7 +369,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: zwei Onlineklausuren am selben Tag, den ganzen Tag Urlaub nehmen")
+    @DisplayName("Urlaubsvalidierung: zwei Onlineklausuren am selben Tag, den ganzen Tag Urlaub nehmen, der Urlaub wird vorne und hinten gekürzt aufgrund von Überschneidungen mit den Klausuren")
     void urlaubZweiVerschiedeneKlausurenUrlaubSplit() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);

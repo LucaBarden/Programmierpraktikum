@@ -39,7 +39,7 @@ public class StudentService {
     }
 
     public Set<Urlaub> validiereUrlaub(Student student, Urlaub urlaub, Set<KlausurData> klausuren, String beginn, String ende) throws Exception {
-        //TODO: String startdatum und String enddatum als Parameter übergeben und überprüfen, ob Urlaubsdatum im Praktikumszeitraum liegt (in Student.checkAufGrundregeln())
+        //TODO: String startdatum und String enddatum als Parameter übergeben und überprüfen, ob Urlaubsdatum im Praktikumszeitraum liegt (in checkAufGrundregeln())
         Set<Urlaub> zuErstattendeZeiten = new HashSet<>();
 
         checkAufGrundregeln(student.getResturlaub(), urlaub, beginn, ende);
@@ -56,7 +56,7 @@ public class StudentService {
             Set<Urlaub> urlaube = new HashSet<>();
             urlaube.add(urlaub);
             neueUrlaube = berechneGueltigeUrlaube(urlaube, zuErstattendeZeiten);
-        //keine Klausur am selben Tag
+        //keine Klausur am selben Tag: wenn neuer Urlaub nicht gültig, Exception werfen
         } else {
             keineKlausurSelberTag(urlaub, urlaubeSelberTag, beginn, ende);
             neueUrlaube.add(urlaub);

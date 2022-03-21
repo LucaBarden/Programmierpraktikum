@@ -35,10 +35,6 @@ public class KlausurService {
     }
 
     public void validiereKlausur(Klausur klausur) throws Exception {
-        /*int puffer;
-        if(klausur.isPraesenz()) { puffer = 30; }
-        else { puffer = 120; }*/
-
         if(klausur.getBeginn().isAfter(klausur.getEnd())) {
             throw new Exception("Die Startzeit kann nicht nach der Endzeit liegen");
         }
@@ -47,19 +43,6 @@ public class KlausurService {
         }
         /*if(Duration.between(klausur.getBeginn(), klausur.getEnd()).toMinutes() < 60) {
             throw new Exception("Die Klausur muss mindestens 60 Minuten dauern.");
-        }*/
-        //es wird nicht überprüft, ob die Klausur am Wochenende ist. notwendig?
-        /*if(klausur.getDatum().isBefore(LocalDate.parse(startdatum))) {
-            throw new Exception("Das Klausurdatum liegt vor Beginn des Praktikums.");
-        }
-        if(klausur.getDatum().isAfter(LocalDate.parse(enddatum))) {
-            throw new Exception("Das Klausurdatum liegt nach Ende des Praktikums.");
-        }
-        if(klausur.getBeginn().minusMinutes(puffer).isBefore(LocalTime.parse(beginn)) || klausur.getBeginn().minusMinutes(puffer).equals(LocalTime.parse(beginn))) {
-            throw new Exception("Der freizustellende Zeitraum für die Klausur liegt vor dem Praktikumszeitraum.");
-        }
-        if(klausur.getEnd().plusMinutes(puffer).isAfter(LocalTime.parse(ende)) || klausur.getEnd().plusMinutes(puffer).equals(LocalTime.parse(ende))) {
-            throw new Exception("Der freizustellende Zeitraum für die Klausur liegt nach dem Praktikumszeitraum.");
         }*/
     }
 }
