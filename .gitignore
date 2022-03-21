@@ -43,3 +43,5 @@ out/
 
 *.bin
 /src/test/resources/testEnv
+
+output.log.1

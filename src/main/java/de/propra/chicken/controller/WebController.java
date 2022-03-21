@@ -47,7 +47,9 @@ public class WebController {
             model.addAttribute("klausuren", service.ladeAngemeldeteKlausuren(student.getGithubID()));
         }
         try {
-            model.addAttribute("urlaube", service.ladeAngemeldeteUrlaube(student.getGithubID()));
+            if (student != null) {
+                model.addAttribute("urlaube", service.ladeAngemeldeteUrlaube(student.getGithubID()));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,12 +68,9 @@ public class WebController {
     @Secured("ROLE_USER")
     @PostMapping("/urlaubErstellen")
     public String urlaubErstellen(Urlaub urlaub, @AuthenticationPrincipal OAuth2User principal, Model model) {
-        System.out.println(urlaub);
         try {
             service.speicherUrlaub(urlaub, Long.parseLong(principal.getAttribute("id").toString()), principal);
-
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             model.addAttribute("error", true);
             model.addAttribute("errortxt", e.getMessage());
             return urlaub(model, principal);
@@ -83,10 +82,6 @@ public class WebController {
     @Secured("ROLE_USER")
     @PostMapping("urlaubStornieren")
     public String urlaubStornieren(String tag, String beginn, String end, @AuthenticationPrincipal OAuth2User principal){
-
-        System.out.println(tag);
-        System.out.println(beginn);
-        System.out.println(end);
 
         try {
             service.urlaubStornieren(principal, tag, beginn, end);
@@ -112,7 +107,7 @@ public class WebController {
         try {
             service.saveKlausur(klausur, principal);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return "redirect:/klausur";
     }

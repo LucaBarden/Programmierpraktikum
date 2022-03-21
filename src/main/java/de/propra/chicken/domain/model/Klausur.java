@@ -1,7 +1,5 @@
 package de.propra.chicken.domain.model;
 
-import org.springframework.data.annotation.Id;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -14,15 +12,15 @@ public class Klausur {
     private boolean praesenz;
     private LocalDate datum;
     private LocalTime beginn;
-    private LocalTime end;
+    private LocalTime ende;
 
-    public Klausur(String name, long lsfid, boolean praesenz, String datum, String beginn, String end) {
+    public Klausur(String name, long lsfid, boolean praesenz, String datum, String beginn, String ende) {
         this.name = name;
         this.lsfid = lsfid;
         this.praesenz = praesenz;
         this.datum = LocalDate.parse(datum);
         this.beginn = LocalTime.parse(beginn);
-        this.end = LocalTime.parse(end);
+        this.ende = LocalTime.parse(ende);
     }
 
     public String getName() {
@@ -45,8 +43,8 @@ public class Klausur {
         return beginn;
     }
 
-    public LocalTime getEnd() {
-        return end;
+    public LocalTime getEnde() {
+        return ende;
     }
 
     @Override
@@ -63,7 +61,7 @@ public class Klausur {
     }
 
     public KlausurData getKlausurData(){
-        return new KlausurData(this.datum, this.beginn, this.end, this.praesenz);
+        return new KlausurData(this.datum, this.beginn, this.ende, this.praesenz);
     }
 
     public KlausurRef getKlausurRef(){
@@ -74,6 +72,6 @@ public class Klausur {
     public String toString() {
         return ((praesenz) ? "Präsenklausur " : "Onlineklausur ") + this.name + "(" + this.getDatum().toString() + ", "
                 + this.getBeginn().truncatedTo(ChronoUnit.MINUTES).toString() + " - "
-                + this.getEnd().truncatedTo(ChronoUnit.MINUTES).toString() + " Uhr)";
+                + this.getEnde().truncatedTo(ChronoUnit.MINUTES).toString() + " Uhr)";
     }
 }

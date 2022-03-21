@@ -107,8 +107,8 @@ public class Service {
 
 
     public void speicherStudent(Student student) {
-        boolean b = studentRepo.existsById(student.getGithubID());
-        if(!b){
+        boolean alreadyExists = studentRepo.existsById(student.getGithubID());
+        if(!alreadyExists){
             studentRepo.speicherStudent(student);
             logger.info("User " + String.valueOf(student.getGithubID()) + " angelegt");
         }
@@ -131,13 +131,8 @@ public class Service {
     }
 
     public void speicherKlausur(Klausur klausur) throws Exception {
-        try {
             validiereKlausur(klausur);
             klausurRepo.speicherKlausur(klausur);
-        } catch (Exception ex) {
-            throw ex;
-        }
-
     }
     public void klausurAnmeldung(long id, OAuth2User principal) throws Exception {
         Klausur klausur = klausurRepo.findeKlausurByID(id);
@@ -147,8 +142,13 @@ public class Service {
         return studentRepo.findByID(id);
     }
 
-    public void storniereKlausurAnmeldung(long id, OAuth2User principal) throws Exception {
-        Klausur klausur = klausurRepo.findeKlausurByID(id);
+    public void storniereKlausurAnmeldung(long lsfID, OAuth2User principal) throws Exception {
+        Klausur klausur = klausurRepo.findeKlausurByID(lsfID);
+        Student student = studentRepo.findByID(Long.parseLong(principal.getAttribute("id").toString()));
+
+        student.entferneUrlaubeAnEinemTag(klausur.getDatum());
+        student.entferneKlausur(lsfID);
+        studentRepo.speicherStudent(student);
         logger.info(principal.getAttribute("login").toString() + " hat die " + klausur + " und damit auch möglichen verbundenen Urlaub an dem Tag storniert");
     }
 

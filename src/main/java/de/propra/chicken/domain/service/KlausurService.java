@@ -3,9 +3,7 @@ package de.propra.chicken.domain.service;
 import de.propra.chicken.domain.model.Klausur;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.*;
 @Service
 public class KlausurService {
@@ -35,10 +33,10 @@ public class KlausurService {
     }
 
     public void validiereKlausur(Klausur klausur) throws Exception {
-        if(klausur.getBeginn().isAfter(klausur.getEnd())) {
+        if(klausur.getBeginn().isAfter(klausur.getEnde())) {
             throw new Exception("Die Startzeit kann nicht nach der Endzeit liegen");
         }
-        if(klausur.getBeginn().equals(klausur.getEnd())) {
+        if(klausur.getBeginn().equals(klausur.getEnde())) {
             throw new Exception("Die Startzeit und Endzeit sind gleich!!");
         }
         /*if(Duration.between(klausur.getBeginn(), klausur.getEnd()).toMinutes() < 60) {

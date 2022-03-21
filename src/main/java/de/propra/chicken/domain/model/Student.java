@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Student {
 
@@ -152,6 +153,14 @@ public class Student {
             abzuziehen += urlaub.duration();
         }
         this.resturlaub = resturlaub - abzuziehen;
+    }
+
+    public void entferneKlausur(long lsfID){
+        klausuren.remove(new KlausurRef(lsfID));
+    }
+
+    public void entferneUrlaubeAnEinemTag(LocalDate datum){
+        urlaube = urlaube.stream().filter(a -> !(a.getTag().equals(datum))).collect(Collectors.toSet());
     }
 
 }

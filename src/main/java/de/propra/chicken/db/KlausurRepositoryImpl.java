@@ -1,5 +1,6 @@
 package de.propra.chicken.db;
 
+import com.sun.jdi.request.DuplicateRequestException;
 import de.propra.chicken.application.service.repo.KlausurRepository;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.KlausurData;
@@ -25,12 +26,13 @@ public class KlausurRepositoryImpl implements KlausurRepository {
 
     //Works
     @Override
-    public Klausur speicherKlausur(Klausur klausur) {
+    public Klausur speicherKlausur(Klausur klausur) throws DuplicateRequestException {
         KlausurDTO dto = transferKlausurToDTO(klausur);
-        if(crudKlausur.existsById(dto.getLsfID())) {
-            dto.setIsNew(false);
+        if(!crudKlausur.existsById(dto.getLsfID())) {
+            return transferDTOToKlausur(crudKlausur.save(dto));
         }
-        return transferDTOToKlausur(crudKlausur.save(dto));
+        throw new DuplicateRequestException("Eine Klausur mit dieser ID existiert bereits");
+        //dto.setIsNew(false);
 
     }
 
@@ -80,7 +82,7 @@ public class KlausurRepositoryImpl implements KlausurRepository {
     }
 
     KlausurDTO transferKlausurToDTO(Klausur s){
-        return new KlausurDTO(s.getLsfid(), s.getName(), s.isPraesenz(), s.getDatum(), s.getBeginn(),s.getEnd());
+        return new KlausurDTO(s.getLsfid(), s.getName(), s.isPraesenz(), s.getDatum(), s.getBeginn(),s.getEnde());
     }
 
 }
