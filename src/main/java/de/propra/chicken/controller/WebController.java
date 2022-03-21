@@ -43,7 +43,9 @@ public class WebController {
         }
 
         model.addAttribute("student", student);
-        model.addAttribute("klausuren", service.ladeAngemeldeteKlausuren(student.getGithubID()));
+        if (student != null) {
+            model.addAttribute("klausuren", service.ladeAngemeldeteKlausuren(student.getGithubID()));
+        }
         try {
             model.addAttribute("urlaube", service.ladeAngemeldeteUrlaube(student.getGithubID()));
         } catch (Exception e) {
@@ -135,7 +137,6 @@ public class WebController {
     @PostMapping("/klausurStornieren")
     public String klausurStornieren(@RequestParam("ref") long id, @AuthenticationPrincipal OAuth2User principal){
         service.storniereKlausurAnmeldung(id, principal);
-
         return "redirect:/student";
     }
 

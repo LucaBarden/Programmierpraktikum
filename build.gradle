@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'application'
+    id "com.github.spotbugs" version "4.7.9"
 }
 
 group = 'de.propra'
@@ -13,6 +14,16 @@ repositories {
     mavenCentral()
 }
 
+spotbugs {
+    effort = "max"
+}
+
+spotbugsMain {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
 dependencies {
     implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
@@ -30,7 +41,7 @@ dependencies {
     testImplementation 'com.tngtech.archunit:archunit-junit5-engine:0.22.0'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.6.4'
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.3'
-    implementation 'com.github.spotbugs:spotbugs:4.6.0'
+    compileOnly 'com.github.spotbugs:spotbugs:4.6.0'
     implementation 'io.github.cdimascio:dotenv-java:2.2.0'
 }
 

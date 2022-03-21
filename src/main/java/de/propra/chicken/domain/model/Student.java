@@ -42,7 +42,7 @@ public class Student {
     }
 
     public Set<KlausurRef> getKlausuren() {
-        return klausuren;
+        return new HashSet<>(klausuren);
     }
 
     public int getResturlaub() {
@@ -113,11 +113,11 @@ public class Student {
     }
 
     public Set<Urlaub> getUrlaube() {
-        return urlaube;
+        return new HashSet<>(urlaube);
     }
 
     public Set<Urlaub> ueberschneidendenUrlaubMergen() {
-        if (urlaube.size() == 0) return urlaube;
+        if (urlaube.size() == 0) return new HashSet<>(urlaube);
 
         Set<Urlaub> zuPruefendeUrlaube = new HashSet<>();
         zuPruefendeUrlaube.addAll(urlaube);

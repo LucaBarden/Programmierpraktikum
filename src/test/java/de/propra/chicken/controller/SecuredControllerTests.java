@@ -60,6 +60,7 @@ public class SecuredControllerTests {
     OAuth2AuthenticationToken buildPrincipal(String role, String name) {
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("login", name);
+        attributes.put("id", 12345);
 
         List<GrantedAuthority> authorities = Collections.singletonList(
                 new OAuth2UserAuthority("ROLE_" + role.toUpperCase(), attributes));
@@ -135,13 +136,7 @@ public class SecuredControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/student"));
     }
-
-    @Test
-    @DisplayName("Ein unangemeldeter User hat keinen zugriff")
-    void noAccess() throws Exception {
-        mockMvc.perform(post("/"))
-                .andExpect(status().isForbidden());
-    }
+    //TODO Service Testen
 
 
 }
