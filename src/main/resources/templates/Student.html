@@ -22,15 +22,15 @@
         </thead>
         <tbody>
         <tr th:each="u : ${urlaube}">
-            <td th:text="${u.getTag()}"></td>
-            <td th:text="${u.getBeginn()}"></td>
-            <td th:text="${u.getEnd()}"></td>
-            <td th:text="${u.duration()}"></td>
-            <td>
+            <td th:text="${u.getKey().getTag()}"></td>
+            <td th:text="${u.getKey().getBeginn()}"></td>
+            <td th:text="${u.getKey().getEnd()}"></td>
+            <td th:text="${u.getKey().duration()}"></td>
+            <td th:if="${u.getValue()}" >
             <form name="stornieren" th:method="post" th:action="@{/urlaubStornieren}">
-                <input type="hidden" th:name="tag" th:value="${u.getTag()}">
-                <input type="hidden" th:name="beginn" th:value="${u.getBeginn()}">
-                <input type="hidden" th:name="end" th:value="${u.getEnd()}">
+                <input type="hidden" th:name="tag" th:value="${u.getKey().getTag()}">
+                <input type="hidden" th:name="beginn" th:value="${u.getKey().getBeginn()}">
+                <input type="hidden" th:name="end" th:value="${u.getKey().getEnd()}">
                 <button alt="Urlaub stornieren" class="btn btn-danger">Stornieren</button>
             </form>
             </td>

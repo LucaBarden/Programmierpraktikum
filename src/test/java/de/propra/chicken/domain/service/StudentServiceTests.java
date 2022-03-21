@@ -440,7 +440,7 @@ public class StudentServiceTests {
 
 
     @Test
-    @DisplayName("bereits für zwei Urlaube angemeldet,  nachdem man sich für eine Klausur angemeldet hat, werden beide gekürzt")
+    @DisplayName("bereits fuer zwei Urlaube angemeldet,  nachdem man sich fuer eine Klausur angemeldet hat, werden beide gekuerzt")
     void klausurAnmeldungTest2() throws Exception {
         StudentService studentService = new StudentService();
         Student student = new Student(234);

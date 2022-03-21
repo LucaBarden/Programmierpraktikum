@@ -9,6 +9,8 @@ import io.github.cdimascio.dotenv.Dotenv;
 import org.jsoup.Jsoup;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.FileHandler;
@@ -98,6 +100,11 @@ public class Service {
         return klausurService.stornierbareKlausuren(klausuren);
     }
 
+    public Map<Urlaub, Boolean> ladeAngemeldeteUrlaube(long githubID) throws Exception {
+        Student student = studentRepo.findByID(githubID);
+        return studentService.stornierbareUrlaube(student.getUrlaube());
+    }
+
 
     public void speicherStudent(Student student) {
         boolean b = studentRepo.existsById(student.getGithubID());
@@ -117,7 +124,7 @@ public class Service {
             gueltigerNeuerUrlaub = student.ueberschneidendenUrlaubMergen();
             student.setUrlaube(gueltigerNeuerUrlaub);
             studentRepo.speicherStudent(student);
-            logger.info(principal.getAttribute("login") + "(" + principal.getAttribute("id") + ") hat Urlaub eingetragen");
+            logger.info(principal.getAttribute("login") + "(" + principal.getAttribute("id") + ") hat Urlaub eingetragen " + urlaub);
         } catch (Exception ex) {
             throw ex;
         }
@@ -144,4 +151,13 @@ public class Service {
         Klausur klausur = klausurRepo.findeKlausurByID(id);
         logger.info(principal.getAttribute("login").toString() + " hat die Klausur " + klausur + " und damit auch möglichen verbundenen Urlaub an dem Tag storniert");
     }
+
+    public void urlaubStornieren(OAuth2User principal, String tag, String beginn, String end) throws Exception {
+        Student student = studentRepo.findByID(Long.parseLong(principal.getAttribute("id").toString()));
+        student.entferneUrlaub(tag, beginn, end);
+        studentRepo.speicherStudent(student);
+        logger.info(principal.getAttribute("login") + " hat seinen Urlaub am " + tag + " von " + beginn + " bis " + end + " Uhr storniert");
+    }
+
+
 }

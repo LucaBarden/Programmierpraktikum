@@ -50,8 +50,7 @@ public class Student {
     }
 
     public void aendereUrlaube(Set<Urlaub> gueltigeUrlaube, LocalDate datum){
-        Set<Urlaub> alteUrlaube = new HashSet<>();
-        alteUrlaube.addAll(urlaube);
+        Set<Urlaub> alteUrlaube = new HashSet<>(urlaube);
         for(Urlaub u: alteUrlaube){
             if(u.getTag().compareTo(datum) == 0){
                 urlaube.remove(u);
@@ -61,6 +60,12 @@ public class Student {
         zieheUrlaubsdauerAb(gueltigeUrlaube);
         urlaube.addAll(gueltigeUrlaube);
 
+    }
+
+    public void entferneUrlaub(String tag, String beginn, String end){
+        Urlaub urlaub = new Urlaub(tag, beginn, end);
+        urlaube.remove(urlaub);
+        erstatteUrlaubsdauer(urlaub);
     }
 
     public void erstatteUrlaubsdauer(Urlaub veralteterUrlaub) {

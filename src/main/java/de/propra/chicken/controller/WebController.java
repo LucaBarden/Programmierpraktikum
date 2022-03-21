@@ -44,7 +44,11 @@ public class WebController {
 
         model.addAttribute("student", student);
         model.addAttribute("klausuren", service.ladeAngemeldeteKlausuren(student.getGithubID()));
-        model.addAttribute("urlaube", student.getUrlaube());
+        try {
+            model.addAttribute("urlaube", service.ladeAngemeldeteUrlaube(student.getGithubID()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return "Student";
     }
@@ -73,12 +77,17 @@ public class WebController {
 
     @Secured("ROLE_USER")
     @PostMapping("urlaubStornieren")
-    public String urlaubStornieren(String tag, String beginn, String end){
+    public String urlaubStornieren(String tag, String beginn, String end, @AuthenticationPrincipal OAuth2User principal){
 
         System.out.println(tag);
         System.out.println(beginn);
         System.out.println(end);
-        
+
+        try {
+            service.urlaubStornieren(principal, tag, beginn, end);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
         return "redirect:/student";

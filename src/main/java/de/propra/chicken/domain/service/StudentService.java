@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 @Service
 public class StudentService {
@@ -190,7 +192,7 @@ public class StudentService {
             while (aenderung) {
                 aenderung = false;
                 for (Urlaub pruefen : zuPruefendeUrlaube) {
-                    //if (aenderung) break;
+                    if (aenderung) break;
                     for (Urlaub u : zuErstattenderUrlaube) {
                         //Startzeit von u ist nach urlaub oder gleichzeitig mit dessen Endzeit
                         if (u.getBeginn().isAfter(pruefen.getEnd()) || u.getBeginn().equals(pruefen.getEnd())) {
@@ -251,5 +253,17 @@ public class StudentService {
     }
 
 
-
+    public Map<Urlaub, Boolean> stornierbareUrlaube(Set<Urlaub> urlaube) {
+        Map<Urlaub, Boolean> stornierbar = new HashMap<>();
+        //prüft, ob der Urlaub noch im stornierbaren Zeitraum ist
+        for(Urlaub urlaub : urlaube) {
+            if(urlaub.getTag().isAfter(LocalDate.now())) {
+                stornierbar.put(urlaub, true);
+            }
+            else {
+                stornierbar.put(urlaub, false);
+            }
+        }
+        return stornierbar;
+    }
 }

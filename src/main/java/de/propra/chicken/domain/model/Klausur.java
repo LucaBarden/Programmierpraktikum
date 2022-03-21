@@ -72,7 +72,7 @@ public class Klausur {
 
     @Override
     public String toString() {
-        return (praesenz) ? "Präsenklausur " : "Onlineklausur " + this.name + "(" + this.getDatum().toString() + ", "
+        return ((praesenz) ? "Präsenklausur " : "Onlineklausur ") + this.name + "(" + this.getDatum().toString() + ", "
                 + this.getBeginn().truncatedTo(ChronoUnit.MINUTES).toString() + " - "
                 + this.getEnd().truncatedTo(ChronoUnit.MINUTES).toString() + " Uhr)";
     }
