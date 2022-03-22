@@ -3,9 +3,11 @@ package de.propra.chicken.domain.service;
 import de.propra.chicken.domain.model.*;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoField;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -15,7 +17,6 @@ public class StudentService {
 
     public Set<Urlaub> validiereKlausurAnmeldung(Klausur klausur,  Student student,String beginn, String ende ) throws Exception {
 
-        //TODO: urlaube erstatten (wenn überlappt)
         Set<KlausurRef> angemeldeteKlausurenRefs = student.getKlausuren();
 
         //Die klausur ist mindestens einen Tag später
@@ -30,7 +31,6 @@ public class StudentService {
         }
         //die urlaube, die man wieder bekommen würde durch neue Klausur: Zeitraum der Klausur mit puffer:
         Set<Urlaub> zuErstattendMoeglicheUrlaube = new HashSet<>();
-        //TODO: hinterher wieder weg machen, kann man mit klausur als Parameter übergeben
         KlausurData klausurData = klausur.getKlausurData();
 
         klausurenAmSelbenTag(zuErstattendMoeglicheUrlaube, Set.of(klausurData), beginn, ende);
@@ -65,7 +65,16 @@ public class StudentService {
         return neueUrlaube;
     }
 
+    public static boolean isWeekend(final LocalDate ld) {
+        DayOfWeek day = DayOfWeek.of(ld.get(ChronoField.DAY_OF_WEEK));
+        return day == DayOfWeek.SUNDAY || day == DayOfWeek.SATURDAY;
+    }
+
     public void checkAufGrundregeln(int resturlaub, Urlaub urlaub, String beginn, String ende) throws Exception {
+
+        if(isWeekend(urlaub.getTag()) ){
+            throw new Exception("Der Urlaub liegt im Wochenende");
+        }
         //Fehler: Startzeit ist nach Endzeit
         if(urlaub.getBeginn().isAfter(urlaub.getEnd())) {
             throw new Exception("Die Startzeit kann nicht nach der Endzeit liegen");

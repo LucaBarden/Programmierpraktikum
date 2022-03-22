@@ -24,7 +24,7 @@ public class ServiceTest {
     @Test
     @DisplayName("Testet ob eine ungueltige LSF ID einen Fehler wirft")
     public void invalidLSFID(){
-        //TODO: (in)validLsfID aus DB oder Internet je eigene Methode
+
         StudentRepository studentRepo = mock(StudentRepository.class);
         KlausurRepository klausurRepo = mock(KlausurRepository.class);
         KlausurService klausurService = new KlausurService();
