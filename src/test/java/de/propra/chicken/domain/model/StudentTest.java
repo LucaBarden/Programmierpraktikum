@@ -264,5 +264,23 @@ public class StudentTest {
         assertThat(student.getResturlaub()).isEqualTo(180);
     }
 
+    @Test
+    @DisplayName("Entfernt eine Klausur aus der Liste der angemeldeten Klausuren")
+    void entferneKlausur(){
+        Student student = new Student(123 );
+        Set<KlausurRef> klausurRefs = new HashSet<>();
+        KlausurRef ref1 = new KlausurRef(123);
+        KlausurRef ref2 = new KlausurRef(456);
+        KlausurRef ref3 = new KlausurRef(789);
+        klausurRefs.add(ref1);
+        klausurRefs.add(ref2);
+        klausurRefs.add(ref3);
+        student.setKlausuren(klausurRefs);
 
+        student.entferneKlausur(123);
+
+        assertThat(student.getKlausuren()).hasSize(2);
+        assertThat(student.getKlausuren()).contains(ref2);
+        assertThat(student.getKlausuren()).contains(ref3);
+    }
 }
