@@ -15,6 +15,8 @@ public class KlausurServiceTests {
 
     private static final String BEGINN_PRAKTIKUM = "08:30";
     private static final String ENDE_PRAKTIKUM   = "12:30";
+    private static final String STARTDATUM = LocalDate.now().minusDays(7).toString();
+    private static final String ENDDATUM   = LocalDate.now().plusDays(7).toString();
 
     Set<Klausur> arrange(){
         Set<Klausur> alleKlausuren = new HashSet<>();
@@ -73,24 +75,68 @@ public class KlausurServiceTests {
 
     @Test
     @DisplayName("Klausurvalidierung: Start nach Ende")
-    void klausurValidierungStartNachEnde() {
+    void klausurValidierung1() {
         KlausurService klausurService = new KlausurService();
         Klausur klausur = new Klausur("RA", 1234, true, "1000-11-12", "11:00", "10:00");
 
-        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur));
+        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
 
         assertThat(thrown.getMessage()).isEqualTo("Die Startzeit kann nicht nach der Endzeit liegen");
     }
 
     @Test
     @DisplayName("Klausurvalidierung: Start gleich Ende")
-    void klausurValidierungStartGleichEnde() {
+    void klausurValidierung2() {
         KlausurService klausurService = new KlausurService();
         Klausur klausur = new Klausur("RA", 1234, true, "1000-11-12", "11:00", "11:00");
 
-        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur));
+        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
 
         assertThat(thrown.getMessage()).isEqualTo("Die Startzeit und Endzeit sind gleich!!");
+    }
+
+    @Test
+    @DisplayName("Klausurvalidierung: Klausur liegt vor Praktikumsbeginn (Datum)")
+    void klausurValidierung3() {
+        KlausurService klausurService = new KlausurService();
+        Klausur klausur = new Klausur("RA", 1234, true, LocalDate.now().minusDays(9).toString(), "11:00", "11:30");
+
+        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+
+        assertThat(thrown.getMessage()).isEqualTo("Das Klausurdatum liegt vor dem Praktikumsbeginn!");
+    }
+
+    @Test
+    @DisplayName("Klausurvalidierung: Klausur liegt nach Praktikumsende (Datum)")
+    void klausurValidierung4() {
+        KlausurService klausurService = new KlausurService();
+        Klausur klausur = new Klausur("RA", 1234, true, LocalDate.now().plusDays(9).toString(), "11:00", "11:30");
+
+        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+
+        assertThat(thrown.getMessage()).isEqualTo("Das Klausurdatum liegt nach dem Praktikumsende!");
+    }
+
+    @Test
+    @DisplayName("Klausurvalidierung: die Klausuruhrzeit liegt vor Beginn des Praktikums")
+    void klausurValidierung5() {
+        KlausurService klausurService = new KlausurService();
+        Klausur klausur = new Klausur("RA", 1234, true, LocalDate.now().plusDays(1).toString(), "07:00", "08:00");
+
+        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+
+        assertThat(thrown.getMessage()).isEqualTo("Setzen Sie den Anfang der Klausur auf den Anfang des Praktikums.");
+    }
+
+    @Test
+    @DisplayName("Klausurvalidierung: die Klausuruhrzeit liegt nach Ende des Praktikums")
+    void klausurValidierung6() {
+        KlausurService klausurService = new KlausurService();
+        Klausur klausur = new Klausur("RA", 1234, true, LocalDate.now().plusDays(1).toString(), "13:00", "14:00");
+
+        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+
+        assertThat(thrown.getMessage()).isEqualTo("Setzen Sie das Ende der Klausur auf das Ende des Praktikums.");
     }
 
 }

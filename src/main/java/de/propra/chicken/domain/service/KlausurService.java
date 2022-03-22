@@ -4,6 +4,7 @@ import de.propra.chicken.domain.model.Klausur;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 @Service
 public class KlausurService {
@@ -32,12 +33,24 @@ public class KlausurService {
         return stornierbar;
     }
 
-    public void validiereKlausur(Klausur klausur) throws Exception {
+    public void validiereKlausur(Klausur klausur, String beginn, String ende, String anfangsdatum, String enddatum) throws Exception {
         if(klausur.getBeginn().isAfter(klausur.getEnde())) {
             throw new Exception("Die Startzeit kann nicht nach der Endzeit liegen");
         }
         if(klausur.getBeginn().equals(klausur.getEnde())) {
             throw new Exception("Die Startzeit und Endzeit sind gleich!!");
+        }
+        if(klausur.getDatum().isBefore(LocalDate.parse(anfangsdatum))) {
+            throw new Exception("Das Klausurdatum liegt vor dem Praktikumsbeginn!");
+        }
+        if(klausur.getDatum().isAfter(LocalDate.parse(enddatum))) {
+            throw new Exception("Das Klausurdatum liegt nach dem Praktikumsende!");
+        }
+        if(klausur.getBeginn().isBefore(LocalTime.parse(beginn))) {
+            throw new Exception("Setzen Sie den Anfang der Klausur auf den Anfang des Praktikums.");
+        }
+        if(klausur.getEnde().isAfter(LocalTime.parse(ende))) {
+            throw new Exception("Setzen Sie das Ende der Klausur auf das Ende des Praktikums.");
         }
         /*if(Duration.between(klausur.getBeginn(), klausur.getEnd()).toMinutes() < 60) {
             throw new Exception("Die Klausur muss mindestens 60 Minuten dauern.");

@@ -39,11 +39,10 @@ public class StudentService {
         return berechneGueltigeUrlaube(urlaubeSelberTag, zuErstattendMoeglicheUrlaube) ;
     }
 
-    public Set<Urlaub> validiereUrlaub(Student student, Urlaub urlaub, Set<KlausurData> klausuren, String beginn, String ende) throws Exception {
-        //TODO: String startdatum und String enddatum als Parameter übergeben und überprüfen, ob Urlaubsdatum im Praktikumszeitraum liegt (in checkAufGrundregeln())
+    public Set<Urlaub> validiereUrlaub(Student student, Urlaub urlaub, Set<KlausurData> klausuren, String beginn, String ende, String anfangsdatum, String enddatum) throws Exception {
         Set<Urlaub> zuErstattendeZeiten = new HashSet<>();
 
-        checkAufGrundregeln(student.getResturlaub(), urlaub, beginn, ende);
+        checkAufGrundregeln(student.getResturlaub(), urlaub, beginn, ende, anfangsdatum, enddatum);
 
         Set<Urlaub> urlaubeSelberTag = student.urlaubSelberTag(urlaub.getTag());
         Set<KlausurData> klausurSelberTag = klausurSelberTag(urlaub, klausuren);
@@ -65,34 +64,35 @@ public class StudentService {
         return neueUrlaube;
     }
 
-    public static boolean isWeekend(final LocalDate ld) {
+    /*public static boolean isWeekend(final LocalDate ld) {
         DayOfWeek day = DayOfWeek.of(ld.get(ChronoField.DAY_OF_WEEK));
         return day == DayOfWeek.SUNDAY || day == DayOfWeek.SATURDAY;
-    }
+    }*/
 
-    public void checkAufGrundregeln(int resturlaub, Urlaub urlaub, String beginn, String ende) throws Exception {
-
-        if(isWeekend(urlaub.getTag()) ){
+    public void checkAufGrundregeln(int resturlaub, Urlaub urlaub, String beginn, String ende, String anfangsdatum, String enddatum) throws Exception {
+        /*if(isWeekend(urlaub.getTag()) ){
             throw new Exception("Der Urlaub liegt im Wochenende");
+        }*/
+        if(urlaub.getTag().isBefore(LocalDate.parse(anfangsdatum))) {
+            throw new Exception("Das Urlaubsdatum liegt vor dem Praktikumsbeginn!");
         }
-        //Fehler: Startzeit ist nach Endzeit
+        if(urlaub.getTag().isAfter(LocalDate.parse(enddatum))) {
+            throw new Exception("Das Urlaubsdatum liegt nach dem Praktikumsende!");
+        }
         if(urlaub.getBeginn().isAfter(urlaub.getEnd())) {
             throw new Exception("Die Startzeit kann nicht nach der Endzeit liegen");
         }
-        //Fehler: Startzeit und Endzeit sind gleich
         if(urlaub.getBeginn().equals(urlaub.getEnd())) {
             throw new Exception("Die Startzeit und Endzeit sind gleich!!");
         }
-        //Fehler: keine ganzen Viertelstunden & Startzeiten 00, 15, 30, 45
         if (!(urlaub.getBeginn().getMinute() % 15 == 0) || !(urlaub.getEnd().getMinute() % 15 == 0)) {
             throw new Exception("Die Start- und Endzeit muss ein Vielfaches von 15 Minuten sein");
         }
-        //Fehler: Resturlaub < Urlaubszeit
         if (resturlaub < Duration.between(urlaub.getBeginn(), urlaub.getEnd()).toMinutes()) {
             throw new Exception("Es ist zu wenig Resturlaub übrig");
         }
         if(urlaub.getBeginn().isBefore(LocalTime.parse(beginn)) || urlaub.getEnd().isAfter(LocalTime.parse(ende))) {
-            throw new Exception("Der Urlaub muss im Praktikumszeitraum liegen");
+            throw new Exception("Der Urlaub muss im Praktikumszeitraum liegen (Uhrzeit)");
         }
         if(urlaub.getTag().isBefore(LocalDate.now().plusDays(1))) {
             throw new Exception("Man kann Urlaub spätestens einen Tag vorher buchen.");

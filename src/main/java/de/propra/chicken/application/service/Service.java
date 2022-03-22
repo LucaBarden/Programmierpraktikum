@@ -77,7 +77,7 @@ public class Service {
 
     private void validiereKlausur(Klausur klausur) throws Exception {
         validiereLsfIdInternet(klausur);
-        klausurService.validiereKlausur(klausur);
+        klausurService.validiereKlausur(klausur, BEGINN, ENDE, STARTDATUM, ENDDATUM);
     }
 
     private void validiereLsfIdInternet(Klausur klausur) throws Exception {
@@ -117,8 +117,13 @@ public class Service {
     public void speicherUrlaub(Urlaub urlaub, long githubID, OAuth2User principal) throws Exception {
         try {
             Student student = studentRepo.findByID(githubID);
+<<<<<<< Updated upstream
             Set<KlausurData> angemeldeteKlausuren = klausurRepo.findAngemeldeteKlausuren(githubID);
             Set<Urlaub> gueltigerNeuerUrlaub = studentService.validiereUrlaub(student, urlaub, angemeldeteKlausuren, BEGINN, ENDE);
+=======
+            Set<KlausurData> angemeldeteKlausuren = studentRepo.findAngemeldeteKlausuren(githubID);
+            Set<Urlaub> gueltigerNeuerUrlaub = studentService.validiereUrlaub(student, urlaub, angemeldeteKlausuren, BEGINN, ENDE, STARTDATUM, ENDDATUM);
+>>>>>>> Stashed changes
             student.addUrlaube(gueltigerNeuerUrlaub);
             gueltigerNeuerUrlaub = student.ueberschneidendenUrlaubMergen();
             student.setUrlaube(gueltigerNeuerUrlaub);
