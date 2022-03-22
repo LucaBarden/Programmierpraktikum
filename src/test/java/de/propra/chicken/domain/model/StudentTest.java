@@ -55,10 +55,10 @@ public class StudentTest {
     @DisplayName("drei Urlaubsblöcke direkt nacheinander werden zu einem Block gemerged")
     void dreiUrlaubsbloeckeMergen() {
         Student student = new Student(123);
-        Set<Urlaub> urlaube = new HashSet<>();
         Urlaub urlaub1 = new Urlaub("1000-01-01", "09:00", "10:00");
         Urlaub urlaub2 = new Urlaub("1000-01-01", "10:00", "11:00");
         Urlaub urlaub3 = new Urlaub("1000-01-01", "11:00", "12:00");
+        Set<Urlaub> urlaube = new HashSet<>();
         urlaube.add(urlaub1);
         urlaube.add(urlaub2);
         urlaube.add(urlaub3);
@@ -76,10 +76,10 @@ public class StudentTest {
     @DisplayName("drei Urlaubsblöcke nicht hintereinander, werden nicht verändert")
     void dreiUrlaubsbloeckeKeinMergen() {
         Student student = new Student(123);
-        Set<Urlaub> urlaube = new HashSet<>();
         Urlaub urlaub1 = new Urlaub("1000-01-01", "08:30", "09:30");
         Urlaub urlaub2 = new Urlaub("1000-01-01", "09:45", "10:00");
         Urlaub urlaub3 = new Urlaub("1000-01-01", "11:00", "11:30");
+        Set<Urlaub> urlaube = new HashSet<>();
         urlaube.add(urlaub1);
         urlaube.add(urlaub2);
         urlaube.add(urlaub3);
@@ -99,11 +99,11 @@ public class StudentTest {
     @DisplayName("je zwei Urlaubsblöcke direkt nacheinander werden zu je einem Block gemerged")
     void vierUrlaubsbloeckeZweiMergen() {
         Student student = new Student(123);
-        Set<Urlaub> urlaube = new HashSet<>();
         Urlaub urlaub1 = new Urlaub("1000-01-01", "08:30", "09:00");
         Urlaub urlaub2 = new Urlaub("1000-01-01", "09:00", "09:30");
         Urlaub urlaub3 = new Urlaub("1000-01-01", "11:00", "11:30");
         Urlaub urlaub4 = new Urlaub("1000-01-01", "11:30", "12:00");
+        Set<Urlaub> urlaube = new HashSet<>();
         urlaube.add(urlaub1);
         urlaube.add(urlaub2);
         urlaube.add(urlaub3);
@@ -159,5 +159,60 @@ public class StudentTest {
         assertThat(student.getResturlaub()).isEqualTo(120);
         assertThat(student.getUrlaube()).contains(urlaub3, gueltigeUrlaub);
         assertThat(student.getUrlaube()).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("urlaubSelberTag wird richtig berechnet")
+    void urlaubSelberTag() {
+        Student student = new Student(123);
+        Urlaub urlaub1 = new Urlaub("2022-03-10", "08:45", "09:15"); //selber Tag
+        Urlaub urlaub2 = new Urlaub("2022-03-10", "10:00", "10:15"); //selber Tag
+        Urlaub urlaub3 = new Urlaub("2022-03-12", "09:00", "09:15");
+        Urlaub urlaub4 = new Urlaub("2022-03-10", "12:00", "12:30"); //selber Tag
+        Urlaub urlaub5 = new Urlaub("2022-03-11", "10:00", "11:30");
+        Urlaub urlaub6 = new Urlaub("2022-03-14", "11:30", "12:30");
+        Set<Urlaub> urlaube = Set.of(urlaub1, urlaub2, urlaub3, urlaub4, urlaub5, urlaub6);
+        student.addUrlaube(urlaube);
+
+        Set<Urlaub> selberTag = student.urlaubSelberTag(urlaub1.getTag());
+
+        assertThat(selberTag).hasSize(3);
+        assertThat(selberTag).contains(urlaub1);
+        assertThat(selberTag).contains(urlaub2);
+        assertThat(selberTag).contains(urlaub4);
+    }
+
+    @Test
+    @DisplayName("summeAllerUrlaube wird richtig berechnet")
+    void summeUrlaube() {
+        Student student = new Student(123);
+        Urlaub urlaub1 = new Urlaub("2022-03-10", "08:45", "09:15");
+        Urlaub urlaub2 = new Urlaub("2022-03-10", "10:00", "10:15");
+        Urlaub urlaub3 = new Urlaub("2022-03-12", "09:00", "09:15");
+        Urlaub urlaub4 = new Urlaub("2022-03-11", "10:00", "11:30");
+        Urlaub urlaub5 = new Urlaub("2022-03-14", "11:30", "12:30");
+        Set<Urlaub> urlaube = Set.of(urlaub1, urlaub2, urlaub3, urlaub4, urlaub5);
+        student.addUrlaube(urlaube);
+
+        long summe = student.summeAllerUrlaube();
+
+        assertThat(summe).isEqualTo(210);
+    }
+
+    @Test
+    @DisplayName("zieheUrlaubsdauerAb")
+    void reduziereResturlaub() {
+        Student student = new Student(123);
+        Urlaub urlaub1 = new Urlaub("2022-03-10", "08:45", "09:15");
+        Urlaub urlaub2 = new Urlaub("2022-03-10", "10:00", "10:15");
+        Urlaub urlaub3 = new Urlaub("2022-03-12", "09:00", "09:15");
+        Urlaub urlaub4 = new Urlaub("2022-03-11", "10:00", "11:30");
+        Urlaub urlaub5 = new Urlaub("2022-03-14", "11:30", "12:30");
+        Set<Urlaub> gueltigeUrlaube = Set.of(urlaub1, urlaub2, urlaub3, urlaub4, urlaub5);
+
+        student.zieheUrlaubsdauerAb(gueltigeUrlaube);
+        int resturlaub = student.getResturlaub();
+
+        assertThat(resturlaub).isEqualTo(30);
     }
 }
