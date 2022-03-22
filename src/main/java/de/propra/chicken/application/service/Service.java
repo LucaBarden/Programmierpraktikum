@@ -120,7 +120,6 @@ public class Service {
             Set<KlausurData> angemeldeteKlausuren = studentRepo.findAngemeldeteKlausuren(githubID);
             Set<Urlaub> gueltigerNeuerUrlaub = studentService.validiereUrlaub(student, urlaub, angemeldeteKlausuren, BEGINN, ENDE);
             student.addUrlaube(gueltigerNeuerUrlaub);
-            student.zieheUrlaubsdauerAb(gueltigerNeuerUrlaub);
             gueltigerNeuerUrlaub = student.ueberschneidendenUrlaubMergen();
             student.setUrlaube(gueltigerNeuerUrlaub);
             studentRepo.speicherStudent(student);

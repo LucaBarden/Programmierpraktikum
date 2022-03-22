@@ -215,4 +215,54 @@ public class StudentTest {
 
         assertThat(resturlaub).isEqualTo(30);
     }
+
+    @Test
+    @DisplayName("Entfernt einzigen Urlaub dieses Tages ")
+    void entferneUrlaubTest1(){
+        Student student = new Student(123 );
+        Urlaub urlaub = new Urlaub("2022-02-02", "08:30", "10:00");
+        Set<Urlaub> urlaube = new HashSet<>();
+        urlaube.add(urlaub);
+        student.setUrlaube(urlaube);
+
+        student.entferneUrlaub("2022-02-02", "08:30", "10:00");
+
+        assertThat(student.getUrlaube()).hasSize(0);
+        assertThat(student.getResturlaub()).isEqualTo(240);
+    }
+    @Test
+    @DisplayName("Entfernt einzigen Urlaub dieses Tages mit mehreren Urlauben  ")
+    void entferneUrlaubTest2(){
+        Student student = new Student(123 );
+        Set<Urlaub> urlaube = new HashSet<>();
+        urlaube.add(new Urlaub("2022-02-02", "08:30", "10:00"));
+        urlaube.add(new Urlaub("2022-02-03", "08:30", "09:30"));
+        urlaube.add(new Urlaub("2022-02-03", "11:30", "12:30"));
+
+        student.setUrlaube(urlaube);
+
+        student.entferneUrlaub("2022-02-02", "08:30", "10:00");
+
+        assertThat(student.getUrlaube()).hasSize(2);
+        assertThat(student.getResturlaub()).isEqualTo(120);
+    }
+
+    @Test
+    @DisplayName("Entfernt den ganzen Tag bei mehreren Urlauben am Tag")
+    void entferneUrlaubAnEinemTagTest1(){
+        Student student = new Student(123 );
+        Set<Urlaub> urlaube = new HashSet<>();
+        urlaube.add(new Urlaub("2022-02-02", "08:30", "10:00"));
+        urlaube.add(new Urlaub("2022-02-02", "12:00", "12:30"));
+        urlaube.add(new Urlaub("2022-02-03", "11:30", "12:30"));
+
+        student.setUrlaube(urlaube);
+
+        student.entferneUrlaubeAnEinemTag(LocalDate.of(2022,2,2));
+
+        assertThat(student.getUrlaube()).hasSize(1);
+        assertThat(student.getResturlaub()).isEqualTo(180);
+    }
+
+
 }

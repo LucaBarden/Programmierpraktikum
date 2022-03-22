@@ -80,6 +80,7 @@ public class Student {
 
     public void setUrlaube(Set<Urlaub> urlaube) {
         this.urlaube = urlaube;
+        this.resturlaub = 240 - (int) summeAllerUrlaube();
     }
 
     public void setKlausuren(Set<KlausurRef> klausuren) {
@@ -92,6 +93,7 @@ public class Student {
 
     public void addUrlaube(Set<Urlaub> urlaub) {
         urlaube.addAll(urlaub);
+        zieheUrlaubsdauerAb(urlaub);
     }
 
 
