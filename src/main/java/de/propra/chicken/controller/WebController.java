@@ -9,7 +9,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 
@@ -26,7 +28,6 @@ public class WebController {
     @Secured("ROLE_USER")
     @GetMapping("/")
     public String index(@AuthenticationPrincipal OAuth2User principal) {
-        System.out.println(principal.getAttributes());
         return "redirect:/student";
     }
 
@@ -37,7 +38,6 @@ public class WebController {
         Student student = null;
         try {
             student = service.findStudentByGithubID(Long.parseLong(principal.getAttribute("id").toString()));
-            System.out.println(student);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,15 +81,12 @@ public class WebController {
 
     @Secured("ROLE_USER")
     @PostMapping("urlaubStornieren")
-    public String urlaubStornieren(String tag, String beginn, String end, @AuthenticationPrincipal OAuth2User principal){
-
+    public String urlaubStornieren(String tag, String beginn, String end, @AuthenticationPrincipal OAuth2User principal) {
         try {
             service.urlaubStornieren(principal, tag, beginn, end);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
         return "redirect:/student";
     }
 
@@ -102,12 +99,14 @@ public class WebController {
 
     @Secured("ROLE_USER")
     @PostMapping("/klausurErstellen")
-    public String klausurErstellen(Klausur klausur, @AuthenticationPrincipal OAuth2User principal) {
+    public String klausurErstellen(Model model, Klausur klausur, @AuthenticationPrincipal OAuth2User principal) {
         System.out.println(klausur);
         try {
             service.saveKlausur(klausur, principal);
         } catch (Exception e) {
-            e.printStackTrace();
+            model.addAttribute("error", true);
+            model.addAttribute("errortxt", e.getMessage());
+            return klausurAnlegen(model);
         }
         return "redirect:/klausur";
     }
@@ -122,18 +121,20 @@ public class WebController {
 
     @Secured("ROLE_USER")
     @PostMapping("/klausurAnmelden")
-    public String klausurAnmelden(long id, @AuthenticationPrincipal OAuth2User principal) {
+    public String klausurAnmelden(Model model, long id, @AuthenticationPrincipal OAuth2User principal) {
         try {
             service.klausurAnmeldung(id, principal);
         } catch (Exception e) {
-            e.printStackTrace();
+            model.addAttribute("error", true);
+            model.addAttribute("errortxt", e.getMessage());
+            return klausur(model, principal);
         }
         return "redirect:/student";
     }
 
     @Secured("ROLE_USER")
     @PostMapping("/klausurStornieren")
-    public String klausurStornieren(@RequestParam("ref") long id, @AuthenticationPrincipal OAuth2User principal){
+    public String klausurStornieren(@RequestParam("ref") long id, @AuthenticationPrincipal OAuth2User principal) {
         try {
             service.storniereKlausurAnmeldung(id, principal);
         } catch (Exception e) {

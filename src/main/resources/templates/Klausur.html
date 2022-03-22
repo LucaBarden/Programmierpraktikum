@@ -21,6 +21,7 @@
         </form>
     </div>
     <div class="formular mtb-3">
+        <label for="klausur-select"><strong>Klausur auswählen</strong></label>
         <form name="klausur_anmelden" method="post" th:action="@{/klausurAnmelden}">
             <select class="form-control" name="id" id="klausur-select">
                 <th:block th:each="k : ${klausuren}">
@@ -40,7 +41,11 @@
                 Ggf. überprüfen wir die Teilnahme an der Klausur über die entsprechenden Teilnehmerlisten
                 <br>
                 <button alt="Klausuranmeldung abschicken" name="klausuranmeldung_abschicken" type="submit" class="btn btn-primary mt-2">Eintragen</button>
+                <button alt="Zurück zur Startseite"  class="btn btn-secondary mt-2" onclick="location.href='/student'" type="button">Zurück zur Startseite</button>
         </form>
+        <div th:if="${error}">
+            <p class="alert alert-warning" th:text="${errortxt}"></p>
+        </div>
         </p>
     </div>
 
