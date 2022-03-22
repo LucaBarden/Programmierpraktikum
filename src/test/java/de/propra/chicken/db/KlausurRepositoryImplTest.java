@@ -11,7 +11,6 @@ import org.springframework.test.context.jdbc.Sql;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -38,16 +37,18 @@ public class KlausurRepositoryImplTest {
     void test1() {
         //ARRANGE
         Klausur klausur = new Klausur("RA", 12335, true, "1999-01-01", "08:30", "09:30");
+        AtomicReference<Klausur> klausurSaved = new AtomicReference<>();
         //ACT
-        assertDoesNotThrow(() -> db.speicherKlausur(klausur));
+        assertDoesNotThrow(() -> klausurSaved.set(db.speicherKlausur(klausur)));
         //ASSERT
+        assertThat(klausurSaved.get()).isEqualTo(klausur);
         Optional<Klausur> result = crud.findeKlausurByID(klausur.getLsfid()).map(db::transferDTOToKlausur);
         assertThat(result).isNotEmpty();
         assertThat(result.get()).isEqualTo(klausur);
     }
 
     @Test
-    @Sql({"classpath:testCreate.sql","classpath:testData.sql"})
+    @Sql({"classpath:testCreate.sql", "classpath:testDataKlausur.sql"})
     @DisplayName("Testet, ob eine Klausur nicht gespeichert wird und keine Änderung vornimmt, wenn die Klausur schon existiert")
     void test2() {
         //ARRANGE
@@ -63,7 +64,7 @@ public class KlausurRepositoryImplTest {
     }
 
     @Test
-    @Sql({"classpath:testCreate.sql","classpath:testData.sql"})
+    @Sql({"classpath:testCreate.sql", "classpath:testDataKlausur.sql"})
     @DisplayName("Testet, ob eine Klausur richtig abgerufen wird, wenn mehrere existieren")
     void test3() {
         //ARRANGE
@@ -77,7 +78,7 @@ public class KlausurRepositoryImplTest {
     }
 
     @Test
-    @Sql({"classpath:testCreate.sql","classpath:testData.sql"})
+    @Sql({"classpath:testCreate.sql", "classpath:testDataKlausur.sql"})
     @DisplayName("Testet, dass ein Fehler geworfen wird wenn eine Klausur gesucht wird, die nicht existiert")
     void test4() {
         //ARRANGE
@@ -87,7 +88,7 @@ public class KlausurRepositoryImplTest {
     }
 
     @Test
-    @Sql({"classpath:testCreate.sql","classpath:testData.sql"})
+    @Sql({"classpath:testCreate.sql", "classpath:testDataKlausur.sql"})
     @DisplayName("Testet, dass alle Klausuren gefunden werden")
     void test5() {
         //ARRANGE
@@ -101,7 +102,7 @@ public class KlausurRepositoryImplTest {
     }
 
     @Test
-    @Sql({"classpath:testCreate.sql","classpath:testData.sql", "classpath:testData2.sql"})
+    @Sql({"classpath:testCreate.sql", "classpath:testDataKlausur.sql", "classpath:testDataKlausur2.sql"})
     @DisplayName("Testet, dass nur bestimmte Klausuren mit KlausurRef gefunden werden")
     void test6() {
         //ARRANGE
@@ -117,7 +118,7 @@ public class KlausurRepositoryImplTest {
     }
 
     @Test
-    @Sql({"classpath:testCreate.sql","classpath:testData.sql", "classpath:testData2.sql"})
+    @Sql({"classpath:testCreate.sql", "classpath:testDataKlausur.sql", "classpath:testDataKlausur2.sql"})
     @DisplayName("Testet, dass nur bestimmte Klausuren mit KlausurRef gefunden und zu KlausurData konvertiert werden")
     void test7() {
         //ARRANGE

@@ -66,6 +66,12 @@ public class KlausurRepositoryImpl implements KlausurRepository {
     public Klausur findeKlausurByID(long id) throws Exception {
         return crudKlausur.findeKlausurByID(id).map(this::transferDTOToKlausur).orElseThrow(() -> new Exception("Diese Klausur Existiert nicht"));
     }
+
+    @Override
+    public Set<KlausurData> findAngemeldeteKlausuren(long githubID) {
+        return crudKlausur.findAngemeldeteKlausuren(githubID);
+    }
+
     private Set<KlausurDTO> findeKlausurenByID(Set<KlausurRef> angemeldeteKlausurenRefs) {
         Set<Long> IDs = angemeldeteKlausurenRefs.stream().map(KlausurRef::getLsfID).collect(Collectors.toSet());
         Set<KlausurDTO> DTOs = new HashSet<>();

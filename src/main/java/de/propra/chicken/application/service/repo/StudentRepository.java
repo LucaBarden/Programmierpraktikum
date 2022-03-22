@@ -7,7 +7,6 @@ import java.util.Set;
 
 public interface StudentRepository {
 
-    Set<KlausurData> findAngemeldeteKlausuren(long githubID);
 
     Student speicherStudent(Student student);
 

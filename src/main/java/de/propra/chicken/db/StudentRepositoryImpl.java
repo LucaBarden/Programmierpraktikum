@@ -18,14 +18,6 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
 
-
-    //Works
-    @Override
-    public Set<KlausurData> findAngemeldeteKlausuren(long githubID) {
-        return crudStudent.findAngemeldeteKlausuren(githubID);
-    }
-
-
     //Works
     @Override
     public Student speicherStudent(Student student) {
@@ -59,7 +51,7 @@ public class StudentRepositoryImpl implements StudentRepository {
         return crudStudent.existsById(githubID);
     }
 
-    private Student transferDTOToStudent(StudentDTO dto, Set<KlausurRef> refs) {
+    Student transferDTOToStudent(StudentDTO dto, Set<KlausurRef> refs) {
         Student student = new Student(dto.getGithubID(), dto.getResturlaub());
         student.setUrlaube(dto.getUrlaube());
         student.setKlausuren(refs);

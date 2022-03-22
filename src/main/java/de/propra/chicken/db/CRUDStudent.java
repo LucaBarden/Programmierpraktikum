@@ -13,9 +13,6 @@ import java.util.Set;
 @Repository
 public interface CRUDStudent extends CrudRepository<StudentDTO, Long> {
 
-    @Query("SELECT K.NAME, K.DATUM, K.BEGINN, K.ENDE, K.PRAESENZ FROM KLAUSUR K JOIN KLAUSUR_STUDENT KS ON K.LSF_ID = KS.KLAUSUR WHERE KS.STUDENT_DTO = :id")
-    Set<KlausurData> findAngemeldeteKlausuren(@Param("id") long id);
-
     @Query("SELECT K.KLAUSUR FROM KLAUSUR_STUDENT K WHERE K.STUDENT_DTO = :id")
     Set<KlausurRef> findAngemeldeteKlausurenIds(@Param("id") long id);
 

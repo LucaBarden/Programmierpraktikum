@@ -3,6 +3,7 @@ package de.propra.chicken.domain.model;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,19 @@ public class Student {
     private int resturlaub;
     private Set<Urlaub> urlaube = new HashSet<>();
     private Set<KlausurRef> klausuren = new HashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return githubID == student.githubID;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(githubID, resturlaub, urlaube, klausuren);
+    }
 
     @Override
     public String toString() {

@@ -117,7 +117,7 @@ public class Service {
     public void speicherUrlaub(Urlaub urlaub, long githubID, OAuth2User principal) throws Exception {
         try {
             Student student = studentRepo.findByID(githubID);
-            Set<KlausurData> angemeldeteKlausuren = studentRepo.findAngemeldeteKlausuren(githubID);
+            Set<KlausurData> angemeldeteKlausuren = klausurRepo.findAngemeldeteKlausuren(githubID);
             Set<Urlaub> gueltigerNeuerUrlaub = studentService.validiereUrlaub(student, urlaub, angemeldeteKlausuren, BEGINN, ENDE);
             student.addUrlaube(gueltigerNeuerUrlaub);
             gueltigerNeuerUrlaub = student.ueberschneidendenUrlaubMergen();

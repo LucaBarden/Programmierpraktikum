@@ -17,4 +17,6 @@ public interface KlausurRepository {
     Set<KlausurData> getKlausurenDataByRefs(Set<KlausurRef> angemeldeteKlausurenRefs);
 
     Klausur findeKlausurByID(long id) throws Exception;
+
+    Set<KlausurData> findAngemeldeteKlausuren(long githubID);
 }
