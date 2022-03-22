@@ -23,8 +23,6 @@ public class KlausurRepositoryImpl implements KlausurRepository {
     }
 
 
-
-    //Works
     @Override
     public Klausur speicherKlausur(Klausur klausur) throws Exception {
         KlausurDTO dto = transferKlausurToDTO(klausur);
@@ -37,7 +35,7 @@ public class KlausurRepositoryImpl implements KlausurRepository {
     }
 
 
-    //Works
+
     @Override
     public Set<Klausur> ladeAlleKlausuren() {
         Set<KlausurDTO> all = crudKlausur.findAll();
@@ -48,14 +46,14 @@ public class KlausurRepositoryImpl implements KlausurRepository {
         return klausuren;
     }
 
-    //Works
+
     @Override
     public Set<Klausur> getKlausurenByRefs(Set<KlausurRef> klausurenRef) {
         Set<KlausurDTO> DTOs = findeKlausurenByID(klausurenRef);
         return DTOs.stream().map(this::transferDTOToKlausur).collect(Collectors.toSet());
     }
 
-    //Works
+
     @Override
     public Set<KlausurData> getKlausurenDataByRefs(Set<KlausurRef> angemeldeteKlausurenRefs) {
         Set<KlausurDTO> DTOs = findeKlausurenByID(angemeldeteKlausurenRefs);

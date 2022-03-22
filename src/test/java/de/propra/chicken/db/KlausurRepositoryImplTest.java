@@ -132,6 +132,21 @@ public class KlausurRepositoryImplTest {
         assertThat(klausurenDB).isEqualTo(data);
     }
 
+    @Test
+    @Sql({"classpath:testCreate.sql", "classpath:testDataStudent.sql", "classpath:testDataKlausur2.sql "})
+    @DisplayName("Testet, dass nur bestimmte Klausuren mit KlausurRef gefunden und zu KlausurData konvertiert werden")
+    void test8() {
+        //ARRANGE
+        Klausur klausur1 = new Klausur("RA", 12345, true, "1999-01-01", "08:30", "12:30");
+        Klausur klausur2 = new Klausur("RDB", 54321, true, "1999-03-04", "09:00", "11:30");
+        Set<KlausurData> data = Set.of(klausur1.getKlausurData(), klausur2.getKlausurData());
+        Set<KlausurRef> refs = Set.of(new KlausurRef(54321), new KlausurRef(12345));
+        //ACT
+        Set<KlausurData> klausurenDB = db.findAngemeldeteKlausuren(99999);
+        //ASSERT
+        assertThat(klausurenDB).isEqualTo(data);
+    }
+
 
 
 

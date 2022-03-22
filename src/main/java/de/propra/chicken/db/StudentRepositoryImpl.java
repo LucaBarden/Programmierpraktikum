@@ -18,7 +18,6 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
 
-    //Works
     @Override
     public Student speicherStudent(Student student) {
         StudentDTO dto = getDto(student);
@@ -31,7 +30,6 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
 
-    //Works
     @Override
     public Student findByID(long githubID) throws Exception{
         StudentDTO dto = crudStudent.findStudentDTOByGithubID(githubID).orElseThrow(() -> new Exception("Dieser Student existiert nicht"));
@@ -39,13 +37,13 @@ public class StudentRepositoryImpl implements StudentRepository {
         return transferDTOToStudent(dto, refs);
     }
 
-    //Works
+
     @Override
     public Set<KlausurRef> getAngemeldeteKlausurenIds(long githubID) {
         return crudStudent.findAngemeldeteKlausurenIds(githubID);
     }
 
-    //Works
+
     @Override
     public boolean existsById(long githubID) {
         return crudStudent.existsById(githubID);
