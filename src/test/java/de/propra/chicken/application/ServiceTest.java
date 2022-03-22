@@ -16,8 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class ServiceTest {
@@ -31,7 +30,12 @@ public class ServiceTest {
         KlausurService klausurService = new KlausurService();
         StudentService studentService = mock(StudentService.class);
         Service service = new Service(studentRepo, klausurRepo,studentService, klausurService);
-        when(klausurRepo.speicherKlausur(any())).thenReturn(null);
+        try {
+            when(klausurRepo.speicherKlausur(any())).thenReturn(null);
+        }
+        catch(Exception ex) {
+            fail();
+        }
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             service.speicherKlausur(new Klausur("Test", 123, false, LocalDate.now().toString(), LocalTime.now().toString(), LocalTime.now().plusHours(1).toString()));
@@ -47,7 +51,12 @@ public class ServiceTest {
         KlausurService klausurService = new KlausurService();
         StudentService studentService = mock(StudentService.class);
         Service service = new Service(studentRepo, klausurRepo, studentService, klausurService);
-        when(klausurRepo.speicherKlausur(any())).thenReturn(null);
+        try {
+            when(klausurRepo.speicherKlausur(any())).thenReturn(null);
+        }
+        catch(Exception ex) {
+            fail();
+        }
 
         assertDoesNotThrow(() ->
             service.speicherKlausur(new Klausur("Test", 225282, false, LocalDate.now().plusDays(2).toString(), LocalTime.now().toString(), LocalTime.now().plusHours(1).toString())));

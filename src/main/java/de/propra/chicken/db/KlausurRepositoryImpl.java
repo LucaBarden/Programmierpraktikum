@@ -26,12 +26,12 @@ public class KlausurRepositoryImpl implements KlausurRepository {
 
     //Works
     @Override
-    public Klausur speicherKlausur(Klausur klausur) throws DuplicateRequestException {
+    public Klausur speicherKlausur(Klausur klausur) throws Exception {
         KlausurDTO dto = transferKlausurToDTO(klausur);
         if(!crudKlausur.existsById(dto.getLsfID())) {
             return transferDTOToKlausur(crudKlausur.save(dto));
         }
-        throw new DuplicateRequestException("Eine Klausur mit dieser ID existiert bereits");
+        throw new Exception("Eine Klausur mit dieser ID existiert bereits");
         //dto.setIsNew(false);
 
     }
