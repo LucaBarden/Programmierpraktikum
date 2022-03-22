@@ -21,6 +21,12 @@ import static org.mockito.Mockito.*;
 
 public class ServiceTest {
 
+    private static final String BEGINN_PRAKTIKUM = "08:30";
+    private static final String ENDE_PRAKTIKUM   = "12:30";
+    private static final String STARTDATUM = LocalDate.now().minusDays(7).toString();
+    private static final String ENDDATUM   = LocalDate.now().plusDays(7).toString();
+    
+
     @Test
     @DisplayName("Testet ob eine ungueltige LSF ID einen Fehler wirft")
     public void invalidLSFID(){
@@ -59,7 +65,7 @@ public class ServiceTest {
         }
 
         assertDoesNotThrow(() ->
-            service.speicherKlausur(new Klausur("Test", 225282, false, LocalDate.now().plusDays(2).toString(), LocalTime.now().toString(), LocalTime.now().plusHours(1).toString())));
+            service.speicherKlausur(new Klausur("Test", 225282, false, LocalDate.now().plusDays(2).toString(), BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM)));
     }
 
     @Test
