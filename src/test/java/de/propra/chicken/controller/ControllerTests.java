@@ -3,6 +3,8 @@ package de.propra.chicken.controller;
 
 import de.propra.chicken.application.service.Service;
 import de.propra.chicken.configuration.MethodSecurityConfiguration;
+import de.propra.chicken.domain.model.Klausur;
+import de.propra.chicken.domain.model.Student;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -36,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc()
 @WebMvcTest(controllers = WebController.class)
 @Import({MethodSecurityConfiguration.class})
-public class SecuredControllerTests {
+public class ControllerTests {
 
     private static MockHttpSession session;
 
@@ -48,7 +54,7 @@ public class SecuredControllerTests {
 
     @BeforeEach
     private void loggedInUser() {
-        OAuth2AuthenticationToken principal = buildPrincipal("user", "Luca Barden");
+        OAuth2AuthenticationToken principal = buildPrincipal("user", "Max Mustermann");
         MockHttpSession newSession = new MockHttpSession();
         newSession.setAttribute(
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, new SecurityContextImpl(principal));
@@ -71,6 +77,7 @@ public class SecuredControllerTests {
     @Test
     @DisplayName("Prüft ob ein eingeloggter Nutzer /Student angezeigt bekommt")
     void student() throws Exception {
+        when(service.findStudentByGithubID(12345)).thenReturn(new Student(12345));
         mockMvc.perform(get("/student")
                         .session(session))
                 .andExpect(status().isOk())
@@ -104,6 +111,7 @@ public class SecuredControllerTests {
     @Test
     @DisplayName("Button auf /urlaub leitet auf /student weiter")
     void urlaubPost() throws Exception {
+        doNothing().when(service).speicherUrlaub(any(), anyLong(), any());
         mockMvc.perform(post("/urlaubErstellen").session(session)
                         .param("tag", LocalDate.now().toString())
                         .param("beginn", LocalTime.now().toString())
@@ -116,12 +124,14 @@ public class SecuredControllerTests {
     @Test
     @DisplayName("Button auf der Seite /klausurAnlegen leitet auf /klausur weiter")
     void klausuranlegen() throws Exception {
+        doNothing().when(service).speicherKlausur(any());
         mockMvc.perform(post("/klausurErstellen").session(session)
+                        .param("name", "test")
                         .param("_praesenz", "on")
                         .param("lsfid", "12345")
-                        .param("date", LocalDate.now().toString())
+                        .param("datum", LocalDate.now().toString())
                         .param("beginn", LocalTime.now().toString())
-                        .param("end", LocalTime.now().plusHours(1).toString())
+                        .param("ende", LocalTime.now().plusHours(1).toString())
                         .with(csrf()))
 
                 .andExpect(status().is3xxRedirection())
@@ -131,12 +141,12 @@ public class SecuredControllerTests {
     @Test
     @DisplayName("Button auf der Seite /klausur leitet auf /student weiter")
     void klausuranmelden() throws Exception {
+        doNothing().when(service).klausurAnmeldung(anyLong(), any());
         mockMvc.perform(post("/klausurAnmelden").session(session)
+                        .param("id", "12345")
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/student"));
     }
-    //TODO Service Testen
-
 
 }
