@@ -49,7 +49,7 @@
         <div class="form-floating mb-3 form-control-lg">
             <div class="form-group mb-3">
                 <label for="von">Klausurbeginn (hh:mm)</label>
-                <input type="time" class="form-control" min="08:30" max="13:30" step="900" id="von" th:field="*{beginn}" placeholder="10:00" name="von"
+                <input type="time" class="form-control" id="von" th:field="*{beginn}" placeholder="10:00" name="von"
                        value="" required>
                 <div class="form-text">Runden Sie die Startzeit auf die nächste viertel Stunde ab. Falls die Klausur
                     vor
@@ -62,7 +62,7 @@
         <div class="form-floating mb-3 form-control-lg">
             <div class="form-group mb-3">
                 <label for="bis" class="form-label">Klausurende (hh:mm)</label>
-                <input type="time" class="form-control" id="bis" min="08:30" max="13:30" step="900" placeholder="12:00" th:field="*{ende}" name="bis" value="">
+                <input type="time" class="form-control" id="bis" placeholder="12:00" th:field="*{ende}" name="bis" value="">
                 <div class="form-text">Runden Sie die Zeit auf die nächste viertel Stunde auf. Falls die Klausur nach
                     13:30 Uhr endet, tragen Sie bitte 13:30 Uhr ein.
                 </div>

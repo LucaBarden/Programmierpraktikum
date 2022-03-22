@@ -23,7 +23,7 @@
             <div class="form-floating mb-3">
                 <div class="form-group mb-3">
                     <label for="von">Start (hh:mm)</label>
-                    <input type="time" class="form-control" min="08:30" max="12:15" step="900" id="von" placeholder=" " name="von" value=""
+                    <input type="time" class="form-control" step="900" id="von" placeholder=" " name="von" value=""
                            th:field="*{beginn}" required>
                     <div class="form-text">Tragen Sie hier die Uhrzeit ein, wann Sie Ihren Urlaub beginnen wollen.</a>
                     </div>
@@ -32,7 +32,7 @@
             <div class="form-floating mb-3">
                 <div class="form-group mb-3">
                     <label for="bis" class="form-label">Ende (hh:mm)</label>
-                    <input type="time" class="form-control" min="08:45" max="12:30" step="900" id="bis" placeholder=" " name="bis" value=""
+                    <input type="time" class="form-control" step="900" id="bis" placeholder=" " name="bis" value=""
                            th:field="*{end}" required>
                 </div>
             </div>
