@@ -1,0 +1,310 @@
+// header file for arc42-template,
+// including all help texts
+//
+// ====================================
+
+= image:arc42-logo.png[arc42] Template
+// toc-title definition MUST follow document title without blank line!
+:toc-title: Inhaltsverzeichnis
+
+//additional style for arc42 help callouts
+ifdef::backend-html5[]
+++++
+<style>
+.arc42help {font-size:small; width: 14px; height: 16px; overflow: hidden; position: absolute; right: 0; padding: 2px 0 3px 2px;}
+.arc42help::before {content: "?";}
+.arc42help:hover {width:auto; height: auto; z-index: 100; padding: 10px;}
+.arc42help:hover::before {content: "";}
+@media print {
+	.arc42help {display:none;}
+}
+</style>
+++++
+endif::backend-html5[]
+
+// configure DE settings for asciidoc
+// asciidoc settings for DE (German)
+// ==================================
+// toc-title definition MUST follow document title without blank line!
+:toc-title: Inhaltsverzeichnis
+
+// enable table-of-contents
+:toc:
+
+:caution-caption: Achtung
+:important-caption: Wichtig
+:note-caption: Hinweis
+:tip-caption: Tip
+:warning-caption: Warnung
+
+:appendix-caption: Anhang
+:example-caption: Beispiel
+:figure-caption: Abbildung
+:table-caption: Tabelle
+
+// where are images located?
+:imagesdir: ./images
+
+:homepage: https://arc42.org
+
+:keywords: software-architecture, documentation, template, arc42
+
+:numbered!:
+
+**Über arc42**
+
+[role="lead"]
+arc42, das Template zur Dokumentation von Software- und Systemarchitekturen.
+
+Erstellt von Dr. Gernot Starke, Dr. Peter Hruschka und Mitwirkenden.
+
+Template Revision: 8.0 DE (asciidoc-based), Februar 2022
+
+(C)
+We acknowledge that this document uses material from the arc42 architecture template, https://arc42.org.
+// horizontal line
+***
+
+// numbering from here on
+:numbered:
+
+<<<<
+// 1. Anforderungen und Ziele
+[[section-introduction-and-goals]]
+==	Einführung und Ziele
+
+=== Aufgabenstellung
+
+=== Qualitätsziele
+
+=== Stakeholder
+
+[cols="1,1,2" options="header"]
+|===
+|Rolle |Kontakt |Erwartungshaltung
+| _<Rolle-1>_ | _<Kontakt-1>_ | _<Erwartung-1>_
+| _<Rolle-2>_ | _<Kontakt-2>_ | _<Erwartung-2>_
+|===
+
+<<<<
+// 2. Randbedingungen
+[[section-architecture-constraints]]
+== Randbedingungen
+
+<<<<
+// 3. Kontextabgrenzung
+[[section-system-scope-and-context]]
+== Kontextabgrenzung
+
+=== Fachlicher Kontext
+
+**<Diagramm und/oder Tabelle>**
+
+**<optional: Erläuterung der externen fachlichen Schnittstellen>**
+
+=== Technischer Kontext
+
+**<Diagramm oder Tabelle>**
+
+**<optional: Erläuterung der externen technischen Schnittstellen>**
+
+**<Mapping fachliche auf technische Schnittstellen>**
+<<<<
+// 4. Lösungsstrategie
+[[section-solution-strategy]]
+== Lösungsstrategie
+<<<<
+// 5. Bausteinsicht
+[[section-building-block-view]]
+== Bausteinsicht
+
+=== Whitebox Gesamtsystem
+
+_**<Übersichtsdiagramm>**_
+
+Begründung:: _<Erläuternder Text>_
+
+Enthaltene Bausteine:: _<Beschreibung der enthaltenen Bausteine (Blackboxen)>_
+
+Wichtige Schnittstellen:: _<Beschreibung wichtiger Schnittstellen>_
+
+==== <Name Blackbox 1>
+
+_<Zweck/Verantwortung>_
+
+_<Schnittstelle(n)>_
+
+_<(Optional) Qualitäts-/Leistungsmerkmale>_
+
+_<(Optional) Ablageort/Datei(en)>_
+
+_<(Optional) Erfüllte Anforderungen>_
+
+_<(optional) Offene Punkte/Probleme/Risiken>_
+
+==== <Name Blackbox 2>
+
+_<Blackbox-Template>_
+
+==== <Name Blackbox n>
+
+_<Blackbox-Template>_
+
+
+==== <Name Schnittstelle 1>
+
+...
+
+==== <Name Schnittstelle m>
+
+=== Ebene 2
+
+
+
+==== Whitebox _<Baustein 1>_
+
+
+
+_<Whitebox-Template>_
+
+==== Whitebox _<Baustein 2>_
+
+_<Whitebox-Template>_
+
+...
+
+==== Whitebox _<Baustein m>_
+
+_<Whitebox-Template>_
+
+=== Ebene 3
+
+
+
+==== Whitebox <_Baustein x.1_>
+
+
+
+_<Whitebox-Template>_
+
+==== Whitebox <_Baustein x.2_>
+
+_<Whitebox-Template>_
+
+==== Whitebox <_Baustein y.1_>
+
+_<Whitebox-Template>_
+<<<<
+// 6. Laufzeitsicht
+[[section-runtime-view]]
+== Laufzeitsicht
+
+
+
+=== _<Bezeichnung Laufzeitszenario 1>_
+
+*  <hier Laufzeitdiagramm oder Ablaufbeschreibung einfügen>
+*  <hier Besonderheiten bei dem Zusammenspiel der Bausteine in diesem Szenario erläutern>
+
+=== _<Bezeichnung Laufzeitszenario 2>_
+
+...
+
+=== _<Bezeichnung Laufzeitszenario n>_
+
+...
+<<<<
+// 7. Verteilungssicht
+[[section-deployment-view]]
+== Verteilungssicht
+
+
+
+=== Infrastruktur Ebene 1
+
+
+
+_**<Übersichtsdiagramm>**_
+
+Begründung:: _<Erläuternder Text>_
+
+Qualitäts- und/oder Leistungsmerkmale:: _<Erläuternder Text>_
+
+Zuordnung von Bausteinen zu Infrastruktur:: _<Beschreibung der Zuordnung>_
+
+=== Infrastruktur Ebene 2
+
+
+
+==== _<Infrastrukturelement 1>_
+
+_<Diagramm + Erläuterungen>_
+
+==== _<Infrastrukturelement 2>_
+
+_<Diagramm + Erläuterungen>_
+
+...
+
+==== _<Infrastrukturelement n>_
+
+_<Diagramm + Erläuterungen>_
+<<<<
+// 8. Querschnittliche Konzepte
+[[section-concepts]]
+== Querschnittliche Konzepte
+
+
+
+=== _<Konzept 1>_
+
+_<Erklärung>_
+
+=== _<Konzept 2>_
+
+_<Erklärung>_
+
+...
+
+=== _<Konzept n>_
+
+_<Erklärung>_
+<<<<
+// 9. Entscheidungen
+[[section-design-decisions]]
+== Architekturentscheidungen
+<<<<
+// 10. Qualitätsanforderungen
+[[section-quality-scenarios]]
+== Qualitätsanforderungen
+
+
+
+.Weiterführende Informationen
+
+Siehe https://docs.arc42.org/section-10/[Qualitätsanforderungen] in der online-Dokumentation (auf Englisch!).
+
+=== Qualitätsbaum
+
+=== Qualitätsszenarien
+<<<<
+// 11. Risiken
+[[section-technical-risks]]
+== Risiken und technische Schulden
+<<<<
+// 12. Glossar
+[[section-glossary]]
+== Glossar
+
+
+
+[cols="e,2e" options="header"]
+|===
+|Begriff |Definition
+
+|<Begriff-1>
+|<Definition-1>
+
+|<Begriff-2
+|<Definition-2>
+|===
