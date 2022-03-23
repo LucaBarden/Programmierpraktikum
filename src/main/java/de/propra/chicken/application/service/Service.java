@@ -6,11 +6,8 @@ import de.propra.chicken.application.service.repo.StudentRepository;
 import de.propra.chicken.domain.service.StudentService;
 import de.propra.chicken.domain.service.KlausurService;
 import io.github.cdimascio.dotenv.Dotenv;
-import org.jsoup.Jsoup;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.FileHandler;
@@ -22,7 +19,7 @@ public class Service {
     private final StudentRepository studentRepo;
     private final KlausurRepository klausurRepo;
     private final StudentService studentService;
-    private final KlausurService klausurService;
+    final KlausurService klausurService;
     private static final Logger logger = Logger.getLogger("chicken.Service.Logger");
 
     private static final Dotenv dotenv = Dotenv.load();
@@ -70,24 +67,6 @@ public class Service {
         }
     }
 
-    public void saveKlausur(Klausur klausur, OAuth2User principal) throws Exception {
-        speicherKlausur(klausur);
-        logger.info(principal.getAttribute("login") + "(" + principal.getAttribute("id") + ") " + "hat die Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " erstellt");
-    }
-
-    private void validiereKlausur(Klausur klausur) throws Exception {
-        validiereLsfIdInternet(klausur);
-        klausurService.validiereKlausur(klausur, BEGINN, ENDE, STARTDATUM, ENDDATUM);
-    }
-
-    private void validiereLsfIdInternet(Klausur klausur) throws Exception {
-        String webContent = Jsoup.connect(String.format("https://lsf.hhu.de/qisserver/rds?state=verpublish&status=init&vmfile=no&publishid=%s&moduleCall=webInfo" +
-                "&publishConfFile=webInfo&publishSubDir=veranstaltung", klausur.getLsfid())).get().text();
-        if (!(webContent.contains("VeranstaltungsID"))) {
-            throw new IllegalArgumentException("Invalide LSF ID");
-        }
-    }
-
     public Set<Klausur> ladeAlleKlausuren() {
         Set<Klausur> alleKlausuren = klausurRepo.ladeAlleKlausuren();
         return klausurService.klausurIstNochImAnmeldezeitraum(alleKlausuren);
@@ -129,9 +108,19 @@ public class Service {
         }
     }
 
-    public void speicherKlausur(Klausur klausur) throws Exception {
+    public void saveKlausur(Klausur klausur, OAuth2User principal) throws Exception {
+        speicherKlausur(klausur);
+        logger.info(principal.getAttribute("login") + "(" + principal.getAttribute("id") + ") " + "hat die Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " erstellt");
+    }
+
+     public void speicherKlausur(Klausur klausur) throws Exception {
             validiereKlausur(klausur);
             klausurRepo.speicherKlausur(klausur);
+    }
+
+     protected void validiereKlausur(Klausur klausur) throws Exception {
+        klausurService.validiereLsfIdInternet(klausur);
+        klausurService.validiereKlausur(klausur, BEGINN, ENDE, STARTDATUM, ENDDATUM);
     }
     public void klausurAnmeldung(long id, OAuth2User principal) throws Exception {
         Klausur klausur = klausurRepo.findeKlausurByID(id);

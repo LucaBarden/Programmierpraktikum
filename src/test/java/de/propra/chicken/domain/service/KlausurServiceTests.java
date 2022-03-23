@@ -6,10 +6,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 public class KlausurServiceTests {
 
@@ -138,6 +142,26 @@ public class KlausurServiceTests {
 
         assertThat(thrown.getMessage()).isEqualTo("Setzen Sie das Ende der Klausur auf das Ende des Praktikums.");
     }
+    //TODO
+    /*@Test
+    @DisplayName("Testet ob eine ungueltige LSF ID einen Fehler wirft")
+    public void invalidLSFID() throws Exception {
+
+        when(klausurRepo.speicherKlausur(any())).thenReturn(null);
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.speicherKlausur(new Klausur("Test", 123, false, LocalDate.now().toString(), LocalTime.now().toString(), LocalTime.now().plusHours(1).toString()));
+        });
+        assertThat(exception.getMessage()).isEqualTo("Invalide LSF ID");
+    }
+
+    @Test
+    @DisplayName("Testet ob eine gueltige LSF ID keinen Fehler wirft")
+    public void validLSFID() throws Exception {
+
+        when(klausurRepo.speicherKlausur(any())).thenReturn(null);
+        assertDoesNotThrow(() ->
+                service.speicherKlausur(new Klausur("Test", 225282, false, LocalDate.now().plusDays(2).toString(), BEGINN, ENDE)));
+    }*/
 
 }
 

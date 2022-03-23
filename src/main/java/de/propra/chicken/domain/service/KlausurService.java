@@ -1,6 +1,7 @@
 package de.propra.chicken.domain.service;
 
 import de.propra.chicken.domain.model.Klausur;
+import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -56,4 +57,12 @@ public class KlausurService {
             throw new Exception("Die Klausur muss mindestens 60 Minuten dauern.");
         }*/
     }
+
+    public void validiereLsfIdInternet(Klausur klausur) throws Exception {
+       String webContent = Jsoup.connect(String.format("https://lsf.hhu.de/qisserver/rds?state=verpublish&status=init&vmfile=no&publishid=%s&moduleCall=webInfo" +
+               "&publishConfFile=webInfo&publishSubDir=veranstaltung", klausur.getLsfid())).get().text();
+       if (!(webContent.contains("VeranstaltungsID"))) {
+           throw new IllegalArgumentException("Invalide LSF ID");
+       }
+   }
 }
