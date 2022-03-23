@@ -59,16 +59,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
             String login = attributes.get("login").toString();
-            System.out.printf("USER LOGIN: %s%n", login);
 
             if (orga.contains(login)) {
-                System.out.printf("Orga User %s%n", login);
                 authorities.add(new SimpleGrantedAuthority("ROLE_ORGA"));
             } else if(tutoren.contains(login)){
-                System.out.printf("Tutor User %s%n", login);
                 authorities.add(new SimpleGrantedAuthority("ROLE_TUTOR"));
-            } else {
-                System.out.printf("Nicht Team User %s%n", login);
             }
 
             return new DefaultOAuth2User(authorities, attributes, "login");

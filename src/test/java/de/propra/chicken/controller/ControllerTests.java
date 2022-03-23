@@ -264,5 +264,44 @@ public class ControllerTests {
         verify(service).speicherUrlaub(urlaub, 12345, oAuth2User);
     }
 
+    @Test
+    @DisplayName("Prüft das die Klausurstornierung richtig aufgerufen wird")
+    void klausurStornieren() throws Exception {
+        OAuth2User user = buildOAuth2User("user", "Max Mustermann");
+        mockMvc.perform(post("/klausurStornieren").session(session)
+                .param("ref", "12345")
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/student"));
+
+        verify(service).storniereKlausurAnmeldung(12345, user);
+
+    }
+
+    @Test
+    @DisplayName("Prüft das die Urlaubsstornierung richtig aufgerufen wird")
+    void urlaubStornieren() throws Exception {
+        OAuth2User user = buildOAuth2User("user", "Max Mustermann");
+        Urlaub urlaub = new Urlaub(LocalDate.now().toString(), LocalTime.now().toString(), LocalTime.now().toString());
+        mockMvc.perform(post("/urlaubStornieren").session(session)
+                        .param("tag", urlaub.getTag().toString())
+                        .param("beginn", urlaub.getBeginn().toString())
+                        .param("end", urlaub.getEnd().toString())
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/student"));
+
+        verify(service).urlaubStornieren(user, urlaub.getTag().toString(), urlaub.getBeginn().toString(), urlaub.getEnd().toString());
+    }
+
+    @Test
+    @DisplayName("/ wird auf /student weitergeleitet")
+    void index() throws Exception {
+        mockMvc.perform(get("/").session(session)
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/student"));
+    }
+
 
 }
