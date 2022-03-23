@@ -24,8 +24,10 @@ import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +53,11 @@ public class ControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
+
+    private final static LocalDate DATE = LocalDate.of(2022, 4, 1);
+    private static final Clock clock = Clock.fixed(DATE.atStartOfDay(ZoneId.systemDefault()).toInstant(),ZoneId.systemDefault());
+
+
 
     @BeforeEach
     private void loggedInUser() {
@@ -123,9 +130,9 @@ public class ControllerTests {
     void urlaubPost() throws Exception {
         doNothing().when(service).speicherUrlaub(any(), anyLong(), any());
         mockMvc.perform(post("/urlaubErstellen").session(session)
-                        .param("tag", LocalDate.now().toString())
-                        .param("beginn", LocalTime.now().toString())
-                        .param("end", LocalTime.now().plusHours(1).toString())
+                        .param("tag", LocalDate.now(clock).toString())
+                        .param("beginn", LocalTime.now(clock).toString())
+                        .param("end", LocalTime.now(clock).plusHours(1).toString())
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/student"));
@@ -139,9 +146,9 @@ public class ControllerTests {
                         .param("name", "test")
                         .param("_praesenz", "on")
                         .param("lsfid", "12345")
-                        .param("datum", LocalDate.now().toString())
-                        .param("beginn", LocalTime.now().toString())
-                        .param("ende", LocalTime.now().plusHours(1).toString())
+                        .param("datum", LocalDate.now(clock).toString())
+                        .param("beginn", LocalTime.now(clock).toString())
+                        .param("ende", LocalTime.now(clock).plusHours(1).toString())
                         .with(csrf()))
 
                 .andExpect(status().is3xxRedirection())
@@ -231,7 +238,7 @@ public class ControllerTests {
     @Test
     @DisplayName("Prueft dass die Service Methoden bei einer Klausur Erstellung richtig aufgerufen werden")
     void klausuranlegenService() throws Exception {
-        Klausur klausur = new Klausur("test", 12345L, true, LocalDate.now().toString(), LocalTime.now().toString(), LocalTime.now().plusHours(1).toString());
+        Klausur klausur = new Klausur("test", 12345L, true, LocalDate.now(clock).toString(), LocalTime.now(clock).toString(), LocalTime.now(clock).plusHours(1).toString());
         OAuth2User oAuth2User = buildOAuth2User("user", "Max Mustermann");
         mockMvc.perform(post("/klausurErstellen").session(session)
                         .param("name", klausur.getName())
@@ -252,7 +259,7 @@ public class ControllerTests {
     @DisplayName("Prueft ob die Service methoden fuers erstellen eines Urlaubs richtig aufgerufen werden")
     void urlaubPostService() throws Exception {
         OAuth2User oAuth2User = buildOAuth2User("user", "Max Mustermann");
-        Urlaub urlaub = new Urlaub(LocalDate.now().toString(), LocalTime.now().toString(), LocalTime.now().plusHours(1).toString());
+        Urlaub urlaub = new Urlaub(LocalDate.now(clock).toString(), LocalTime.now(clock).toString(), LocalTime.now(clock).plusHours(1).toString());
         mockMvc.perform(post("/urlaubErstellen").session(session)
                         .param("tag", urlaub.getTag().toString())
                         .param("beginn", urlaub.getBeginn().toString())
@@ -282,7 +289,7 @@ public class ControllerTests {
     @DisplayName("Prüft das die Urlaubsstornierung richtig aufgerufen wird")
     void urlaubStornieren() throws Exception {
         OAuth2User user = buildOAuth2User("user", "Max Mustermann");
-        Urlaub urlaub = new Urlaub(LocalDate.now().toString(), LocalTime.now().toString(), LocalTime.now().toString());
+        Urlaub urlaub = new Urlaub(LocalDate.now(clock).toString(), LocalTime.now(clock).toString(), LocalTime.now(clock).toString());
         mockMvc.perform(post("/urlaubStornieren").session(session)
                         .param("tag", urlaub.getTag().toString())
                         .param("beginn", urlaub.getBeginn().toString())

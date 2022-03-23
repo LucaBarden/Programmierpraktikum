@@ -3,10 +3,7 @@ package de.propra.chicken.domain.service;
 import de.propra.chicken.domain.model.*;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.temporal.ChronoField;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,13 +11,18 @@ import java.util.Map;
 import java.util.Set;
 @Service
 public class StudentService {
+    private final Clock clock;
 
-    public Set<Urlaub> validiereKlausurAnmeldung(Klausur klausur,  Student student,String beginn, String ende ) throws Exception {
+    public StudentService(Clock clock) {
+        this.clock = clock;
+    }
+
+    public Set<Urlaub> validiereKlausurAnmeldung(Klausur klausur, Student student, String beginn, String ende ) throws Exception {
 
         Set<KlausurRef> angemeldeteKlausurenRefs = student.getKlausuren();
 
         //Die klausur ist mindestens einen Tag später
-        if (!klausur.getDatum().isAfter(LocalDate.now())) {
+        if (!klausur.getDatum().isAfter(LocalDate.now(clock))) {
             throw new Exception("Klausur findet heute statt. Anmeldung nicht mehr moeglich");
         }
         //Überprüft, ob der Student schon angemeldet ist
@@ -94,7 +96,7 @@ public class StudentService {
         if(urlaub.getBeginn().isBefore(LocalTime.parse(beginn)) || urlaub.getEnd().isAfter(LocalTime.parse(ende))) {
             throw new Exception("Der Urlaub muss im Praktikumszeitraum liegen (Uhrzeit)");
         }
-        if(urlaub.getTag().isBefore(LocalDate.now().plusDays(1))) {
+        if(urlaub.getTag().isBefore(LocalDate.now(clock).plusDays(1))) {
             throw new Exception("Man kann Urlaub spätestens einen Tag vorher buchen.");
         }
     }
@@ -263,7 +265,7 @@ public class StudentService {
         //prüft, ob der Urlaub noch im stornierbaren Zeitraum ist
         Map<Urlaub, Boolean> stornierbar = new HashMap<>();
         for(Urlaub urlaub : urlaube) {
-            if(urlaub.getTag().isAfter(LocalDate.now())) {
+            if(urlaub.getTag().isAfter(LocalDate.now(clock))) {
                 stornierbar.put(urlaub, true);
             }
             else {

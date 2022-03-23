@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ public class ServiceTest {
     KlausurRepository klausurRepo;
     KlausurService klausurService;
     StudentService studentService;
+    Clock clock;
 
     @BeforeEach
     void beforeEach() {
@@ -41,7 +43,8 @@ public class ServiceTest {
         klausurRepo = mock(KlausurRepository.class);
         klausurService = mock(KlausurService.class);
         studentService = mock(StudentService.class);
-        service = new Service(studentRepo, klausurRepo,studentService, klausurService);
+        clock = mock(Clock.class);
+        service = new Service(studentRepo, klausurRepo,studentService, klausurService, clock);
     }
 
     @Test

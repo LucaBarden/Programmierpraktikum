@@ -6,16 +6,22 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 @Service
 public class KlausurService {
+    private final Clock clock;
+
+    public KlausurService(Clock clock) {
+        this.clock = clock;
+    }
 
     public  Set<Klausur> klausurIstNochImAnmeldezeitraum(Set<Klausur> alleKlausuren) {
         Set<Klausur> gueltigeKlausuren = new HashSet<>();
         for(Klausur klausur : alleKlausuren) {
-            if(klausur.getDatum().isAfter(LocalDate.now())) {
+            if(klausur.getDatum().isAfter(LocalDate.now(clock))) {
                 gueltigeKlausuren.add(klausur);
             }
         }
@@ -26,7 +32,7 @@ public class KlausurService {
         Map<Klausur, Boolean> stornierbar = new HashMap<>();
         //prüft, ob die Klausur noch im stornierbaren Zeitraum ist
         for(Klausur klausur : klausuren) {
-            if(klausur.getDatum().isAfter(LocalDate.now())) {
+            if(klausur.getDatum().isAfter(LocalDate.now(clock))) {
                 stornierbar.put(klausur, true);
             }
             else {
