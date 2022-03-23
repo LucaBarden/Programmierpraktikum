@@ -26,12 +26,14 @@ public class StudentServiceTests {
     public void test1() {
         LocalDate tag = LocalDate.now().plusDays(2);
         Student student = new Student(123456);
-        Klausur klausur = new Klausur("RA", 44445, false, tag.toString(), LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
+        Klausur klausur = new Klausur("RA", 44445, false, tag.toString(),
+                LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
         KlausurRef klausurRef = new KlausurRef(44445);
         StudentService studentService = new StudentService();
         student.addKlausur(klausurRef);
 
-        Exception thrown = assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausur, student, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
+        Exception thrown = assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausur, student,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM));
         assertThat(thrown.getMessage()).isEqualTo("Du bist bereits bei der Klausur angemeldet");
     }
 
@@ -41,7 +43,8 @@ public class StudentServiceTests {
         LocalDate tag = LocalDate.now().plusDays(2);
         Student student = new Student(123456);
         //KlausurData klausur = new KlausurData(tag, LocalTime.of(10,0,0), LocalTime.of(11,30,0),false);
-        Klausur klausur2 = new Klausur("RA", 54654, false, tag.toString(), LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
+        Klausur klausur2 = new Klausur("RA", 54654, false, tag.toString(),
+                LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
         KlausurRef klausurRef = new KlausurRef(44445);
         //KlausurRef klausurRef2 = new KlausurRef(54654);
         StudentService studentService = new StudentService();
@@ -56,12 +59,14 @@ public class StudentServiceTests {
     @DisplayName("Fehler, wenn die Klausur am gleichen Tag ist wie die Anmeldung")
     public void test3() {
         Student student = new Student(123456);
-        Klausur klausur = new Klausur("RA", 44445, false, LocalDate.now().toString(), LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
+        Klausur klausur = new Klausur("RA", 44445, false, LocalDate.now().toString(),
+                LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
         //KlausurRef klausurRef = klausur.getKlausurRef();
         //KlausurData klausurData = klausur.getKlausurData();
         StudentService studentService = new StudentService();
 
-        Exception thrown = assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausur, student, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM ));
+        Exception thrown = assertThrows(Exception.class,() -> studentService.validiereKlausurAnmeldung(klausur, student,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM ));
         assertThat(thrown.getMessage()).isEqualTo("Klausur findet heute statt. Anmeldung nicht mehr moeglich");
     }
 
@@ -73,7 +78,8 @@ public class StudentServiceTests {
         Urlaub urlaub = new Urlaub(LocalDate.now().plusDays(2).toString(), "08:30", "12:30");
         Set<KlausurData> klausuren = new HashSet<>();
 
-        assertDoesNotThrow(() -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        assertDoesNotThrow(() -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM,
+                ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
     }
 
     @Test
@@ -84,7 +90,8 @@ public class StudentServiceTests {
         Urlaub urlaub = new Urlaub(LocalDate.now().plusDays(1).toString(), "08:00", "09:00");
         Set<KlausurData> klausuren = new HashSet<>();
 
-        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
         assertThat(thrown.getMessage()).isEqualTo("Der Urlaub muss im Praktikumszeitraum liegen (Uhrzeit)");
     }
 
@@ -96,7 +103,8 @@ public class StudentServiceTests {
         Urlaub urlaub = new Urlaub(LocalDate.now().plusDays(1).toString(), "10:00", "09:00");
         Set<KlausurData> klausuren = new HashSet<>();
 
-        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
         assertThat(thrown.getMessage()).isEqualTo("Die Startzeit kann nicht nach der Endzeit liegen");
     }
 
@@ -108,7 +116,8 @@ public class StudentServiceTests {
         Urlaub urlaub = new Urlaub(LocalDate.now().minusDays(9).toString(), "08:30", "09:00");
         Set<KlausurData> klausuren = new HashSet<>();
 
-        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
         assertThat(thrown.getMessage()).isEqualTo("Das Urlaubsdatum liegt vor dem Praktikumsbeginn!");
     }
 
@@ -120,7 +129,8 @@ public class StudentServiceTests {
         Urlaub urlaub = new Urlaub(LocalDate.now().plusDays(9).toString(), "08:30", "09:00");
         Set<KlausurData> klausuren = new HashSet<>();
 
-        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
         assertThat(thrown.getMessage()).isEqualTo("Das Urlaubsdatum liegt nach dem Praktikumsende!");
     }
 
@@ -132,24 +142,26 @@ public class StudentServiceTests {
         Urlaub urlaub = new Urlaub(LocalDate.now().plusDays(2).toString(), "10:00", "10:00");
         Set<KlausurData> klausuren = new HashSet<>();
 
-        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
         assertThat(thrown.getMessage()).isEqualTo("Die Startzeit und Endzeit sind gleich!!");
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: Urlaubszeit ist kein Vielfaches von 15 Minuten: Exception wird geworfen")
+    @DisplayName("Fehler,wenn Urlaubszeit ist kein Vielfaches von 15 Minuten ist")
     void urlaubsvalidierung5() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
         Urlaub urlaub = new Urlaub(LocalDate.now().plusDays(2).toString(), "10:53", "12:00");
         Set<KlausurData> klausuren = new HashSet<>();
 
-        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
         assertThat(thrown.getMessage()).isEqualTo("Die Start- und Endzeit muss ein Vielfaches von 15 Minuten sein");
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: zu wenig Resturlaub um diesen Urlaub zu buchen: Exception wird geworfen")
+    @DisplayName("Fehler, wenn zu wenig Resturlaub da ist um diesen Urlaub zu buchen")
     void urlaubsvalidierung6() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -157,36 +169,39 @@ public class StudentServiceTests {
         Urlaub urlaub = new Urlaub(LocalDate.now().plusDays(2).toString(), "10:00", "10:30");
         Set<KlausurData> klausuren = new HashSet<>();
 
-        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
         assertThat(thrown.getMessage()).isEqualTo("Es ist zu wenig Resturlaub übrig");
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: der Urlaub ist weder den ganzen Tag lang noch weniger als 2.5h: Exception werfen")
+    @DisplayName("Fehler, wenn der Urlaub weder den ganzen Tag lang noch weniger als 2.5h lang ist")
     void urlaubsvalidierung7() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
         Urlaub urlaub = new Urlaub(LocalDate.now().plusDays(2).toString(), "08:30", "11:30");
         Set<KlausurData> klausuren = new HashSet<>();
 
-        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
         assertThat(thrown.getMessage()).isEqualTo("Der Urlaub ist weder den ganzen Tag lang noch weniger als 2.5 Stunden lang");
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: der zu buchende Urlaub ist heute: zu spät um den Urlaub zu buchen")
+    @DisplayName("Fehler, wenn der zu buchende Urlaub am gleichen Tag wie die Buchung ist, also es zu spaet ist um den Urlaub zu buchen")
     void urlaubsvalidierung8() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
         Urlaub urlaub = new Urlaub(LocalDate.now().toString(), "08:30", "11:30");
         Set<KlausurData> klausuren = new HashSet<>();
 
-        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
         assertThat(thrown.getMessage()).isEqualTo("Man kann Urlaub spätestens einen Tag vorher buchen.");
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: es gibt schon zwei Urlaubsblöcke an diesem Tag: Exception werfen")
+    @DisplayName("Fehler, wenn bereits zwei Urlaubsbloecke gebucht wurden und ein dritter hinzugefuegt werden soll")
     void urlaubsvalidierung9() {
         String tag = LocalDate.now().plusDays(2).toString();
         StudentService studentService = new StudentService();
@@ -200,12 +215,14 @@ public class StudentServiceTests {
         Urlaub urlaub = new Urlaub(tag, "11:30", "12:00");
         Set<KlausurData> klausuren = new HashSet<>();
 
-        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
         assertThat(thrown.getMessage()).isEqualTo("Es wurden bereits zwei Urlaubsblöcke genommen");
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: zwei gültige Blöcke: keine Exception wird geworfen")
+    @DisplayName("Kein Fehler, wenn ein Urlaub am Anfang des Tages bereits existiert" +
+            " und ein weiterer am Ende des Tages hinzugefuegt werden soll")
     void urlaubsvalidierung10() {
         String tag = LocalDate.now().plusDays(2).toString();
         StudentService studentService = new StudentService();
@@ -217,11 +234,12 @@ public class StudentServiceTests {
         Urlaub urlaub = new Urlaub(tag, "12:00", "12:30");
         Set<KlausurData> klausuren = new HashSet<>();
 
-        assertDoesNotThrow(() -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        assertDoesNotThrow(() -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM,
+                ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: es werden keine 90min gearbeitet zwischen den Urlaubsblöcken: Exception wird geworfen")
+    @DisplayName("Fehler, wenn keine 90 min zwischen dem bereits gebuchten und zu buchendem Urlaub gearbeitet wird")
     void urlaubsvalidierung11() {
         String tag = LocalDate.now().plusDays(2).toString();
         StudentService studentService = new StudentService();
@@ -233,12 +251,14 @@ public class StudentServiceTests {
         Urlaub urlaub = new Urlaub(tag, "11:00", "12:30");
         Set<KlausurData> klausuren = new HashSet<>();
 
-        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
         assertThat(thrown.getMessage()).isEqualTo("Man muss mindestens 90 Minuten zwischen den beiden Urlaubsblöcken arbeiten");
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: die beiden Urlaubsblöcke liegen nicht am Anfang und am Ende: Exception wird geworfen")
+    @DisplayName("Fehler, wenn der bereits gebuchte Urlaub nicht am Anfang des Tages liegt, der zu buchende Urlaub " +
+            "am Ende des Tages, also die Urlaubsbloecke nicht am Anfang und Ende des Tages liegen")
     void urlaubsvalidierung12() {
         String tag = LocalDate.now().plusDays(2).toString();
         StudentService studentService = new StudentService();
@@ -250,12 +270,14 @@ public class StudentServiceTests {
         Urlaub urlaub = new Urlaub(tag, "12:00", "12:30");
         Set<KlausurData> klausuren = new HashSet<>();
 
-        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
         assertThat(thrown.getMessage()).isEqualTo("Der bereits gebuchte Urlaub ist weder am Anfang noch am Ende des Tages");
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: die beiden Urlaubsblöcke liegen nicht am Anfang und am Ende: Exception wird geworfen")
+    @DisplayName("Fehler, wenn der bereits gebuchte Urlaub am Anfang des Tages liegt, aber der zu buchende Urlaub " +
+            "nicht am Ende des Tages, also die Urlaubsbloecke nicht am Anfang und Ende des Tages liegen")
     void urlaubsvalidierung13() {
         String tag = LocalDate.now().plusDays(2).toString();
         StudentService studentService = new StudentService();
@@ -267,12 +289,13 @@ public class StudentServiceTests {
         Urlaub urlaub = new Urlaub(tag, "12:00", "12:15");
         Set<KlausurData> klausuren = new HashSet<>();
 
-        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
         assertThat(thrown.getMessage()).isEqualTo("Der neue Urlaub muss am Ende des Tages liegen");
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: eine Präsenzklausur am selben Tag, vorher 30 min Urlaub nehmen; 15 min davon werden erstattet")
+    @DisplayName("Richtige Erstattung des Urlaubs bei einer Praesenzklausur am selben Tag, die sich 15 min lang mit dem Urlaub ueberschneidet")
     void urlaubsvalidierung14() {
         String tag = LocalDate.now().plusDays(2).toString();
         StudentService studentService = new StudentService();
@@ -285,7 +308,8 @@ public class StudentServiceTests {
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
 
         try { //wenn eine Klausur am selben Tag ist werden keine Fehler geworfen, sondern der gültige Urlaub zurückgegeben
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM);
+            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM,
+                    ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -296,7 +320,8 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: eine Onlineklausur am selben Tag, den ganzen Tag Urlaub nehmen: zwei Urlaubsblöcke werden erstellt, dazwischen liegt die Klausur und der Urlaub wird erstattet")
+    @DisplayName("Richtige Erstattung des Urlaubs bei einer Onlineklausur, wenn man sich den ganzen Tag Urlaub nehmen will:" +
+            " zwei Urlaubsbloecke werden erstellt, der Zeitraum der Klausur wird erstattet")
     void urlaubsvalidierung15() {
         String tag = LocalDate.now().plusDays(2).toString();
         StudentService studentService = new StudentService();
@@ -309,7 +334,8 @@ public class StudentServiceTests {
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
 
         try { //wenn eine Klausur am selben Tag ist werden keine Fehler geworfen, sondern der gültige Urlaub zurückgegeben
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM);
+            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM,
+                    ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -322,7 +348,8 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: eine Onlineklausur am selben Tag, nachher Urlaub nehmen; Anfang des Urlaubs wird aufgrund von einer Überschneidung mit der Klausur erstattet")
+    @DisplayName("Richtige Erstattung des Urlaubs bei einer Onlineklausur am selben Tag," +
+            " wenn sich der Anfang des Urlaubs mit der Klausur ueberschneidet")
     void urlaubsvalidierung16() {
         String tag = LocalDate.now().plusDays(1).toString();
         StudentService studentService = new StudentService();
@@ -335,7 +362,8 @@ public class StudentServiceTests {
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
 
         try { //wenn eine Klausur am selben Tag ist werden keine Fehler geworfen, sondern der gültige Urlaub zurückgegeben
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM);
+            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM,
+                    STARTDATUM, ENDDATUM);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -347,7 +375,8 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: zwei Onlineklausuren am selben Tag, dazwischen Urlaub nehmen; der Urlaub wird vorne und hinten gekürzt aufgrund von Überschneidung mit der Klausur")
+    @DisplayName("Richtige Erstattung des Urlaubs bei zwei Onlineklausuren am selben Tag," +
+            "wenn der Urlaub sich am Anfang und am Ende mit den Klausuren ueberschneidet")
     void urlaubsvalidierung17() {
         String tag = LocalDate.now().plusDays(1).toString();
         StudentService studentService = new StudentService();
@@ -362,7 +391,8 @@ public class StudentServiceTests {
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
 
         try { //wenn eine Klausur am selben Tag ist werden keine Fehler geworfen, sondern der gültige Urlaub zurückgegeben
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM);
+            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM,
+                    STARTDATUM, ENDDATUM);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -374,7 +404,8 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: zwei Onlineklausuren am selben Tag, den ganzen Tag Urlaub nehmen; der Urlaub wird in drei Blöcke aufgeteilt")
+    @DisplayName("Richtige Erstattung des Urlaubs bei zwei Onlineklausuren am selben Tag," +
+            "wenn der Urlaub fuer einen ganzen Tag mit den Klausuren  der Urlaub wird in drei Blöcke aufgeteilt")
     void urlaubsvalidierung18() {
         String tag = LocalDate.now().plusDays(1).toString();
         StudentService studentService = new StudentService();
@@ -389,7 +420,8 @@ public class StudentServiceTests {
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
 
         try { //wenn eine Klausur am selben Tag ist werden keine Fehler geworfen, sondern der gültige Urlaub zurückgegeben
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM);
+            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM,
+                    STARTDATUM, ENDDATUM);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -398,14 +430,13 @@ public class StudentServiceTests {
         Urlaub urlaub2 = new Urlaub(tag, "09:30", "10:30");
         Urlaub urlaub3 = new Urlaub(tag, "11:30", "12:30");
 
-        System.out.println(gueltigerUrlaub.size());
-        System.out.println(gueltigerUrlaub);
         assertThat(gueltigerUrlaub.size()).isEqualTo(3);
         assertThat(gueltigerUrlaub).contains(urlaub1, urlaub2, urlaub3);
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: zwei Onlineklausuren am selben Tag, den ganzen Tag Urlaub nehmen, der Urlaub wird vorne und hinten gekürzt aufgrund von Überschneidungen mit den Klausuren")
+    @DisplayName("Richtige Erstattung des Urlaubs bei zwei Onlineklausuren am selben Tag," +
+            "wenn der Urlaub sich am Anfang und am Ende jeweils mit einer Klausur ueberschneidet")
     void urlaubsvalidierung19() {
         String tag = LocalDate.now().plusDays(1).toString();
         StudentService studentService = new StudentService();
@@ -420,21 +451,20 @@ public class StudentServiceTests {
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
 
         try { //wenn eine Klausur am selben Tag ist werden keine Fehler geworfen, sondern der gültige Urlaub zurückgegeben
-            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM);
+            gueltigerUrlaub = studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM,
+                    STARTDATUM, ENDDATUM);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         Urlaub urlaub1 = new Urlaub(tag, "11:30", "12:30");
 
-        System.out.println(gueltigerUrlaub.size());
-        System.out.println(gueltigerUrlaub);
         assertThat(gueltigerUrlaub.size()).isEqualTo(1);
         assertThat(gueltigerUrlaub).contains(urlaub1);
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: eine Onlineklausur und einen Urlaub am selben Tag")
+    @DisplayName("Richtige Erstattung des gesamten Urlaubs wegen kompletter Ueberschneidung mit einer Onlineklausur")
     void urlaubsvalidierung20() {
         String tag = LocalDate.now().plusDays(1).toString();
         StudentService studentService = new StudentService();
@@ -451,7 +481,8 @@ public class StudentServiceTests {
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
 
         try { //wenn eine Klausur am selben Tag ist werden keine Fehler geworfen, sondern der gültige Urlaub zurückgegeben
-            gueltigerUrlaub = studentService.validiereUrlaub(student, neuerUrlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM);
+            gueltigerUrlaub = studentService.validiereUrlaub(student, neuerUrlaub, klausuren, BEGINN_PRAKTIKUM,
+                    ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -460,7 +491,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("ganzer Tag Urlaub, der sich mit neu zu anmeldender Klausur überschneidet, also wird Teil des Urlaubs erstattet")
+    @DisplayName("Bei Online-Klausuranmeldung wird der Anfang des bereits gebuchten Urlaubs richtig erstattet")
     void klasusurAnmeldungTest1() {
         String tag = LocalDate.now().plusDays(1).toString();
         StudentService studentService = new StudentService();
@@ -469,7 +500,6 @@ public class StudentServiceTests {
         Urlaub urlaub1 = new Urlaub(tag, "08:30", "12:30");
         urlaube.add(urlaub1);
         student.setUrlaube(urlaube);
-        //KlausurRef lsfID = new KlausurRef(12345);
         Klausur klausur = new Klausur("RA", 12345, false, tag, "08:30", "10:00");
         Urlaub uebrigerUrlaub = new Urlaub(tag, "10:00", "12:30");
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
@@ -485,7 +515,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("ganzer Tag Urlaub, der sich mit neu zu anmeldender Praesenz-Klausur überschneidet, also wird alles erstattet")
+    @DisplayName("Bei Praesenz-Klausuranmeldung wird der ganze Tag Urlaub richtig erstattet")
     void klasusurAnmeldungTest2() {
         String tag = LocalDate.now().plusDays(1).toString();
         StudentService studentService = new StudentService();
@@ -508,7 +538,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("bereits angemeldeter Urlaub wird gelöscht, nachdem man sich für eine Praesenz-Klausur angemeldet hat, die sich mit Urlaub überschneidet")
+    @DisplayName("Bei Praesenz-Klausuranmeldung wird gesamter Urlaub richtig erstattet")
     void klausurAnmeldungTest3() {
         String tag = LocalDate.now().plusDays(1).toString();
         StudentService studentService = new StudentService();
@@ -531,7 +561,7 @@ public class StudentServiceTests {
 
     }
     @Test
-    @DisplayName("Anfang eines Urlaubs wird erstattet, nachdem man sich für eine Praesenz-Klausur angemeldet hat, die sich mit Urlaub überschneidet")
+    @DisplayName("Bei Praesenz-Klausuranmeldung wird der Anfang eines Urlaubs richtig erstattet, der sich mit Klausur ueberschneidet")
     void klausurAnmeldungTest4() {
         String tag = LocalDate.now().plusDays(1).toString();
         StudentService studentService = new StudentService();
@@ -554,7 +584,7 @@ public class StudentServiceTests {
         assertThat(gueltigerUrlaub).contains(uebrigerUrlaub);
     }
     @Test
-    @DisplayName("Ende eines Urlaubs wird erstattet, nachdem man sich für eine Praesenz-Klausur angemeldet hat, die sich mit Urlaub überschneidet")
+    @DisplayName("Bei Praesenz-Klausuranmeldung wird das Ende eines Urlaubs richtig erstattet, der sich mit Klausur ueberschneidet")
     void klausurAnmeldungTest5() {
         String tag = LocalDate.now().plusDays(1).toString();
         StudentService studentService = new StudentService();
@@ -577,7 +607,7 @@ public class StudentServiceTests {
         assertThat(gueltigerUrlaub).contains(uebrigerUrlaub);
     }
     @Test
-    @DisplayName("Mitte eines Urlaubs wird erstattet, nachdem man sich für eine Online-Klausur angemeldet hat, die sich mit Urlaub überschneidet")
+    @DisplayName("Bei Online-Klausur wird die Mitte eines Urlaubs richtig erstattet, der sich mit der Klausur ueberschneidet")
     void klausurAnmeldungTest6() {
         String tag = LocalDate.now().plusDays(1).toString();
         StudentService studentService = new StudentService();
@@ -605,7 +635,7 @@ public class StudentServiceTests {
 
 
     @Test
-    @DisplayName("bereits fuer zwei Urlaube angemeldet, nachdem man sich fuer eine Klausur angemeldet hat, werden beide gekuerzt")
+    @DisplayName("Bei Online-Klausuranmeldung wird ein Urlaub am Ende, der andere am Anfang richtig erstattet aufgrund der Ueberschneidung")
     void klausurAnmeldungTest7() throws Exception {
         String tag = LocalDate.now().plusDays(1).toString();
         StudentService studentService = new StudentService();
@@ -632,7 +662,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("bereits für zwei Urlaube angemeldet,  nachdem man sich für eine Klausur angemeldet hat, wird einer gelöscht und der andere gekürzt")
+    @DisplayName("Bei Praesenz-Klausuranmeldung wird ein Urlaub komplett, der andere am Ende richtig erstattet aufgrund der Ueberschneidung ")
     void klausurAnmeldungTest8() throws Exception {
         String tag = LocalDate.now().plusDays(1).toString();
         StudentService studentService = new StudentService();
@@ -658,7 +688,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("bereits für zwei Urlaube angemeldet,  nachdem man sich für eine Klausur angemeldet hat, werden beide gelöscht")
+    @DisplayName("Bei Praesenz-Klausuranmeldung werden beide komplett richtig erstattet aufgrund der Ueberschneidung")
     void klausurAnmeldungTest9() throws Exception {
         String tag = LocalDate.now().plusDays(1).toString();
         StudentService studentService = new StudentService();
@@ -682,7 +712,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("bereits für zwei Urlaube und eine Klausur angemeldet,  nachdem man sich für eine Klausur angemeldet hat, wird Urlaub gelöscht und einer gekürzt")
+    @DisplayName("Bei Praesenz-Klausuranmeldung wird ein Urlaub komplett, der andere am Anfang richtig erstattet")
     void klausurAnmeldungTest10() throws Exception {
         String tag = LocalDate.now().plusDays(1).toString();
         StudentService studentService = new StudentService();
@@ -693,8 +723,8 @@ public class StudentServiceTests {
         Urlaub urlaub2 = new Urlaub(tag, "11:00", "12:30");
         urlaube.add(urlaub2);
         student.setUrlaube(urlaube);
-        Klausur klausur = new Klausur("RA", 12345,true,tag, "11:00", "12:00");
-        Urlaub result = new Urlaub(tag, "08:30", "09:00");
+        Klausur klausur = new Klausur("RA", 12345,true,tag, "08:30", "10:00");
+        Urlaub result = new Urlaub(tag, "12:00", "12:30");
 
         Set<Urlaub> gueltigerUrlaub = new HashSet<>();
         try{
@@ -708,7 +738,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("stornierbareUrlaube")
+    @DisplayName("Die Urlaube, die in der Zukunft liegen, sind stornierbar(also true), die heute oder vorher waren sind nicht stornierbar")
     void stornierbareUrlaube() {
         String heute = LocalDate.now().toString();
         String gestern = LocalDate.now().minusDays(1).toString();

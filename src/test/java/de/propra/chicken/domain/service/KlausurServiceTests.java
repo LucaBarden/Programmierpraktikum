@@ -4,13 +4,11 @@ import de.propra.chicken.domain.model.Klausur;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,18 +29,21 @@ public class KlausurServiceTests {
     Set<Klausur> arrange(){
         Set<Klausur> alleKlausuren = new HashSet<>();
         //gueltig
-        alleKlausuren.add(new Klausur("Rechnerarchitektur", 12, true, LocalDate.now().plusDays(1).toString(), "10:00", "10:00"));
-        alleKlausuren.add(new Klausur("Progra", 34, false, LocalDate.now().plusDays(3).toString(), "10:00", "10:00"));
+        alleKlausuren.add(new Klausur("Rechnerarchitektur", 12, true,
+                LocalDate.now().plusDays(1).toString(), "10:00", "10:00"));
+        alleKlausuren.add(new Klausur("Progra", 34, false,
+                LocalDate.now().plusDays(3).toString(), "10:00", "10:00"));
         //ungueltig
         alleKlausuren.add(new Klausur("RDB", 56, false, LocalDate.now().toString(), "10:00", "10:00"));
-        alleKlausuren.add(new Klausur("AlDat", 78, false, LocalDate.now().minusDays(2).toString(), "10:00", "10:00"));
+        alleKlausuren.add(new Klausur("AlDat", 78, false,
+                LocalDate.now().minusDays(2).toString(), "10:00", "10:00"));
 
         return alleKlausuren;
 
     }
 
     @Test
-    @DisplayName("Testet, dass nur Klausuren in der Zukunft geladen werden")
+    @DisplayName("Es weden nur Klausuren geladen, die in der Zukunft liegen")
     void klausurenUngueltig() {
         //arrange
         Set<Klausur> alleKlausuren = arrange();
@@ -62,7 +63,7 @@ public class KlausurServiceTests {
 
 
     @Test
-    @DisplayName("Testet ob nur gültige Klausuren auf true gesetzt werden")
+    @DisplayName("Nur stornierbare Klausuren werden auf true gesetzt")
     void klausurenStornierbar() {
         //arrange
         Set<Klausur> alleKlausuren = arrange();
@@ -84,12 +85,13 @@ public class KlausurServiceTests {
     }
 
     @Test
-    @DisplayName("Fehler, wenn startzeit vor Endzeit der Klausur ist")
+    @DisplayName("Fehler, wenn Startuhrzeit vor Enduhrzeit der Klausur ist")
     void klausurValidierung1() {
         KlausurService klausurService = new KlausurService();
         Klausur klausur = new Klausur("RA", 1234, true, "1000-11-12", "11:00", "10:00");
 
-        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
 
         assertThat(thrown.getMessage()).isEqualTo("Die Startzeit kann nicht nach der Endzeit liegen");
     }
@@ -100,7 +102,8 @@ public class KlausurServiceTests {
         KlausurService klausurService = new KlausurService();
         Klausur klausur = new Klausur("RA", 1234, true, "1000-11-12", "11:00", "11:00");
 
-        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
 
         assertThat(thrown.getMessage()).isEqualTo("Die Startzeit und Endzeit sind gleich!!");
     }
@@ -109,20 +112,24 @@ public class KlausurServiceTests {
     @DisplayName("Fehler, wenn Klausur beim validieren vor dem Praktikumsdatum liegt")
     void klausurValidierung3() {
         KlausurService klausurService = new KlausurService();
-        Klausur klausur = new Klausur("RA", 1234, true, LocalDate.now().minusDays(9).toString(), "11:00", "11:30");
+        Klausur klausur = new Klausur("RA", 1234, true, LocalDate.now().minusDays(9).toString(),
+                "11:00", "11:30");
 
-        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
 
         assertThat(thrown.getMessage()).isEqualTo("Das Klausurdatum liegt vor dem Praktikumsbeginn!");
     }
 
     @Test
-    @DisplayName("Fehler, wenn Klausur beim validieren nach dem Praktikumsdatum liegt")
+    @DisplayName("Fehler, wenn Klausur beim Validieren nach dem Praktikumsdatum liegt")
     void klausurValidierung4() {
         KlausurService klausurService = new KlausurService();
-        Klausur klausur = new Klausur("RA", 1234, true, LocalDate.now().plusDays(9).toString(), "11:00", "11:30");
+        Klausur klausur = new Klausur("RA", 1234, true, LocalDate.now().plusDays(9).toString(),
+                "11:00", "11:30");
 
-        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
 
         assertThat(thrown.getMessage()).isEqualTo("Das Klausurdatum liegt nach dem Praktikumsende!");
     }
@@ -131,9 +138,11 @@ public class KlausurServiceTests {
     @DisplayName("Fehler, wenn Klausurbeginn vor der Praktikumszeit liegt")
     void klausurValidierung5() {
         KlausurService klausurService = new KlausurService();
-        Klausur klausur = new Klausur("RA", 1234, true, LocalDate.now().plusDays(1).toString(), "07:00", "08:00");
+        Klausur klausur = new Klausur("RA", 1234, true, LocalDate.now().plusDays(1).toString(),
+                "07:00", "08:00");
 
-        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
 
         assertThat(thrown.getMessage()).isEqualTo("Setzen Sie den Anfang der Klausur auf den Anfang des Praktikums.");
     }
@@ -142,9 +151,11 @@ public class KlausurServiceTests {
     @DisplayName("Fehler, wenn Klausurende nach Praktikumszeitraum liegt")
     void klausurValidierung6() {
         KlausurService klausurService = new KlausurService();
-        Klausur klausur = new Klausur("RA", 1234, true, LocalDate.now().plusDays(1).toString(), "13:00", "14:00");
+        Klausur klausur = new Klausur("RA", 1234, true, LocalDate.now().plusDays(1).toString(),
+                "13:00", "14:00");
 
-        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
+        Exception thrown = assertThrows(Exception.class, () -> klausurService.validiereKlausur(klausur,
+                BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
 
         assertThat(thrown.getMessage()).isEqualTo("Setzen Sie das Ende der Klausur auf das Ende des Praktikums.");
     }

@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StudentTest {
 
     @Test
-    @DisplayName("zwei Urlaubsblöcke direkt hintereinander werden zu einem Block gemerged")
+    @DisplayName("Zwei Urlaubsbloecke, die direkt hintereinander liegen, werden zu einem Block gemerged")
     void mergenZweiUrlaubsbloeckeHintereinander() {
         Student student = new Student(123);
         Set<Urlaub> urlaube = new HashSet<>();
@@ -32,7 +32,7 @@ public class StudentTest {
     }
 
     @Test
-    @DisplayName("zwei Urlaubsblöcke nicht hintereinander, werden nicht verändert")
+    @DisplayName("Zwei Urlaubsbloecke, die nicht hintereinander liegen, werden nicht veraendert")
     void zweiUrlaubsbloeckeKeinMergen() {
         Student student = new Student(123);
         Set<Urlaub> urlaube = new HashSet<>();
@@ -52,7 +52,7 @@ public class StudentTest {
     }
 
     @Test
-    @DisplayName("drei Urlaubsblöcke direkt nacheinander werden zu einem Block gemerged")
+    @DisplayName("Drei Urlaubsbloecke,die direkt nacheinander liegen, werden zu einem Block gemerged")
     void dreiUrlaubsbloeckeMergen() {
         Student student = new Student(123);
         Urlaub urlaub1 = new Urlaub("1000-01-01", "09:00", "10:00");
@@ -73,7 +73,7 @@ public class StudentTest {
     }
 
     @Test
-    @DisplayName("drei Urlaubsblöcke nicht hintereinander, werden nicht gemerged")
+    @DisplayName("Drei Urlaubsbloecke,die nicht hintereinander liegen, werden nicht gemerged")
     void dreiUrlaubsbloeckeKeinMergen() {
         Student student = new Student(123);
         Urlaub urlaub1 = new Urlaub("1000-01-01", "08:30", "09:30");
@@ -96,7 +96,7 @@ public class StudentTest {
     }
 
     @Test
-    @DisplayName("je zwei Urlaubsblöcke direkt nacheinander werden zu je einem Block gemerged")
+    @DisplayName("Je zwei Urlaubsbloecke direkt nacheinander werden zu je einem Block gemerged")
     void vierUrlaubsbloeckeZweiMergen() {
         Student student = new Student(123);
         Urlaub urlaub1 = new Urlaub("1000-01-01", "08:30", "09:00");
@@ -120,7 +120,7 @@ public class StudentTest {
     }
 
     @Test
-    @DisplayName("Ein Student hat zwei Urlaube, einer ist zur gleichen Zeit wie eine Klausur(also der uebergebene Tag), wird also herausgelöscht")
+    @DisplayName("Ein Student hat zwei Urlaube, einer ist zur gleichen Zeit wie eine Klausur(also der uebergebene Tag), wird also erstattet")
     void aendereUrlaube1Test(){
         Student student = new Student(123);
         Urlaub urlaub1 = new Urlaub("2022-02-02", "08:30", "10:00");
@@ -137,24 +137,25 @@ public class StudentTest {
         assertThat(student.getUrlaube()).hasSize(1);
     }
     @Test
-    @DisplayName("Ein Student hat zwei Urlaube, einer ist zur gleichen Zeit wie eine Klausur(also der uebergebene Tag), wird also herausgelöscht")
+    @DisplayName("Ein Student hat drei Urlaube, zwei ueberschneiden sich mit einer Klausur(also der uebergebene Tag)," +
+            "also wird das Ende eines Urlaubs und der andere Urlaub komplett erstattet")
     void aendereUrlaube2Test(){
         Student student = new Student(123);
         Urlaub urlaub1 = new Urlaub("2022-02-02", "08:30", "10:00"); //1.5
         Urlaub urlaub2 = new Urlaub("2022-02-02","11:30", "12:30"); //1
         Urlaub urlaub3 = new Urlaub("2022-03-03", "08:30", "10:00"); //1.5
-        Urlaub gueltigeUrlaub = new Urlaub("2022-02-02", "08:30", "09:00");
+        Urlaub gueltigerUrlaub = new Urlaub("2022-02-02", "08:30", "09:00");
         Set<Urlaub> alteUrlaube = new HashSet<>();
         alteUrlaube.add(urlaub1);
         alteUrlaube.add(urlaub2);
         alteUrlaube.add(urlaub3);
         Set<Urlaub> gueltigeUrlaube = new HashSet<>();
-        gueltigeUrlaube.add(gueltigeUrlaub);
+        gueltigeUrlaube.add(gueltigerUrlaub);
         student.setUrlaube(alteUrlaube);
         student.aendereUrlaube(gueltigeUrlaube, LocalDate.of(2022,2,2));
 
         assertThat(student.getResturlaub()).isEqualTo(120);
-        assertThat(student.getUrlaube()).contains(urlaub3, gueltigeUrlaub);
+        assertThat(student.getUrlaube()).contains(urlaub3, gueltigerUrlaub);
         assertThat(student.getUrlaube()).hasSize(2);
     }
 
