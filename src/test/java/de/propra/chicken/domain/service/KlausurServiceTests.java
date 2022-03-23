@@ -26,6 +26,7 @@ public class KlausurServiceTests {
     private static final String ENDE_PRAKTIKUM   = "12:30";
     private static final String STARTDATUM = LocalDate.now().minusDays(7).toString();
     private static final String ENDDATUM   = LocalDate.now().plusDays(7).toString();
+    private static final MockedStatic<Jsoup> jsoupMockedStatic = mockStatic(Jsoup.class);
 
     Set<Klausur> arrange(){
         Set<Klausur> alleKlausuren = new HashSet<>();
@@ -155,11 +156,9 @@ public class KlausurServiceTests {
         Klausur klausur = mock(Klausur.class);
         Document document = mock(Document.class);
         Connection connection = mock(Connection.class);
-        MockedStatic<Jsoup> jsoupMockedStatic = mockStatic(Jsoup.class);
         jsoupMockedStatic.when(() -> Jsoup.connect(anyString())).thenReturn(connection);
         when(connection.get()).thenReturn(document);
         when(document.text()).thenReturn("invalide");
-
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             klausurService.validiereLsfIdInternet(klausur);
         });
@@ -173,7 +172,6 @@ public class KlausurServiceTests {
         Klausur klausur = mock(Klausur.class);
         Document document = mock(Document.class);
         Connection connection = mock(Connection.class);
-        MockedStatic<Jsoup> jsoupMockedStatic = mockStatic(Jsoup.class);
         jsoupMockedStatic.when(() -> Jsoup.connect(anyString())).thenReturn(connection);
         when(connection.get()).thenReturn(document);
         when(document.text()).thenReturn("VeranstaltungsID");

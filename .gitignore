@@ -45,3 +45,5 @@ out/
 /src/test/resources/testEnv
 
 output.log.1
+
+.envtemplate
