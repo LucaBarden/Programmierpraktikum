@@ -74,14 +74,14 @@ public class ControllerTests {
         return new OAuth2AuthenticationToken(user, authorities, "whatever");
     }
 
-        OAuth2User buildOAuth2User(String role, String name) {
-            Map<String, Object> attributes = new HashMap<>();
-            attributes.put("login", name);
-            attributes.put("id", 12345);
+    OAuth2User buildOAuth2User(String role, String name) {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("login", name);
+        attributes.put("id", 12345);
 
-            List<GrantedAuthority> authorities = Collections.singletonList(
-                    new OAuth2UserAuthority("ROLE_" + role.toUpperCase(), attributes));
-            return new DefaultOAuth2User(authorities, attributes, "login");
+        List<GrantedAuthority> authorities = Collections.singletonList(
+                new OAuth2UserAuthority("ROLE_" + role.toUpperCase(), attributes));
+        return new DefaultOAuth2User(authorities, attributes, "login");
     }
 
     @Test
@@ -158,7 +158,60 @@ public class ControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/student"));
 
-}
+    }
+
+    @Test
+    @DisplayName("Orga Mitglieder können auf die Orga Seite zugreifen")
+    void orga() throws Exception {
+        OAuth2AuthenticationToken principal = buildPrincipal("orga", "Max Mustermann");
+        MockHttpSession newSession = new MockHttpSession();
+        newSession.setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, new SecurityContextImpl(principal));
+
+        session = newSession;
+
+        mockMvc.perform(get("/orga").session(session)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("Orga"));
+
+    }
+
+    @Test
+    @DisplayName("Tutoren können auf die Tutor Seite zugreifen")
+    void tutor() throws Exception {
+        OAuth2AuthenticationToken principal = buildPrincipal("tutor", "Max Mustermann");
+        MockHttpSession newSession = new MockHttpSession();
+        newSession.setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, new SecurityContextImpl(principal));
+
+        session = newSession;
+
+        mockMvc.perform(get("/tutor").session(session)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("Tutor"));
+
+    }
+
+    @Test
+    @DisplayName("Nicht-Orga Mitglieder können nicht auf die Orga Seite zugreifen")
+    void nonOrga() throws Exception {
+        mockMvc.perform(get("/orga").session(session)
+                        .with(csrf()))
+                .andExpect(status().isForbidden());
+
+    }
+
+    @Test
+    @DisplayName("Nicht-Tutoren können nicht auf die Tutor Seite zugreifen")
+    void nonTutor() throws Exception {
+        mockMvc.perform(get("/tutor").session(session)
+                        .with(csrf()))
+                .andExpect(status().isForbidden());
+
+    }
+
 
     @Test
     @DisplayName("Prueft dass die Service Methoden bei einer Klausuranmeldung richtig aufgerufen werden")

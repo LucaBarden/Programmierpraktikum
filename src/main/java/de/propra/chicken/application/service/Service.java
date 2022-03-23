@@ -23,7 +23,7 @@ public class Service {
     private final KlausurRepository klausurRepo;
     private final StudentService studentService;
     private final KlausurService klausurService;
-    private static final Logger logger = Logger.getLogger("chicken.Service");
+    private static final Logger logger = Logger.getLogger("chicken.Service.Logger");
 
     private static final Dotenv dotenv = Dotenv.load();
 

@@ -57,6 +57,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             var authorities = new HashSet<GrantedAuthority>();
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
+
             String login = attributes.get("login").toString();
             System.out.printf("USER LOGIN: %s%n", login);
 
