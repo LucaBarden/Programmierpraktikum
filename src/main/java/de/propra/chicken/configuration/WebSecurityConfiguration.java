@@ -26,7 +26,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${Chicken.rollen.orga}")
     private Set<String> orga;
 
-    @Value("${Chicken.rollen.tutor")
+    @Value("${Chicken.rollen.tutor}")
     private Set<String> tutoren;
 
     @Override
