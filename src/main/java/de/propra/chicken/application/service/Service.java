@@ -24,13 +24,10 @@ public class Service {
 
     private static final Dotenv dotenv = Dotenv.load();
 
-
     private static String BEGINN     = dotenv.get("STARTUHRZEIT_PRAKTIKUM");
     private static String ENDE       = dotenv.get("ENDUHRZEIT_PRAKTIKUM");
     private static String STARTDATUM = dotenv.get("STARTDATUM_PRAKTIKUM");
     private static String ENDDATUM   = dotenv.get("ENDDATUM_PRAKTIKUM");
-
-
 
     static {
         try {
@@ -49,8 +46,6 @@ public class Service {
         this.klausurRepo = klausurRepo;
         this.studentService = studentService;
         this.klausurService = klausurService;
-
-
     }
 
     private void klausurAnmelden(Klausur klausur, long githubID, OAuth2User principal) throws Exception {
@@ -83,7 +78,6 @@ public class Service {
         Student student = studentRepo.findByID(githubID);
         return studentService.stornierbareUrlaube(student.getUrlaube());
     }
-
 
     public void speicherStudent(Student student) {
         boolean alreadyExists = studentRepo.existsById(student.getGithubID());
@@ -148,6 +142,4 @@ public class Service {
         studentRepo.speicherStudent(student);
         logger.info(principal.getAttribute("login") + " hat seinen Urlaub am " + tag + " von " + beginn + " bis " + end + " Uhr storniert");
     }
-
-
 }
