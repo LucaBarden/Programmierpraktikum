@@ -3,7 +3,9 @@ package de.propra.chicken.application.service;
 import de.propra.chicken.application.service.repo.KlausurRepository;
 import de.propra.chicken.application.service.repo.StudentRepository;
 import de.propra.chicken.domain.model.Klausur;
+import de.propra.chicken.domain.model.KlausurData;
 import de.propra.chicken.domain.model.Student;
+import de.propra.chicken.domain.model.Urlaub;
 import de.propra.chicken.domain.service.KlausurService;
 import de.propra.chicken.domain.service.StudentService;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -71,8 +73,8 @@ public class ServiceTest {
         Klausur klausur = mock(Klausur.class);
         when(klausurRepo.speicherKlausur(any())).thenReturn(klausur);
         doNothing().when(klausurService).validiereLsfIdInternet(klausur);
-        service.saveKlausur(klausur, user);
 
+        service.saveKlausur(klausur, user);
 
         verify(klausurService, times(1)).validiereLsfIdInternet(klausur);
         verify(klausurService, times(1)).validiereKlausur(klausur, BEGINN, ENDE, STARTDATUM, ENDDATUM);
@@ -105,12 +107,57 @@ public class ServiceTest {
 
         service.storniereKlausurAnmeldung(12345, user);
 
-
+        verify(klausurRepo, times(1)).findeKlausurByID(anyLong());
+        verify(studentRepo, times(1)).findByID(anyLong());
         verify(student, times(1)).entferneUrlaubeAnEinemTag(klausur.getDatum());
         verify(student, times(1)).entferneKlausur(anyLong());
         verify(studentRepo, times(1)).speicherStudent(student);
 
     }
+
+    @Test
+    @DisplayName("Prueft ob speicherUrlaub richtig aufgerufen wird")
+    public void speicherUrlaub() throws Exception {
+        Student student = mock(Student.class);
+        OAuth2User user = mock(OAuth2User.class);
+        KlausurData klausurData = new KlausurData(LocalDate.of(2022,3,3), LocalTime.of(8,30), LocalTime.of(10,0),true);
+        Set<KlausurData> angemeldeteKlausuren = Set.of(klausurData);
+        Urlaub urlaub = mock(Urlaub.class);
+        Set<Urlaub> gueltigerNeuerUrlaub = Set.of(urlaub);
+        when(studentRepo.findByID(anyLong())).thenReturn(student);
+        when(klausurRepo.findAngemeldeteKlausuren(anyLong())).thenReturn(angemeldeteKlausuren);
+        when(studentService.validiereUrlaub(student,urlaub, angemeldeteKlausuren, BEGINN, ENDE, STARTDATUM, ENDDATUM)). thenReturn(gueltigerNeuerUrlaub);
+        when(student.ueberschneidendenUrlaubMergen()).thenReturn(gueltigerNeuerUrlaub);
+
+
+        service.speicherUrlaub(urlaub, 1234,user );
+
+        verify(studentRepo, times(1)).findByID(anyLong());
+        verify(klausurRepo, times(1)).findAngemeldeteKlausuren(anyLong());
+        verify(studentService,times(1)).validiereUrlaub(student,urlaub, angemeldeteKlausuren, BEGINN, ENDE, STARTDATUM, ENDDATUM);
+        verify(student, times(1)).addUrlaube(gueltigerNeuerUrlaub);
+        verify(student, times(1)).ueberschneidendenUrlaubMergen();
+        verify(student, times(1)).setUrlaube(gueltigerNeuerUrlaub);
+        verify(studentRepo, times(1)).speicherStudent(student);
+    }
+
+    @Test
+    @DisplayName("Prueft ob urlaubStornieren richtig aufgerufen wird")
+    public void urlaubStornieren() throws Exception {
+        OAuth2User user = mock(OAuth2User.class);
+        Student student = mock(Student.class);
+        when(studentRepo.findByID(anyLong())).thenReturn(student);
+        when(user.getAttribute(anyString())).thenReturn(anyLong());
+
+        service.urlaubStornieren(user, " ", " ", " " );
+
+        verify(studentRepo, times(1)).findByID(anyLong());
+        verify(student, times(1)).entferneUrlaub(anyString(),anyString(), anyString());
+        verify(studentRepo, times(1)).speicherStudent(student);
+
+
+    }
+
 
     
 

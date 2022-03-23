@@ -113,19 +113,21 @@ public class Service {
         logger.info(principal.getAttribute("login") + "(" + principal.getAttribute("id") + ") " + "hat die Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " erstellt");
     }
 
-     public void speicherKlausur(Klausur klausur) throws Exception {
+    public void speicherKlausur(Klausur klausur) throws Exception {
             validiereKlausur(klausur);
             klausurRepo.speicherKlausur(klausur);
     }
 
-     protected void validiereKlausur(Klausur klausur) throws Exception {
+    protected void validiereKlausur(Klausur klausur) throws Exception {
         klausurService.validiereLsfIdInternet(klausur);
         klausurService.validiereKlausur(klausur, BEGINN, ENDE, STARTDATUM, ENDDATUM);
     }
+
     public void klausurAnmeldung(long id, OAuth2User principal) throws Exception {
         Klausur klausur = klausurRepo.findeKlausurByID(id);
         klausurAnmelden(klausur, Long.parseLong(principal.getAttribute("id").toString()), principal);
     }
+
     public Student findStudentByGithubID(long id) throws Exception {
         return studentRepo.findByID(id);
     }
