@@ -74,7 +74,7 @@ public class KlausurServiceTests {
     }
 
     @Test
-    @DisplayName("Klausurvalidierung: Start nach Ende")
+    @DisplayName("Fehler, wenn startzeit vor Endzeit der Klausur ist")
     void klausurValidierung1() {
         KlausurService klausurService = new KlausurService();
         Klausur klausur = new Klausur("RA", 1234, true, "1000-11-12", "11:00", "10:00");
@@ -85,7 +85,7 @@ public class KlausurServiceTests {
     }
 
     @Test
-    @DisplayName("Klausurvalidierung: Start gleich Ende")
+    @DisplayName("Fehler, wenn Startzeit und Endzeit der Klausur gleich sind")
     void klausurValidierung2() {
         KlausurService klausurService = new KlausurService();
         Klausur klausur = new Klausur("RA", 1234, true, "1000-11-12", "11:00", "11:00");
@@ -96,7 +96,7 @@ public class KlausurServiceTests {
     }
 
     @Test
-    @DisplayName("Klausurvalidierung: Klausur liegt vor Praktikumsbeginn (Datum)")
+    @DisplayName("Fehler, wenn Klausur beim validieren vor dem Praktikumsdatum liegt")
     void klausurValidierung3() {
         KlausurService klausurService = new KlausurService();
         Klausur klausur = new Klausur("RA", 1234, true, LocalDate.now().minusDays(9).toString(), "11:00", "11:30");
@@ -107,7 +107,7 @@ public class KlausurServiceTests {
     }
 
     @Test
-    @DisplayName("Klausurvalidierung: Klausur liegt nach Praktikumsende (Datum)")
+    @DisplayName("Fehler, wenn Klausur beim validieren nach dem Praktikumsdatum liegt")
     void klausurValidierung4() {
         KlausurService klausurService = new KlausurService();
         Klausur klausur = new Klausur("RA", 1234, true, LocalDate.now().plusDays(9).toString(), "11:00", "11:30");
@@ -118,7 +118,7 @@ public class KlausurServiceTests {
     }
 
     @Test
-    @DisplayName("Klausurvalidierung: die Klausuruhrzeit liegt vor Beginn des Praktikums")
+    @DisplayName("Fehler, wenn Klausurbeginn vor der Praktikumszeit liegt")
     void klausurValidierung5() {
         KlausurService klausurService = new KlausurService();
         Klausur klausur = new Klausur("RA", 1234, true, LocalDate.now().plusDays(1).toString(), "07:00", "08:00");
@@ -129,7 +129,7 @@ public class KlausurServiceTests {
     }
 
     @Test
-    @DisplayName("Klausurvalidierung: die Klausuruhrzeit liegt nach Ende des Praktikums")
+    @DisplayName("Fehler, wenn Klausurende nach Praktikumszeitraum liegt")
     void klausurValidierung6() {
         KlausurService klausurService = new KlausurService();
         Klausur klausur = new Klausur("RA", 1234, true, LocalDate.now().plusDays(1).toString(), "13:00", "14:00");

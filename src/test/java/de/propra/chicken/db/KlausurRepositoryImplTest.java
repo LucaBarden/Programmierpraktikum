@@ -133,7 +133,7 @@ public class KlausurRepositoryImplTest {
     }
 
     @Test
-    @Sql({"classpath:testCreate.sql", "classpath:testDataStudent.sql", "classpath:testDataKlausur2.sql "})
+    @Sql({"classpath:testCreate.sql", "classpath:testDataStudent.sql", "classpath:testDataKlausur2.sql"})
     @DisplayName("Testet, dass nur bestimmte Klausuren mit KlausurRef gefunden und zu KlausurData konvertiert werden")
     void test8() {
         //ARRANGE

@@ -22,7 +22,7 @@ public class StudentServiceTests {
     private static final String ENDDATUM   = LocalDate.now().plusDays(7).toString();
 
     @Test
-    @DisplayName("Der Student wirft einen Fehler, wenn er sich bei einer bereits angemeldeten Klausur anmelden möchte")
+    @DisplayName("Fehler, wenn Student sich bei einer bereits angemeldeten Klausur anmelden möchte")
     public void test1() {
         LocalDate tag = LocalDate.now().plusDays(2);
         Student student = new Student(123456);
@@ -36,7 +36,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Der Student wirft keinen Fehler, wenn er sich bei einer neuen Klausur anmelden möchte")
+    @DisplayName("Kein Fehler, wenn Student sich bei einer neuen Klausur anmelden möchte")
     public void test2() {
         LocalDate tag = LocalDate.now().plusDays(2);
         Student student = new Student(123456);
@@ -53,7 +53,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Der Student wirft einen Fehler, wenn die Klausur am gleichen Tag ist wie die Anmeldung")
+    @DisplayName("Fehler, wenn die Klausur am gleichen Tag ist wie die Anmeldung")
     public void test3() {
         Student student = new Student(123456);
         Klausur klausur = new Klausur("RA", 44445, false, LocalDate.now().toString(), LocalTime.of(10,0,0).toString(), LocalTime.of(11,30,0).toString());
@@ -66,7 +66,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: den ganzen Tag Urlaub nehmen ist gültig")
+    @DisplayName("Kein Fehler, wenn ganzer Tag Urlaub genommen wird")
     void urlaubsvalidierung1() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -77,7 +77,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: Urlaub liegt vor dem Praktikumszeitraum: Exception wird geworfen")
+    @DisplayName("Fehler, wenn Urlaubsstart vor dem Praktikumszeitraum liegt")
     void urlaubsvalidierung2() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -89,7 +89,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: Start des Urlaubs ist nach End: Exception wird geworfen")
+    @DisplayName("Fehler, wenn Startzeit nach Endzeit des Urlaubs liegt")
     void urlaubsvalidierung3() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
@@ -101,11 +101,11 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: Urlaub ist vor Beginn des Praktikums: Exception wird geworfen")
+    @DisplayName("Fehler, wenn Urlaubsdatum vor dem Praktikumszeitraum liegt")
     void urlaubsvalidierung21() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
-        Urlaub urlaub = new Urlaub(LocalDate.now().minusDays(9).toString(), "10:00", "09:00");
+        Urlaub urlaub = new Urlaub(LocalDate.now().minusDays(9).toString(), "08:30", "09:00");
         Set<KlausurData> klausuren = new HashSet<>();
 
         Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
@@ -113,11 +113,11 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: Urlaub ist nach Ende des Praktikums: Exception wird geworfen")
+    @DisplayName("Fehler, wenn Urlaubsdatum nach Praktikumszeitraum liegt")
     void urlaubsvalidierung22() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);
-        Urlaub urlaub = new Urlaub(LocalDate.now().plusDays(9).toString(), "10:00", "09:00");
+        Urlaub urlaub = new Urlaub(LocalDate.now().plusDays(9).toString(), "08:30", "09:00");
         Set<KlausurData> klausuren = new HashSet<>();
 
         Exception thrown = assertThrows(Exception.class, () -> studentService.validiereUrlaub(student, urlaub, klausuren, BEGINN_PRAKTIKUM, ENDE_PRAKTIKUM, STARTDATUM, ENDDATUM));
@@ -125,7 +125,7 @@ public class StudentServiceTests {
     }
 
     @Test
-    @DisplayName("Urlaubsvalidierung: Start- und Endzeit des Urlaubs gleich: Exception wird geworfen")
+    @DisplayName("Fehler, wenn Start- und Endzeit des Urlaubs gleich sind")
     void urlaubsvalidierung4() {
         StudentService studentService = new StudentService();
         Student student = new Student(123);

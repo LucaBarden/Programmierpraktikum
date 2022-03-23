@@ -73,7 +73,7 @@ public class StudentTest {
     }
 
     @Test
-    @DisplayName("drei Urlaubsblöcke nicht hintereinander, werden nicht verändert")
+    @DisplayName("drei Urlaubsblöcke nicht hintereinander, werden nicht gemerged")
     void dreiUrlaubsbloeckeKeinMergen() {
         Student student = new Student(123);
         Urlaub urlaub1 = new Urlaub("1000-01-01", "08:30", "09:30");
@@ -129,7 +129,6 @@ public class StudentTest {
         alteUrlaube.add(urlaub1);
         alteUrlaube.add(urlaub2);
         student.setUrlaube(alteUrlaube);
-        student.zieheUrlaubsdauerAb(alteUrlaube);
 
         student.aendereUrlaube(new HashSet<>(), LocalDate.of(2022,2,2));
 
@@ -152,8 +151,6 @@ public class StudentTest {
         Set<Urlaub> gueltigeUrlaube = new HashSet<>();
         gueltigeUrlaube.add(gueltigeUrlaub);
         student.setUrlaube(alteUrlaube);
-        student.zieheUrlaubsdauerAb(alteUrlaube);
-        System.out.println(student.toString());
         student.aendereUrlaube(gueltigeUrlaube, LocalDate.of(2022,2,2));
 
         assertThat(student.getResturlaub()).isEqualTo(120);
@@ -162,7 +159,7 @@ public class StudentTest {
     }
 
     @Test
-    @DisplayName("urlaubSelberTag wird richtig berechnet")
+    @DisplayName("urlaubSelberTag wird richtig berechnet, bei mehereren gleichen Tagen")
     void urlaubSelberTag() {
         Student student = new Student(123);
         Urlaub urlaub1 = new Urlaub("2022-03-10", "08:45", "09:15"); //selber Tag
@@ -200,7 +197,7 @@ public class StudentTest {
     }
 
     @Test
-    @DisplayName("zieheUrlaubsdauerAb")
+    @DisplayName("Ein Urlaub wird Korrekt vom Resturlaub abgezogen")
     void reduziereResturlaub() {
         Student student = new Student(123);
         Urlaub urlaub1 = new Urlaub("2022-03-10", "08:45", "09:15");
