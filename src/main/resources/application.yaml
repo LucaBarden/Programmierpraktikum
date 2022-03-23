@@ -11,12 +11,12 @@ spring:
     schemas: chickendb
     create-schemas: true
     url: jdbc:mariadb://localhost:3307/
-    user: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    user: root
+    password: geheim
   datasource:
     url: jdbc:mariadb://localhost:3307/chickendb
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    username: root
+    password: geheim
 
 Chicken:
   rollen:
