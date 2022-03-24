@@ -1,0 +1,106 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+class ApplicationService {
+}
+
+component Domain {
+component Model {
+component StudentAggregat {
+class Student {
+Long github_ID
+int resturlaub
+Set<KlausurRef> klausuren
+Set<Urlaub> urlaube
+}
+
+class Urlaub {
+LocalDate tag
+LocalTime von
+LocalTime bis
+}
+class KlausurRef {
+int lsfid
+}
+}
+
+component KlausurAggregat {
+class Klausur {
+int lsfid
+string veranstaltung
+boolean praesenz
+LocalDate tag
+LocalTime von
+LocalTime bis
+}
+}
+
+
+class KlausurData {
+string veranstaltung
+boolean praesenz
+LocalDate tag
+LocalTime von
+LocalTime bis
+}
+
+
+}
+
+component service {
+    class KlausurService {
+    }
+    class StudentService {
+    }
+}
+}
+
+component ApplicationService {
+
+    component Repo {
+        interface KlausurRepository
+        interface StudentRepository
+        }
+    class Service {
+
+    }
+
+}
+
+component DB {
+    class KlausurRepositoryImpl {
+    }
+    class StudentRepositoryImpl {
+    }
+    interface CRUDKlausur {
+     Klausur speichern
+    }
+    interface CRUDStudent {
+
+    }
+}
+
+Service -> Repo
+KlausurRepositoryImpl --> KlausurRepository
+StudentRepositoryImpl --> StudentRepository
+Service --> Domain
+
+Student -> Urlaub
+Student --> KlausurRef
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@enduml
