@@ -85,7 +85,7 @@ public class Student {
     }
 
     public long  summeAllerUrlaube(){
-        return this.urlaube.stream().map(a -> Duration.between(a.getBeginn(), a.getEnd()).toMinutes()).reduce(0L, (a,b) -> a+b);
+        return this.urlaube.stream().map(a -> Duration.between(a.getBeginn(), a.getEnd()).toMinutes()).reduce(0L, Long::sum);
     }
 
     public void setResturlaub(int resturlaub) {
@@ -93,12 +93,12 @@ public class Student {
     }
 
     public void setUrlaube(Set<Urlaub> urlaube) {
-        this.urlaube = urlaube;
+        this.urlaube = new HashSet<>(urlaube);
         this.resturlaub = 240 - (int) summeAllerUrlaube();
     }
 
     public void setKlausuren(Set<KlausurRef> klausuren) {
-        this.klausuren = klausuren;
+        this.klausuren = new HashSet<>(klausuren);
     }
 
     public void addKlausur(KlausurRef klausur) {
@@ -113,14 +113,7 @@ public class Student {
 
     public Set<Urlaub> urlaubSelberTag(LocalDate datum) {
         Set<Urlaub> uSelberTag = new HashSet<>();
-
-        //urlaube.stream().filter(a -> a.getTag().compareTo(datum) == 0).forEach(uSelberTag::add);
-
-        for (Urlaub tmpUrlaub : urlaube) {
-            if (tmpUrlaub.getTag().compareTo(datum) == 0) {
-                uSelberTag.add(tmpUrlaub);
-            }
-        }
+        urlaube.stream().filter(a -> a.getTag().compareTo(datum) == 0).forEach(uSelberTag::add);
         return uSelberTag;
     }
 
@@ -131,8 +124,7 @@ public class Student {
     public Set<Urlaub> ueberschneidendenUrlaubMergen() {
         if (urlaube.size() == 0) return new HashSet<>(urlaube);
 
-        Set<Urlaub> zuPruefendeUrlaube = new HashSet<>();
-        zuPruefendeUrlaube.addAll(urlaube);
+        Set<Urlaub> zuPruefendeUrlaube = new HashSet<>(urlaube);
         Set<Urlaub> stashUrlaube = new HashSet<>();
         boolean aenderung = true;
 

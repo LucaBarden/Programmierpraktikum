@@ -3,8 +3,10 @@ package de.propra.chicken.domain.service;
 import de.propra.chicken.domain.model.*;
 import org.springframework.stereotype.Service;
 
-import java.time.*;
-import java.time.temporal.ChronoField;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -117,16 +119,17 @@ public class StudentService {
             LocalTime anfangsZeitKlausur = k.von();
             LocalTime endZeitKlausur     = k.bis();
 
+            int pufferBefore;
+            int pufferAfter;
             if(k.isPraesenz()) {
-                int pufferBefore = 120;
-                int pufferAfter  = 120;
-                erstattungsZeiten(zuErstattenderUrlaube, klausurTag, anfangsZeitKlausur, endZeitKlausur, pufferBefore, pufferAfter, beginn, ende);
+                pufferBefore = 120;
+                pufferAfter = 120;
 
             } else {
-                int pufferBefore = 30;
-                int pufferAfter  = 0;
-                erstattungsZeiten(zuErstattenderUrlaube, klausurTag, anfangsZeitKlausur, endZeitKlausur, pufferBefore, pufferAfter, beginn, ende);
+                pufferBefore = 30;
+                pufferAfter = 0;
             }
+            erstattungsZeiten(zuErstattenderUrlaube, klausurTag, anfangsZeitKlausur, endZeitKlausur, pufferBefore, pufferAfter, beginn, ende);
         }
     }
 

@@ -15,7 +15,6 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
-
 import java.util.HashSet;
 import java.util.Set;
 

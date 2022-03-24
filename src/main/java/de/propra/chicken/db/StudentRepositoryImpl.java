@@ -1,7 +1,8 @@
 package de.propra.chicken.db;
 
 import de.propra.chicken.application.service.repo.StudentRepository;
-import de.propra.chicken.domain.model.*;
+import de.propra.chicken.domain.model.KlausurRef;
+import de.propra.chicken.domain.model.Student;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;

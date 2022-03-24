@@ -4,22 +4,18 @@ import de.propra.chicken.domain.model.Klausur;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import java.time.Clock;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class KlausurServiceTests {
@@ -164,9 +160,7 @@ public class KlausurServiceTests {
         jsoupMockedStatic.when(() -> Jsoup.connect(anyString())).thenReturn(connection);
         when(connection.get()).thenReturn(document);
         when(document.text()).thenReturn("invalide");
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            klausurService.validiereLsfIdInternet(klausur);
-        });
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> klausurService.validiereLsfIdInternet(klausur));
         assertThat(exception.getMessage()).isEqualTo("Invalide LSF ID");
     }
 
@@ -181,7 +175,7 @@ public class KlausurServiceTests {
         when(connection.get()).thenReturn(document);
         when(document.text()).thenReturn("VeranstaltungsID");
 
-        assertDoesNotThrow(() -> { klausurService.validiereLsfIdInternet(klausur); });
+        assertDoesNotThrow(() -> klausurService.validiereLsfIdInternet(klausur));
     }
 
 }

@@ -1,12 +1,13 @@
 package de.propra.chicken.application.service;
 
 import de.propra.chicken.application.service.repo.KlausurRepository;
-import de.propra.chicken.domain.model.*;
 import de.propra.chicken.application.service.repo.StudentRepository;
-import de.propra.chicken.domain.service.StudentService;
+import de.propra.chicken.domain.model.*;
 import de.propra.chicken.domain.service.KlausurService;
+import de.propra.chicken.domain.service.StudentService;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+
 import java.io.IOException;
 import java.time.Clock;
 import java.util.Map;
@@ -21,7 +22,6 @@ public class Service {
     private final KlausurRepository klausurRepo;
     private final StudentService studentService;
     private final KlausurService klausurService;
-    private final Clock clock;
     private static final Logger logger = Logger.getLogger("chicken.Service.Logger");
 
     private static final Dotenv dotenv = Dotenv.load();
@@ -48,10 +48,9 @@ public class Service {
         this.klausurRepo = klausurRepo;
         this.studentService = studentService;
         this.klausurService = klausurService;
-        this.clock = clock;
     }
 
-    private void klausurAnmelden(Klausur klausur, long githubID, OAuth2User principal) throws Exception {
+    private void klausurAnmelden(Klausur klausur, long githubID, String user) throws Exception {
 
         Student student = studentRepo.findByID(githubID);
         Set<Urlaub> gueltigeUrlaubeFuerTag = studentService.validiereKlausurAnmeldung(klausur, student, BEGINN, ENDE);
@@ -59,7 +58,7 @@ public class Service {
         KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
         student.addKlausur(klausurRef);
         studentRepo.speicherStudent(student);
-        logger.info(principal.getAttribute("login") + " hat sich zur Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " angemeldet");
+        logger.info(user + " hat sich zur Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " angemeldet");
 
     }
 
@@ -88,7 +87,7 @@ public class Service {
         }
     }
 
-    public void speicherUrlaub(Urlaub urlaub, long githubID, OAuth2User principal) throws Exception {
+    public void speicherUrlaub(Urlaub urlaub, long githubID, String username) throws Exception {
 
         Student student = studentRepo.findByID(githubID);
         Set<KlausurData> angemeldeteKlausuren = klausurRepo.findAngemeldeteKlausuren(githubID);
@@ -97,13 +96,13 @@ public class Service {
         gueltigerNeuerUrlaub = student.ueberschneidendenUrlaubMergen();
         student.setUrlaube(gueltigerNeuerUrlaub);
         studentRepo.speicherStudent(student);
-        logger.info(principal.getAttribute("login") + "(" + principal.getAttribute("id") + ") hat Urlaub eingetragen " + urlaub);
+        logger.info(username + "(" + githubID + ") hat Urlaub eingetragen " + urlaub);
 
     }
 
-    public void saveKlausur(Klausur klausur, OAuth2User principal) throws Exception {
+    public void saveKlausur(Klausur klausur, String username, long id) throws Exception {
         speicherKlausur(klausur);
-        logger.info(principal.getAttribute("login") + "(" + principal.getAttribute("id") + ") " + "hat die Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " erstellt");
+        logger.info(username + "(" + id + ") " + "hat die Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " erstellt");
     }
 
     public void speicherKlausur(Klausur klausur) throws Exception {
@@ -116,29 +115,29 @@ public class Service {
         klausurService.validiereKlausur(klausur, BEGINN, ENDE, STARTDATUM, ENDDATUM);
     }
 
-    public void klausurAnmeldung(long id, OAuth2User principal) throws Exception {
+    public void klausurAnmeldung(long id, String username, long github_id) throws Exception {
         Klausur klausur = klausurRepo.findeKlausurByID(id);
-        klausurAnmelden(klausur, Long.parseLong(principal.getAttribute("id").toString()), principal);
+        klausurAnmelden(klausur, github_id, username);
     }
 
     public Student findStudentByGithubID(long id) throws Exception {
         return studentRepo.findByID(id);
     }
 
-    public void storniereKlausurAnmeldung(long lsfID, OAuth2User principal) throws Exception {
+    public void storniereKlausurAnmeldung(long lsfID, String username, long id) throws Exception {
         Klausur klausur = klausurRepo.findeKlausurByID(lsfID);
-        Student student = studentRepo.findByID(Long.parseLong(principal.getAttribute("id").toString()));
+        Student student = studentRepo.findByID(id);
 
         student.entferneUrlaubeAnEinemTag(klausur.getDatum());
         student.entferneKlausur(lsfID);
         studentRepo.speicherStudent(student);
-        logger.info(principal.getAttribute("login").toString() + " hat die " + klausur + " und damit auch möglichen verbundenen Urlaub an dem Tag storniert");
+        logger.info(username + " hat die " + klausur + " und damit auch möglichen verbundenen Urlaub an dem Tag storniert");
     }
 
-    public void urlaubStornieren(OAuth2User principal, String tag, String beginn, String end) throws Exception {
-        Student student = studentRepo.findByID(Long.parseLong(principal.getAttribute("id").toString()));
+    public void urlaubStornieren(String username, long id, String tag, String beginn, String end) throws Exception {
+        Student student = studentRepo.findByID(id);
         student.entferneUrlaub(tag, beginn, end);
         studentRepo.speicherStudent(student);
-        logger.info(principal.getAttribute("login") + " hat seinen Urlaub am " + tag + " von " + beginn + " bis " + end + " Uhr storniert");
+        logger.info(username + " hat seinen Urlaub am " + tag + " von " + beginn + " bis " + end + " Uhr storniert");
     }
 }

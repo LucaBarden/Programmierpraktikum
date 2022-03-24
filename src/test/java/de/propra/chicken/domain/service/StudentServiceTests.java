@@ -622,7 +622,7 @@ public class StudentServiceTests {
 
     @Test
     @DisplayName("Bei Online-Klausuranmeldung wird ein Urlaub am Ende, der andere am Anfang richtig erstattet aufgrund der Ueberschneidung")
-    void klausurAnmeldungTest7() throws Exception {
+    void klausurAnmeldungTest7() {
         String tag = LocalDate.now(clock).plusDays(1).toString();
         StudentService studentService = new StudentService(clock);
         Student student = new Student(234);
@@ -649,7 +649,7 @@ public class StudentServiceTests {
 
     @Test
     @DisplayName("Bei Praesenz-Klausuranmeldung wird ein Urlaub komplett, der andere am Ende richtig erstattet aufgrund der Ueberschneidung ")
-    void klausurAnmeldungTest8() throws Exception {
+    void klausurAnmeldungTest8() {
         String tag = LocalDate.now(clock).plusDays(1).toString();
         StudentService studentService = new StudentService(clock);
         Student student = new Student(234);
@@ -675,7 +675,7 @@ public class StudentServiceTests {
 
     @Test
     @DisplayName("Bei Praesenz-Klausuranmeldung werden beide komplett richtig erstattet aufgrund der Ueberschneidung")
-    void klausurAnmeldungTest9() throws Exception {
+    void klausurAnmeldungTest9() {
         String tag = LocalDate.now(clock).plusDays(1).toString();
         StudentService studentService = new StudentService(clock);
         Student student = new Student(234);
@@ -699,7 +699,7 @@ public class StudentServiceTests {
 
     @Test
     @DisplayName("Bei Praesenz-Klausuranmeldung wird ein Urlaub komplett, der andere am Anfang richtig erstattet")
-    void klausurAnmeldungTest10() throws Exception {
+    void klausurAnmeldungTest10() {
         String tag = LocalDate.now(clock).plusDays(1).toString();
         StudentService studentService = new StudentService(clock);
         Student student = new Student(234);

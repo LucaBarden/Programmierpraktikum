@@ -33,13 +33,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @AutoConfigureMockMvc()
 @WebMvcTest(controllers = WebController.class)
@@ -61,7 +66,7 @@ public class ControllerTests {
 
     @BeforeEach
     private void loggedInUser() {
-        OAuth2AuthenticationToken principal = buildPrincipal("user", "Max Mustermann");
+        OAuth2AuthenticationToken principal = buildPrincipal("user", "MaxMustermann");
         MockHttpSession newSession = new MockHttpSession();
         newSession.setAttribute(
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, new SecurityContextImpl(principal));
@@ -158,7 +163,7 @@ public class ControllerTests {
     @Test
     @DisplayName("Button auf der Seite /klausur leitet auf /student weiter")
     void klausuranmelden() throws Exception {
-        doNothing().when(service).klausurAnmeldung(anyLong(), any());
+        doNothing().when(service).klausurAnmeldung(anyLong(), anyString(), anyLong());
         mockMvc.perform(post("/klausurAnmelden").session(session)
                         .param("id", "12345")
                         .with(csrf()))
@@ -224,13 +229,15 @@ public class ControllerTests {
     @DisplayName("Prueft dass die Service Methoden bei einer Klausuranmeldung richtig aufgerufen werden")
     void klausuranmeldenService() throws Exception {
         OAuth2User oAuth2User = buildOAuth2User("user", "Max Mustermann");
+        String username = "MaxMustermann";
+        long id = 12345;
         mockMvc.perform(post("/klausurAnmelden").session(session)
                         .param("id", "12345")
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/student"));
 
-        verify(service).klausurAnmeldung(12345L, oAuth2User);
+        verify(service).klausurAnmeldung(12345L, username, id);
 
 
     }
@@ -239,7 +246,7 @@ public class ControllerTests {
     @DisplayName("Prueft dass die Service Methoden bei einer Klausur Erstellung richtig aufgerufen werden")
     void klausuranlegenService() throws Exception {
         Klausur klausur = new Klausur("test", 12345L, true, LocalDate.now(clock).toString(), LocalTime.now(clock).toString(), LocalTime.now(clock).plusHours(1).toString());
-        OAuth2User oAuth2User = buildOAuth2User("user", "Max Mustermann");
+        OAuth2User oAuth2User = buildOAuth2User("user", "MaxMustermann");
         mockMvc.perform(post("/klausurErstellen").session(session)
                         .param("name", klausur.getName())
                         .param("_praesenz", "on")
@@ -252,13 +259,13 @@ public class ControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/klausur"));
 
-        verify(service).saveKlausur(klausur, oAuth2User);
+        verify(service).saveKlausur(klausur, "MaxMustermann", 12345);
     }
 
     @Test
     @DisplayName("Prueft ob die Service methoden fuers erstellen eines Urlaubs richtig aufgerufen werden")
     void urlaubPostService() throws Exception {
-        OAuth2User oAuth2User = buildOAuth2User("user", "Max Mustermann");
+        OAuth2User oAuth2User = buildOAuth2User("user", "MaxMustermann");
         Urlaub urlaub = new Urlaub(LocalDate.now(clock).toString(), LocalTime.now(clock).toString(), LocalTime.now(clock).plusHours(1).toString());
         mockMvc.perform(post("/urlaubErstellen").session(session)
                         .param("tag", urlaub.getTag().toString())
@@ -268,27 +275,27 @@ public class ControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/student"));
 
-        verify(service).speicherUrlaub(urlaub, 12345, oAuth2User);
+        verify(service).speicherUrlaub(urlaub, 12345, "MaxMustermann");
     }
 
     @Test
     @DisplayName("Prüft das die Klausurstornierung richtig aufgerufen wird")
     void klausurStornieren() throws Exception {
-        OAuth2User user = buildOAuth2User("user", "Max Mustermann");
+        OAuth2User user = buildOAuth2User("user", "MaxMustermann");
         mockMvc.perform(post("/klausurStornieren").session(session)
                 .param("ref", "12345")
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/student"));
 
-        verify(service).storniereKlausurAnmeldung(12345, user);
+        verify(service).storniereKlausurAnmeldung(12345, "MaxMustermann", 12345);
 
     }
 
     @Test
     @DisplayName("Prüft das die Urlaubsstornierung richtig aufgerufen wird")
     void urlaubStornieren() throws Exception {
-        OAuth2User user = buildOAuth2User("user", "Max Mustermann");
+        OAuth2User user = buildOAuth2User("user", "MaxMustermann");
         Urlaub urlaub = new Urlaub(LocalDate.now(clock).toString(), LocalTime.now(clock).toString(), LocalTime.now(clock).toString());
         mockMvc.perform(post("/urlaubStornieren").session(session)
                         .param("tag", urlaub.getTag().toString())
@@ -298,7 +305,7 @@ public class ControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/student"));
 
-        verify(service).urlaubStornieren(user, urlaub.getTag().toString(), urlaub.getBeginn().toString(), urlaub.getEnd().toString());
+        verify(service).urlaubStornieren(user.getAttribute("login"), 12345L, urlaub.getTag().toString(), urlaub.getBeginn().toString(), urlaub.getEnd().toString());
     }
 
     @Test

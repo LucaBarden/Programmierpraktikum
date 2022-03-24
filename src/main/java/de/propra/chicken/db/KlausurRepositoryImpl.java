@@ -1,6 +1,5 @@
 package de.propra.chicken.db;
 
-import com.sun.jdi.request.DuplicateRequestException;
 import de.propra.chicken.application.service.repo.KlausurRepository;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.KlausurData;

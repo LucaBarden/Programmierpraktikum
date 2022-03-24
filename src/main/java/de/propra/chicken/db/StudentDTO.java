@@ -1,8 +1,8 @@
 package de.propra.chicken.db;
+
 import de.propra.chicken.domain.model.KlausurRef;
 import de.propra.chicken.domain.model.Urlaub;
 import org.springframework.data.annotation.Id;
-
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
@@ -26,8 +26,8 @@ public class StudentDTO implements Persistable {
     private boolean isNew = true;
 
     public StudentDTO(long githubID,  int resturlaub,  Set<UrlaubDTO> urlaube, Set<KlausurRef> refs) {
-        this.klausuren = refs;
-        this.urlaube = urlaube;
+        this.klausuren = new HashSet<>(refs);
+        this.urlaube = new HashSet<>(urlaube);
         this.resturlaub = resturlaub;
         this.githubID = githubID;
     }
@@ -57,7 +57,7 @@ public class StudentDTO implements Persistable {
     }
 
     public Set<Urlaub> getUrlaube() {
-        return urlaube.stream().map(u -> u.getUrlaub()).collect(Collectors.toSet());
+        return urlaube.stream().map(UrlaubDTO::getUrlaub).collect(Collectors.toSet());
     }
 
     public void setIsNew(boolean isNew) {

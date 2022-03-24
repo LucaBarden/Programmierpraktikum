@@ -1,6 +1,7 @@
 package de.propra.chicken.application.service.repo;
 
-import de.propra.chicken.domain.model.*;
+import de.propra.chicken.domain.model.KlausurRef;
+import de.propra.chicken.domain.model.Student;
 
 import java.util.Set;
 

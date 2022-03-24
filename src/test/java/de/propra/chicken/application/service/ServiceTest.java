@@ -52,12 +52,12 @@ public class ServiceTest {
     void klausurAnmeldungTest() throws Exception {
         Student student = mock(Student.class);
         Klausur klausur = new Klausur("RA", 65464, true, "1999-01-01", "08:30", "09:30");
-        OAuth2User user = mock(OAuth2User.class);
+        String username = "MaxMustermann";
+        long id = 12345;
         when(klausurRepo.findeKlausurByID(anyLong())).thenReturn(klausur);
         when(studentRepo.findByID(anyLong())).thenReturn(student);
-        when(user.getAttribute(anyString())).thenReturn(anyLong());
 
-        service.klausurAnmeldung(45642, user);
+        service.klausurAnmeldung(45642, username, id);
 
         verify(studentService, times(1)).validiereKlausurAnmeldung(klausur, student, BEGINN, ENDE);
         verify(student, times(1)).aendereUrlaube(new HashSet<>(), LocalDate.of(1999,1,1));
@@ -68,12 +68,13 @@ public class ServiceTest {
     @Test
     @DisplayName("Klausur speichern wird korrekt aufgerufen")
     void saveKlausur() throws Exception {
-        OAuth2User user = mock(OAuth2User.class);
         Klausur klausur = mock(Klausur.class);
+        String username = "MaxMustermann";
+        long id = 12345L;
         when(klausurRepo.speicherKlausur(any())).thenReturn(klausur);
         doNothing().when(klausurService).validiereLsfIdInternet(klausur);
 
-        service.saveKlausur(klausur, user);
+        service.saveKlausur(klausur, username, id);
 
         verify(klausurService, times(1)).validiereLsfIdInternet(klausur);
         verify(klausurService, times(1)).validiereKlausur(klausur, BEGINN, ENDE, STARTDATUM, ENDDATUM);
@@ -99,12 +100,12 @@ public class ServiceTest {
     void klausurStornieren() throws Exception {
         Klausur klausur = mock(Klausur.class);
         Student student = mock(Student.class);
-        OAuth2User user = mock(OAuth2User.class);
+        String username = "MaxMustermann";
+        long id = 12345L;
         when(klausurRepo.findeKlausurByID(anyLong())).thenReturn(klausur);
         when(studentRepo.findByID(anyLong())).thenReturn(student);
-        when(user.getAttribute(anyString())).thenReturn(anyLong());
 
-        service.storniereKlausurAnmeldung(12345, user);
+        service.storniereKlausurAnmeldung(12345, username, id);
 
         verify(klausurRepo, times(1)).findeKlausurByID(anyLong());
         verify(studentRepo, times(1)).findByID(anyLong());
@@ -117,7 +118,6 @@ public class ServiceTest {
     @DisplayName("Prueft ob speicherUrlaub richtig aufgerufen wird")
     void speicherUrlaub() throws Exception {
         Student student = mock(Student.class);
-        OAuth2User user = mock(OAuth2User.class);
         KlausurData klausurData = new KlausurData(LocalDate.of(2022,3,3), LocalTime.of(8,30), LocalTime.of(10,0),true);
         Set<KlausurData> angemeldeteKlausuren = Set.of(klausurData);
         Urlaub urlaub = mock(Urlaub.class);
@@ -128,7 +128,7 @@ public class ServiceTest {
         when(student.ueberschneidendenUrlaubMergen()).thenReturn(gueltigerNeuerUrlaub);
 
 
-        service.speicherUrlaub(urlaub, 1234,user );
+        service.speicherUrlaub(urlaub, 1234, "MaxMustermann");
 
         verify(studentRepo, times(1)).findByID(anyLong());
         verify(klausurRepo, times(1)).findAngemeldeteKlausuren(anyLong());
@@ -142,12 +142,11 @@ public class ServiceTest {
     @Test
     @DisplayName("Prueft ob urlaubStornieren richtig aufgerufen wird")
     void urlaubStornieren() throws Exception {
-        OAuth2User user = mock(OAuth2User.class);
+        String user = "MaxMustermann";
         Student student = mock(Student.class);
         when(studentRepo.findByID(anyLong())).thenReturn(student);
-        when(user.getAttribute(anyString())).thenReturn(anyLong());
 
-        service.urlaubStornieren(user, " ", " ", " " );
+        service.urlaubStornieren(user, 12345L, " ", " ", " " );
 
         verify(studentRepo, times(1)).findByID(anyLong());
         verify(student, times(1)).entferneUrlaub(anyString(),anyString(), anyString());

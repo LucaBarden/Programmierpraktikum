@@ -15,7 +15,6 @@
 
     <div class="formular mtb-3">
         <strong>Wenn die Klausur noch nicht vorhanden ist, können sie sie hier anlegen</strong>
-        </p>
         <form th:action="@{/klausurAnlegen}">
             <input type="submit" class="btn btn-info" value="Neue Klausur anlegen"/>
         </form>
@@ -46,7 +45,6 @@
         <div th:if="${error}">
             <p class="alert alert-warning" th:text="${errortxt}"></p>
         </div>
-        </p>
     </div>
 
 </div>

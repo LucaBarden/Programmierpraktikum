@@ -1,6 +1,5 @@
 package de.propra.chicken.domain.model;
 
-import de.propra.chicken.domain.service.StudentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -23,8 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Sql({"classpath:testCreate.sql"})
 public class KlausurRepositoryImplTest {
 
-    CRUDKlausur crud;
-    KlausurRepositoryImpl db;
+    final CRUDKlausur crud;
+    final KlausurRepositoryImpl db;
 
     public KlausurRepositoryImplTest(@Autowired CRUDKlausur crud) {
         this.crud = crud;
@@ -70,9 +70,7 @@ public class KlausurRepositoryImplTest {
         //ARRANGE
         AtomicReference<Klausur> klausur = new AtomicReference<>();
         //ACT
-        assertDoesNotThrow(() -> {
-            klausur.set(db.findeKlausurByID(54321));
-        });
+        assertDoesNotThrow(() -> klausur.set(db.findeKlausurByID(54321)));
         //ASSERT
         assertThat(klausur.get().getLsfid()).isEqualTo(54321);
     }
@@ -112,7 +110,7 @@ public class KlausurRepositoryImplTest {
         Set<KlausurRef> refs = Set.of(new KlausurRef(54321), new KlausurRef(66666));
         //ACT
         Set<Klausur> klausurenDB = db.getKlausurenByRefs(refs);
-        Set<KlausurRef> refsDB = klausurenDB.stream().map(r -> r.getKlausurRef()).collect(Collectors.toSet());
+        Set<KlausurRef> refsDB = klausurenDB.stream().map(Klausur::getKlausurRef).collect(Collectors.toSet());
         //ASSERT
         assertThat(klausuren).isEqualTo(klausurenDB);
     }

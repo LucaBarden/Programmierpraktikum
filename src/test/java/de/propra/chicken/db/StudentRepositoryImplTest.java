@@ -10,7 +10,6 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -21,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Sql({"classpath:testCreate.sql"})
 public class StudentRepositoryImplTest {
 
-    CRUDStudent crud;
-    StudentRepositoryImpl db;
+    final CRUDStudent crud;
+    final StudentRepositoryImpl db;
 
     public StudentRepositoryImplTest(@Autowired CRUDStudent crud) {
         this.crud = crud;

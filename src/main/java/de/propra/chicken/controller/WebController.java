@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 
 @Controller
@@ -33,10 +34,10 @@ public class WebController {
     @Secured("ROLE_USER")
     @GetMapping("/student")
     public String student(Model model, @AuthenticationPrincipal OAuth2User principal) {
-        service.speicherStudent(new Student(Long.parseLong(principal.getAttribute("id").toString())));
+        service.speicherStudent(new Student(Long.parseLong(Objects.requireNonNull(principal.getAttribute("id")).toString())));
         Student student = null;
         try {
-            student = service.findStudentByGithubID(Long.parseLong(principal.getAttribute("id").toString()));
+            student = service.findStudentByGithubID(Long.parseLong(Objects.requireNonNull(principal.getAttribute("id")).toString()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -60,7 +61,7 @@ public class WebController {
     @GetMapping("/urlaub")
     public String urlaub(Model model, @AuthenticationPrincipal OAuth2User principal) {
         model.addAttribute("urlaub", new Urlaub(LocalDate.now().toString(), "08:30", "12:30"));
-        service.speicherStudent(new Student(Long.parseLong(principal.getAttribute("id").toString())));
+        service.speicherStudent(new Student(Long.parseLong(Objects.requireNonNull(principal.getAttribute("id")).toString())));
         return "Urlaub";
     }
 
@@ -68,7 +69,7 @@ public class WebController {
     @PostMapping("/urlaubErstellen")
     public String urlaubErstellen(Urlaub urlaub, @AuthenticationPrincipal OAuth2User principal, Model model) {
         try {
-            service.speicherUrlaub(urlaub, Long.parseLong(principal.getAttribute("id").toString()), principal);
+            service.speicherUrlaub(urlaub, Long.parseLong(Objects.requireNonNull(principal.getAttribute("id")).toString()), principal.getAttribute("login"));
         } catch (Exception e) {
             model.addAttribute("error", true);
             model.addAttribute("errortxt", e.getMessage());
@@ -82,7 +83,7 @@ public class WebController {
     @PostMapping("urlaubStornieren")
     public String urlaubStornieren(String tag, String beginn, String end, @AuthenticationPrincipal OAuth2User principal) {
         try {
-            service.urlaubStornieren(principal, tag, beginn, end);
+            service.urlaubStornieren(principal.getAttribute("login"),Long.parseLong(Objects.requireNonNull(principal.getAttribute("id")).toString()), tag, beginn, end);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -101,7 +102,7 @@ public class WebController {
     public String klausurErstellen(Model model, Klausur klausur, @AuthenticationPrincipal OAuth2User principal) {
         System.out.println(klausur);
         try {
-            service.saveKlausur(klausur, principal);
+            service.saveKlausur(klausur, principal.getAttribute("login"), Long.parseLong(Objects.requireNonNull(principal.getAttribute("id")).toString()) );
         } catch (Exception e) {
             model.addAttribute("error", true);
             model.addAttribute("errortxt", e.getMessage());
@@ -114,7 +115,7 @@ public class WebController {
     @GetMapping("/klausur")
     public String klausur(Model model, @AuthenticationPrincipal OAuth2User principal) {
         model.addAttribute("klausuren", service.ladeAlleKlausuren());
-        service.speicherStudent(new Student(Long.parseLong(principal.getAttribute("id").toString())));
+        service.speicherStudent(new Student(Long.parseLong(Objects.requireNonNull(principal.getAttribute("id")).toString())));
         return "Klausur";
     }
 
@@ -122,7 +123,7 @@ public class WebController {
     @PostMapping("/klausurAnmelden")
     public String klausurAnmelden(Model model, long id, @AuthenticationPrincipal OAuth2User principal) {
         try {
-            service.klausurAnmeldung(id, principal);
+            service.klausurAnmeldung(id, principal.getAttribute("login"), Long.parseLong(Objects.requireNonNull(principal.getAttribute("id")).toString()));
         } catch (Exception e) {
             model.addAttribute("error", true);
             model.addAttribute("errortxt", e.getMessage());
@@ -135,7 +136,7 @@ public class WebController {
     @PostMapping("/klausurStornieren")
     public String klausurStornieren(@RequestParam("ref") long id, @AuthenticationPrincipal OAuth2User principal) {
         try {
-            service.storniereKlausurAnmeldung(id, principal);
+            service.storniereKlausurAnmeldung(id, principal.getAttribute("login"), Long.parseLong(Objects.requireNonNull(principal.getAttribute("id")).toString()));
         } catch (Exception e) {
             e.printStackTrace();
         }
