@@ -5,17 +5,20 @@ import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.library.GeneralCodingRules;
+import de.propra.chicken.controller.WebController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
+import static com.tngtech.archunit.library.Architectures.onionArchitecture;
 import static com.tngtech.archunit.library.DependencyRules.NO_CLASSES_SHOULD_DEPEND_UPPER_PACKAGES;
 
 @AnalyzeClasses(packages = "de.propra.chicken", importOptions = { ImportOption.DoNotIncludeTests.class })
-public class DependencyRulesTest {
+public class ArchTests {
 
     @ArchTest
     static final ArchRule no_accesses_to_upper_package = NO_CLASSES_SHOULD_DEPEND_UPPER_PACKAGES;
@@ -48,4 +51,16 @@ public class DependencyRulesTest {
     @ArchTest
     ArchRule notComponent =
             noClasses().should().beAnnotatedWith(Component.class);
+
+    @ArchTest
+    static final ArchRule onionTest = onionArchitecture()
+            .domainModels("..domain.model..")
+            .domainServices("..domain.service..")
+            .applicationServices("..application.service..")
+
+            .adapter("web", "..controller..")
+            .adapter("db", "..db..");
+
+    @ArchTest
+    ArchRule ControllerAnnotation = methods().that().areDeclaredIn(WebController.class).should().beAnnotatedWith(Secured.class);
 }

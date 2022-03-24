@@ -62,7 +62,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
             if (orga.contains(login)) {
                 authorities.add(new SimpleGrantedAuthority("ROLE_ORGA"));
-            } else if(tutoren.contains(login)){
+            }
+            if(tutoren.contains(login)){
                 authorities.add(new SimpleGrantedAuthority("ROLE_TUTOR"));
             }
 

@@ -16,7 +16,7 @@
             <div class="form-group mb-3">
                 <label for="veranstaltung">Name der Veranstaltung</label>
                 <input type="text" class="form-control" id="veranstaltung" th:field="*{name}"
-                       placeholder="Rechnerarchitektur" name="veranstaltung" value="">
+                       placeholder="Rechnerarchitektur" name="veranstaltung" value=""  required>
             </div>
         </div>
 
@@ -25,7 +25,7 @@
             <div class="form-group mb-3">
                 <label for="lsfId" class="form-label">ID der Veranstaltung im LSF</label>
                 <input type="number" class="form-control" id="lsfId" th:field="*{lsfid}" placeholder="123456" name="lsfid"
-                       value="">
+                       value="" required>
             </div>
 
         </div>
@@ -41,7 +41,7 @@
             <div class="form-group mb-3">
                 <label for="tag" class="form-label">Datum der Klausur (dd.mm.yyyy)</label>
                 <input type="date" class="form-control" id="tag" placeholder="" th:field="*{datum}"
-                       name="datum" value="">
+                       name="datum" value="" required>
             </div>
 
         </div>
@@ -62,8 +62,8 @@
         <div class="form-floating mb-3 form-control-lg">
             <div class="form-group mb-3">
                 <label for="bis" class="form-label">Klausurende (hh:mm)</label>
-                <input type="time" class="form-control" id="bis" placeholder="12:00" th:field="*{ende}" name="bis" value="">
-                <div class="form-text">Runden Sie die Zeit auf die nächste viertel Stunde auf. Falls die Klausur nach
+                <input type="time" class="form-control" id="bis" placeholder="12:00" th:field="*{ende}" name="bis" value="" required>
+                <div class="form-text" >Runden Sie die Zeit auf die nächste viertel Stunde auf. Falls die Klausur nach
                     Praktikumsende endet, tragen Sie bitte Enduhrzeit ihres Praktikums ein.
                 </div>
                 <div class="form-group mb-3">
