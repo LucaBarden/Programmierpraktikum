@@ -13,9 +13,9 @@ public class Urlaub {
 
     @Id
     private int id;
-    private LocalDate tag;
-    private LocalTime beginn;
-    private LocalTime end;
+    private final LocalDate tag;
+    private final LocalTime beginn;
+    private final LocalTime end;
 
     public Urlaub(String tag, String beginn, String end) {
         this.tag = LocalDate.parse(tag);

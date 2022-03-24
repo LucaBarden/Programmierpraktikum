@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class KlausurRepositoryImpl implements KlausurRepository {
 
 
-    private CRUDKlausur crudKlausur;
+    private final CRUDKlausur crudKlausur;
 
     public KlausurRepositoryImpl(CRUDKlausur crudKlausur) {
         this.crudKlausur = crudKlausur;

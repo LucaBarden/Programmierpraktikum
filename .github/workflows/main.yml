@@ -5,11 +5,9 @@ jobs:
     build:
         runs-on: self-hosted
         steps:
-            - uses: actions/checkout@v1
-              name: Git Checkout
             - name: Java installieren
               uses: actions/setup-java@v1
               with:
                 java-version: 17
-            - name: Run Gradle
+            - name: Run Gradle Tests
               run: gradle test

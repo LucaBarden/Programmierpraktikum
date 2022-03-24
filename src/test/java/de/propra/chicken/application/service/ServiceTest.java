@@ -25,10 +25,10 @@ public class ServiceTest {
 
     private static final Dotenv dotenv = Dotenv.load();
 
-    private static String BEGINN     = dotenv.get("STARTUHRZEIT_PRAKTIKUM");
-    private static String ENDE       = dotenv.get("ENDUHRZEIT_PRAKTIKUM");
-    private static String STARTDATUM = dotenv.get("STARTDATUM_PRAKTIKUM");
-    private static String ENDDATUM   = dotenv.get("ENDDATUM_PRAKTIKUM");
+    private static final String BEGINN     = dotenv.get("STARTUHRZEIT_PRAKTIKUM");
+    private static final String ENDE       = dotenv.get("ENDUHRZEIT_PRAKTIKUM");
+    private static final String STARTDATUM = dotenv.get("STARTDATUM_PRAKTIKUM");
+    private static final String ENDDATUM   = dotenv.get("ENDDATUM_PRAKTIKUM");
 
     Service service;
     StudentRepository studentRepo;

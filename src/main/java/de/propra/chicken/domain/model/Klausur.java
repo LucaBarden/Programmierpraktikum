@@ -7,12 +7,12 @@ import java.util.Objects;
 
 
 public class Klausur {
-    private String name;
-    private long lsfid;
-    private boolean praesenz;
-    private LocalDate datum;
-    private LocalTime beginn;
-    private LocalTime ende;
+    private final String name;
+    private final long lsfid;
+    private final boolean praesenz;
+    private final LocalDate datum;
+    private final LocalTime beginn;
+    private final LocalTime ende;
 
     public Klausur(String name, long lsfid, boolean praesenz, String datum, String beginn, String ende) {
         this.name = name;

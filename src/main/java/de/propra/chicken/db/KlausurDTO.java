@@ -13,12 +13,12 @@ import java.time.LocalTime;
 public class KlausurDTO implements Persistable {
 
     @Id
-    private Long lsf_id;
-    private String name;
-    private boolean praesenz;
-    private LocalDate datum;
-    private LocalTime beginn;
-    private LocalTime ende;
+    private final Long lsf_id;
+    private final String name;
+    private final boolean praesenz;
+    private final LocalDate datum;
+    private final LocalTime beginn;
+    private final LocalTime ende;
 
     @Transient
     private boolean isNew = true;
