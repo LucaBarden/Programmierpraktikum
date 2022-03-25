@@ -126,13 +126,16 @@ public class Student {
 
         Set<Urlaub> zuPruefendeUrlaube = new HashSet<>(urlaube);
         Set<Urlaub> stashUrlaube = new HashSet<>();
+        Set<Urlaub> urlaubAmSelbenTag = new HashSet<>();
         boolean aenderung = true;
+
         while (aenderung) {
             aenderung = false;
             for (Urlaub neu : zuPruefendeUrlaube) {
                 if (aenderung) break;
                 stashUrlaube.addAll(zuPruefendeUrlaube);
-                for (Urlaub alt : zuPruefendeUrlaube) {
+                urlaubAmSelbenTag.addAll(urlaubSelberTag(neu.getTag()));
+                for (Urlaub alt : urlaubAmSelbenTag) {
                     if (alt.getBeginn().equals(neu.getEnd())) {
                         stashUrlaube.remove(alt);
                         stashUrlaube.remove(neu);
@@ -149,6 +152,7 @@ public class Student {
                 }
                 zuPruefendeUrlaube = stashUrlaube;
                 stashUrlaube = new HashSet<>();
+                urlaubAmSelbenTag = new HashSet<>();
             }
         }
         return zuPruefendeUrlaube;

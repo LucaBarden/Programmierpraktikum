@@ -280,4 +280,22 @@ public class StudentTest {
         assertThat(student.getKlausuren()).contains(ref2);
         assertThat(student.getKlausuren()).contains(ref3);
     }
+
+    @Test
+    @DisplayName("Zwei Urlaube an einem anderen Tag, die aber an der Uhrzeit uebergrenzen, sind noch zwei")
+    void urlaubZusammenfuegenTest() {
+        Student student = new Student(123);
+        Urlaub urlaub1 = new Urlaub("2022-03-28", "08:30", "09:30");
+        Urlaub urlaub2 = new Urlaub("2022-03-30", "09:30", "10:30");
+        Set<Urlaub> urlaube = new HashSet<>();
+        urlaube.add(urlaub1);
+        urlaube.add(urlaub2);
+        student.setUrlaube(urlaube);
+        Set<Urlaub> gueltigeUrlaube;
+
+        gueltigeUrlaube = student.urlaubeZusammenfuegen();
+        assertThat(gueltigeUrlaube).hasSize(2);
+        assertThat(gueltigeUrlaube).contains(urlaub1, urlaub2);
+
+    }
 }
