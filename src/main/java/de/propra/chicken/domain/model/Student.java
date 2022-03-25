@@ -121,13 +121,12 @@ public class Student {
         return new HashSet<>(urlaube);
     }
 
-    public Set<Urlaub> ueberschneidendenUrlaubMergen() {
+    public Set<Urlaub> urlaubeZusammenfuegen() {
         if (urlaube.size() == 0) return new HashSet<>(urlaube);
 
         Set<Urlaub> zuPruefendeUrlaube = new HashSet<>(urlaube);
         Set<Urlaub> stashUrlaube = new HashSet<>();
         boolean aenderung = true;
-
         while (aenderung) {
             aenderung = false;
             for (Urlaub neu : zuPruefendeUrlaube) {
@@ -154,6 +153,7 @@ public class Student {
         }
         return zuPruefendeUrlaube;
     }
+
 
     public void zieheUrlaubsdauerAb(Set<Urlaub> gueltigerNeuerUrlaub) {
         int abzuziehen = 0;

@@ -23,7 +23,7 @@ public class StudentTest {
         student.addUrlaube(urlaube);
         Set<Urlaub> gueltigeUrlaube;
 
-        gueltigeUrlaube = student.ueberschneidendenUrlaubMergen();
+        gueltigeUrlaube = student.urlaubeZusammenfuegen();
         Urlaub result = new Urlaub("1000-01-01", "10:00", "12:00");
 
         assertThat(gueltigeUrlaube).hasSize(1);
@@ -42,7 +42,7 @@ public class StudentTest {
         student.addUrlaube(urlaube);
         Set<Urlaub> gueltigeUrlaube;
 
-        gueltigeUrlaube = student.ueberschneidendenUrlaubMergen();
+        gueltigeUrlaube = student.urlaubeZusammenfuegen();
         Urlaub result = new Urlaub("1000-01-01", "10:00", "11:00");
         Urlaub result2 = new Urlaub("1000-01-01", "11:30", "12:00");
 
@@ -64,7 +64,7 @@ public class StudentTest {
         student.addUrlaube(urlaube);
         Set<Urlaub> gueltigeUrlaube;
 
-        gueltigeUrlaube = student.ueberschneidendenUrlaubMergen();
+        gueltigeUrlaube = student.urlaubeZusammenfuegen();
         Urlaub result = new Urlaub("1000-01-01", "09:00", "12:00");
 
         assertThat(gueltigeUrlaube).hasSize(1);
@@ -85,7 +85,7 @@ public class StudentTest {
         student.addUrlaube(urlaube);
         Set<Urlaub> gueltigeUrlaube;
 
-        gueltigeUrlaube = student.ueberschneidendenUrlaubMergen();
+        gueltigeUrlaube = student.urlaubeZusammenfuegen();
         Urlaub result = new Urlaub("1000-01-01", "08:30", "09:30");
         Urlaub result2 = new Urlaub("1000-01-01", "09:45", "10:00");
         Urlaub result3 = new Urlaub("1000-01-01", "11:00", "11:30");
@@ -110,7 +110,7 @@ public class StudentTest {
         student.addUrlaube(urlaube);
         Set<Urlaub> gueltigeUrlaube;
 
-        gueltigeUrlaube = student.ueberschneidendenUrlaubMergen();
+        gueltigeUrlaube = student.urlaubeZusammenfuegen();
         Urlaub result = new Urlaub("1000-01-01", "08:30", "09:30");
         Urlaub result2 = new Urlaub("1000-01-01", "11:00", "12:00");
 

@@ -6,7 +6,6 @@ import de.propra.chicken.domain.model.*;
 import de.propra.chicken.domain.service.KlausurService;
 import de.propra.chicken.domain.service.StudentService;
 import io.github.cdimascio.dotenv.Dotenv;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.io.IOException;
 import java.time.Clock;
@@ -93,7 +92,7 @@ public class Service {
         Set<KlausurData> angemeldeteKlausuren = klausurRepo.findAngemeldeteKlausuren(githubID);
         Set<Urlaub> gueltigerNeuerUrlaub = studentService.validiereUrlaub(student, urlaub, angemeldeteKlausuren, BEGINN, ENDE, STARTDATUM, ENDDATUM);
         student.addUrlaube(gueltigerNeuerUrlaub);
-        gueltigerNeuerUrlaub = student.ueberschneidendenUrlaubMergen();
+        gueltigerNeuerUrlaub = student.urlaubeZusammenfuegen();
         student.setUrlaube(gueltigerNeuerUrlaub);
         studentRepo.speicherStudent(student);
         logger.info(username + "(" + githubID + ") hat Urlaub eingetragen " + urlaub);

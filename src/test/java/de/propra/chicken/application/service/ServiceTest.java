@@ -9,7 +9,6 @@ import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -125,7 +124,7 @@ public class ServiceTest {
         when(studentRepo.findByID(anyLong())).thenReturn(student);
         when(klausurRepo.findAngemeldeteKlausuren(anyLong())).thenReturn(angemeldeteKlausuren);
         when(studentService.validiereUrlaub(student,urlaub, angemeldeteKlausuren, BEGINN, ENDE, STARTDATUM, ENDDATUM)). thenReturn(gueltigerNeuerUrlaub);
-        when(student.ueberschneidendenUrlaubMergen()).thenReturn(gueltigerNeuerUrlaub);
+        when(student.urlaubeZusammenfuegen()).thenReturn(gueltigerNeuerUrlaub);
 
 
         service.speicherUrlaub(urlaub, 1234, "MaxMustermann");
@@ -134,7 +133,7 @@ public class ServiceTest {
         verify(klausurRepo, times(1)).findAngemeldeteKlausuren(anyLong());
         verify(studentService,times(1)).validiereUrlaub(student,urlaub, angemeldeteKlausuren, BEGINN, ENDE, STARTDATUM, ENDDATUM);
         verify(student, times(1)).addUrlaube(gueltigerNeuerUrlaub);
-        verify(student, times(1)).ueberschneidendenUrlaubMergen();
+        verify(student, times(1)).urlaubeZusammenfuegen();
         verify(student, times(1)).setUrlaube(gueltigerNeuerUrlaub);
         verify(studentRepo, times(1)).speicherStudent(student);
     }
