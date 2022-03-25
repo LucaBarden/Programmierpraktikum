@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
+import static com.tngtech.archunit.lang.conditions.ArchConditions.notBeAnnotatedWith;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.fields;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
@@ -66,4 +67,11 @@ public class ArchTests {
 
     @ArchTest
     ArchRule ControllerAnnotation = methods().that().areDeclaredIn(WebController.class).should().beAnnotatedWith(Secured.class);
+
+    @ArchTest
+    public static final ArchRule doNotUseFieldInjection = fields()
+            .that().areNotDeclaredIn("...configuration..")
+            .should(notBeAnnotatedWith("org.springframework.beans.factory.annotation.Autowired"))
+            .orShould(notBeAnnotatedWith("org.springframework.beans.factory.annotation.Value"))
+            .because("wir muessen in WebSecuriyConfiguration @Value benutzen, sonst darf man keine field injection benutzen");
 }

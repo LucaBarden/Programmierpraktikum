@@ -6,7 +6,6 @@ import de.propra.chicken.domain.model.*;
 import de.propra.chicken.domain.service.KlausurService;
 import de.propra.chicken.domain.service.StudentService;
 import io.github.cdimascio.dotenv.Dotenv;
-import org.jsoup.Jsoup;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -86,7 +85,7 @@ public class ServiceTest {
         when(klausurRepo.speicherKlausur(any())).thenReturn(klausur);
         doNothing().when(klausurService).validiereLsfIdInternet(klausur);
 
-        service.saveKlausur(klausur, username, id);
+        service.speicherKlausur(klausur, username, id);
 
         verify(klausurService, times(1)).validiereLsfIdInternet(klausur);
         verify(klausurService, times(1)).validiereKlausur(klausur, BEGINN, ENDE, STARTDATUM, ENDDATUM);

@@ -206,14 +206,14 @@ public class StudentService {
                     for (Urlaub pruefen : zuPruefendeUrlaube) {
                         //Startzeit von u ist nach urlaub oder gleichzeitig mit dessen Endzeit
                         if (u.getBeginn().isAfter(pruefen.getEnd()) || u.getBeginn().equals(pruefen.getEnd())) {
-                            //5: keine Überschneidung: nichts erstatten
+                            //keine Überschneidung: nichts erstatten
                             zuPruefendeUrlaube.add(pruefen);
                         }
                         //Startzeit von u liegt im neu zu buchenden Urlaub
                         else if ((u.getBeginn().isAfter(pruefen.getBeginn())) && u.getBeginn().isBefore(pruefen.getEnd())) {
                             //Endzeit von u liegt im neu zu buchenden Urlaub
                             if (u.getEnd().isBefore(pruefen.getEnd())) {
-                                //4: Mitte erstatten: der geplante Urlaub urlaub wird in zwei Urlaubsblöcke aufgeteilt
+                                //Mitte erstatten: der geplante Urlaub urlaub wird in zwei Urlaubsblöcke aufgeteilt
                                 Urlaub ersterBlock = new Urlaub(pruefen.getTag().toString(), pruefen.getBeginn().toString(), u.getBeginn().toString());
                                 Urlaub zweiterBlock = new Urlaub(pruefen.getTag().toString(), u.getEnd().toString(), pruefen.getEnd().toString());
                                 zuPruefendeUrlaube.remove(pruefen);
@@ -224,11 +224,10 @@ public class StudentService {
                             }
                             //Endzeit von u ist nach urlaub oder gleichzeitig mit dessen Endzeit
                             else if (u.getEnd().isAfter(pruefen.getEnd()) || u.getEnd().equals(pruefen.getEnd())) {
-                                //2: Ende erstatten
+                                //Ende erstatten
                                 Urlaub stashUrlaub = new Urlaub(pruefen.getTag().toString(), pruefen.getBeginn().toString(), u.getBeginn().toString());
                                 zuPruefendeUrlaube.remove(pruefen);
                                 zuPruefendeUrlaube.add(stashUrlaub);
-                                /* pruefen.setBis(u.getVon());*/
                                 aenderung = true;
                                 break;
                             }
@@ -237,21 +236,20 @@ public class StudentService {
                         else if (u.getBeginn().isBefore(pruefen.getBeginn()) || u.getBeginn().equals(pruefen.getBeginn())) {
                             //Endzeit von u liegt in urlaub
                             if (u.getEnd().isAfter(pruefen.getBeginn()) && u.getEnd().isBefore(pruefen.getEnd())) {
-                                //3: Anfang erstatten
+                                //Anfang erstatten
                                 Urlaub stashUrlaub = new Urlaub(pruefen.getTag().toString(), u.getEnd().toString(), pruefen.getEnd().toString());
                                 zuPruefendeUrlaube.remove(pruefen);
                                 zuPruefendeUrlaube.add(stashUrlaub);
-                                //pruefen.setVon(u.getBis());
                                 aenderung = true;
                                 break;
                             }
                             //Endzeit von u ist vor urlaub oder gleichzeitig mit dessen Startzeit
                             else if (u.getEnd().isBefore(pruefen.getBeginn()) || u.getEnd().equals(pruefen.getBeginn())) {
-                                //5: keine Überschneidung: nichts erstatten
+                                //keine Überschneidung: nichts erstatten
                                 zuPruefendeUrlaube.add(pruefen);
                             }
                             else if(u.getEnd().equals(pruefen.getEnd()) || u.getEnd().isAfter(pruefen.getEnd())) {
-                                //1: der gesamte Urlaub wird erstattet
+                                //der gesamte Urlaub wird erstattet
                                 zuPruefendeUrlaube.remove(pruefen);
                                 aenderung = true;
                                 break;

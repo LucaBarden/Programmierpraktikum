@@ -102,7 +102,7 @@ public class WebController {
     public String klausurErstellen(Model model, Klausur klausur, @AuthenticationPrincipal OAuth2User principal) {
         System.out.println(klausur);
         try {
-            service.saveKlausur(klausur, principal.getAttribute("login"), Long.parseLong(Objects.requireNonNull(principal.getAttribute("id")).toString()) );
+            service.speicherKlausur(klausur, principal.getAttribute("login"), Long.parseLong(Objects.requireNonNull(principal.getAttribute("id")).toString()) );
         } catch (Exception e) {
             model.addAttribute("error", true);
             model.addAttribute("errortxt", e.getMessage());

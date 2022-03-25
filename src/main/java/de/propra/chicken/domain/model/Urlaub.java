@@ -1,8 +1,6 @@
 package de.propra.chicken.domain.model;
 
 
-import org.springframework.data.annotation.Id;
-
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -11,8 +9,6 @@ import java.util.Objects;
 
 public class Urlaub {
 
-    @Id
-    private int id;
     private final LocalDate tag;
     private final LocalTime beginn;
     private final LocalTime end;

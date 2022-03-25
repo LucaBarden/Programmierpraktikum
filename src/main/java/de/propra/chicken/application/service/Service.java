@@ -49,35 +49,6 @@ public class Service {
         this.klausurService = klausurService;
     }
 
-    private void klausurAnmelden(Klausur klausur, long githubID, String user) throws Exception {
-
-        Student student = studentRepo.findByID(githubID);
-        Set<Urlaub> gueltigeUrlaubeFuerTag = studentService.validiereKlausurAnmeldung(klausur, student, BEGINN, ENDE);
-        student.aendereUrlaube(gueltigeUrlaubeFuerTag, klausur.getDatum());
-        KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
-        student.addKlausur(klausurRef);
-        studentRepo.speicherStudent(student);
-        logger.info(user + " hat sich zur Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " angemeldet");
-
-    }
-
-    public Set<Klausur> ladeAlleKlausuren() {
-        Set<Klausur> alleKlausuren = klausurRepo.ladeAlleKlausuren();
-        return klausurService.klausurIstNochImAnmeldezeitraum(alleKlausuren);
-    }
-
-    public Map<Klausur, Boolean> ladeAngemeldeteKlausuren(long githubID) {
-        Set<KlausurRef> klausurenRef = studentRepo.getAngemeldeteKlausurenIds(githubID);
-        Set<Klausur> klausuren = klausurRepo.getKlausurenByRefs(klausurenRef);
-
-        return klausurService.stornierbareKlausuren(klausuren);
-    }
-
-    public Map<Urlaub, Boolean> ladeAngemeldeteUrlaube(long githubID) throws Exception {
-        Student student = studentRepo.findByID(githubID);
-        return studentService.stornierbareUrlaube(student.getUrlaube());
-    }
-
     public void speicherStudent(Student student) {
         boolean alreadyExists = studentRepo.existsById(student.getGithubID());
         if(!alreadyExists){
@@ -99,28 +70,34 @@ public class Service {
 
     }
 
-    public void saveKlausur(Klausur klausur, String username, long id) throws Exception {
-        speicherKlausur(klausur);
+    public void urlaubStornieren(String username, long id, String tag, String beginn, String end) throws Exception {
+        Student student = studentRepo.findByID(id);
+        student.entferneUrlaub(tag, beginn, end);
+        studentRepo.speicherStudent(student);
+        logger.info(username + " hat seinen Urlaub am " + tag + " von " + beginn + " bis " + end + " Uhr storniert");
+    }
+
+    public void speicherKlausur(Klausur klausur, String username, long id) throws Exception {
+        speicherKlausurIntern(klausur);
         logger.info(username + "(" + id + ") " + "hat die Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " erstellt");
     }
 
-    public void speicherKlausur(Klausur klausur) throws Exception {
-            validiereKlausur(klausur);
-            klausurRepo.speicherKlausur(klausur);
-    }
-
-    protected void validiereKlausur(Klausur klausur) throws Exception {
+    public void speicherKlausurIntern(Klausur klausur) throws Exception {
         klausurService.validiereLsfIdInternet(klausur);
         klausurService.validiereKlausur(klausur, BEGINN, ENDE, STARTDATUM, ENDDATUM);
+        klausurRepo.speicherKlausur(klausur);
     }
 
     public void klausurAnmeldung(long id, String username, long github_id) throws Exception {
         Klausur klausur = klausurRepo.findeKlausurByID(id);
-        klausurAnmelden(klausur, github_id, username);
-    }
+        Student student = studentRepo.findByID(github_id);
+        Set<Urlaub> gueltigeUrlaubeFuerTag = studentService.validiereKlausurAnmeldung(klausur, student, BEGINN, ENDE);
+        student.aendereUrlaube(gueltigeUrlaubeFuerTag, klausur.getDatum());
+        KlausurRef klausurRef = new KlausurRef(klausur.getLsfid());
+        student.addKlausur(klausurRef);
+        studentRepo.speicherStudent(student);
+        logger.info(username + " hat sich zur Klausur " + klausur.getName()+"(" + klausur.getLsfid()+")" + " angemeldet");
 
-    public Student findStudentByGithubID(long id) throws Exception {
-        return studentRepo.findByID(id);
     }
 
     public void storniereKlausurAnmeldung(long lsfID, String username, long id) throws Exception {
@@ -133,10 +110,24 @@ public class Service {
         logger.info(username + " hat die " + klausur + " und damit auch möglichen verbundenen Urlaub an dem Tag storniert");
     }
 
-    public void urlaubStornieren(String username, long id, String tag, String beginn, String end) throws Exception {
-        Student student = studentRepo.findByID(id);
-        student.entferneUrlaub(tag, beginn, end);
-        studentRepo.speicherStudent(student);
-        logger.info(username + " hat seinen Urlaub am " + tag + " von " + beginn + " bis " + end + " Uhr storniert");
+    public Student findStudentByGithubID(long id) throws Exception {
+        return studentRepo.findByID(id);
+    }
+
+    public Set<Klausur> ladeAlleKlausuren() {
+        Set<Klausur> alleKlausuren = klausurRepo.ladeAlleKlausuren();
+        return klausurService.klausurIstNochImAnmeldezeitraum(alleKlausuren);
+    }
+
+    public Map<Klausur, Boolean> ladeAngemeldeteKlausuren(long githubID) {
+        Set<KlausurRef> klausurenRef = studentRepo.getAngemeldeteKlausurenIds(githubID);
+        Set<Klausur> klausuren = klausurRepo.getKlausurenByRefs(klausurenRef);
+
+        return klausurService.stornierbareKlausuren(klausuren);
+    }
+
+    public Map<Urlaub, Boolean> ladeAngemeldeteUrlaube(long githubID) throws Exception {
+        Student student = studentRepo.findByID(githubID);
+        return studentService.stornierbareUrlaube(student.getUrlaube());
     }
 }
