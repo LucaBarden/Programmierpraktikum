@@ -73,7 +73,7 @@ Webanwendung zum Buchen von Urlauben und Verwalten von Klausuren und freien Zeit
 *** Da die Anforderungen an das Praktikum variieren können
 * Functional Suitability
 ** Functional Appropriateness
-*** Da die Funktionsweise zwar alle Randbedingungen erfüllt, allerdings keine komplizierte Anwendbarkeit hat
+*** Da die Funktionsweise zwar alle Randbedingungen erfüllen, allerdings keine komplizierte Anwendbarkeit haben soll
 ** Functional Correctness
 *** Da es wichtig ist, dass es zu keinen Fehlern kommt, die sich negativ auf Studenten oder Administratoren auswirken
 * Usability
@@ -93,11 +93,11 @@ Webanwendung zum Buchen von Urlauben und Verwalten von Klausuren und freien Zeit
 == Randbedingungen
 * Beim Anlegen einer neuen Klausur wird der Nutzer aufgefordert die Praktikumszeiten einzuhalten.
 * Beim Buchen eines Urlaubs wird dieser validiert und verrechnet, der User wird nicht darüber informiert, ob der neue Urlaub komplett gebucht wurde, oder nur teilweise (zum Beispiel, wenn bereits eine Klausuranmeldung in diesem Zeitraum vorliegt).
-* Wenn eine neue Urlaubsbuchung verhindert wird, obwohl sie an einen vorhandenen grenzt und somit, als Verlängerung des vorhandenen Urlaubs gültig wäre, wird diese Buchung verhindert und der User muss eine Stornierung und eine erneute Buchung vornehmen.
+* Wenn eine neue Urlaubsbuchung verhindert wird, obwohl sie an einen Vorhandenen grenzt und somit, als Verlängerung des vorhandenen Urlaubs gültig wäre, wird diese Buchung verhindert und der User muss eine Stornierung und eine erneute Buchung vornehmen.
 * Wenn ein User eine Klausur storniert, dann wird der gesamte gebuchte Urlaub für diesen Tag ebenfalls storniert.
 * Es wird nicht überprüft, ob ein gebuchter Urlaub am Wochenende liegt.
 * Es wird nicht überprüft, ob eine Klausur mindestens 60 Minuten dauert.
-* Beim Ausführen von Tests wird eine weitere Log file generiert. Es wird allerdings nicht in die Datei geschrieben, sodas keine falschen Informationen dokumentiert werden
+* Beim Ausführen von Tests wird eine weitere Log file generiert. Es wird allerdings nicht in die Datei geschrieben, sodass keine falschen Informationen dokumentiert werden
 
 <<<<
 
@@ -106,19 +106,19 @@ Webanwendung zum Buchen von Urlauben und Verwalten von Klausuren und freien Zeit
 == Kontextabgrenzung
 
 === Fachlicher Kontext
-* *externe Kontextabgrenzung:*
+* *Externe Kontextabgrenzung:*
 ** Es gibt nach außen eine Schnittstelle zum HIS-LSF-System, durch die eine zu erstellende Klausur validiert wird.
 ** Beim Login wird die GitHub Anmeldeseite verwendet.
 
-* *interne Kontextabgrenzung:*
+* *Interne Kontextabgrenzung:*
 ** *Klausurerstellung*
-*** Klausur wird validiert: dazu Zugriff auf das HIS-LSF-System, um die LSF-ID zu überprüfen
+*** Klausur wird validiert: Dazu Zugriff auf das HIS-LSF-System, um die LSF-ID zu überprüfen
 ** *Klausurbuchung*
 *** Klausuranmeldung: die Anmeldung wird validiert und gespeichert
-*** Klausurstornierung: es wird überprüft, welche der angemeldeten Klausuren des Studenten in der Zukunft liegen und noch stornierbar sind, dann kann storniert werden
+*** Klausurstornierung: Es wird überprüft, welche der angemeldeten Klausuren des Studenten in der Zukunft liegen und noch stornierbar sind, dann kann storniert werden
 ** *Urlaubsbuchung*
 *** Urlaubsanmeldung: Urlaub wird validiert und ggf gekürzt oder aufgeteilt, falls er sich mit einem vorher gebuchten Urlaub oder einer Klausur überschneidet
-*** Urlaubsstornierung: es wird überprüft, welche Urlaube in der Zukunft liegen und noch stornierbar sind, dann kann storniert werden
+*** Urlaubsstornierung: Es wird überprüft, welche Urlaube in der Zukunft liegen und noch stornierbar sind. Dann kann storniert werden
 
 <<<<
 // 4. Lösungsstrategie
@@ -131,7 +131,6 @@ Webanwendung zum Buchen von Urlauben und Verwalten von Klausuren und freien Zeit
 ** MariaDB
 ** Spring DATA JDBC (Interaction with Database)
 ** Flyway (Migration Framework)
-** H2 Database (In Memory Database for testing)
 * Web
 ** Thymeleaf
 ** OAuth2 Client (GitHub Login; Security)
@@ -140,6 +139,7 @@ Webanwendung zum Buchen von Urlauben und Verwalten von Klausuren und freien Zeit
 ** JUnit4
 ** Mockito-Inline
 ** Spring (MockMVC)
+** H2 Database (In Memory Database for testing)
 
 === Komponentenstruktur
 * Aggregate
