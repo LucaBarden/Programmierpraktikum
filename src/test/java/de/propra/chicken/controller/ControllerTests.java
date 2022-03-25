@@ -6,9 +6,11 @@ import de.propra.chicken.configuration.MethodSecurityConfiguration;
 import de.propra.chicken.domain.model.Klausur;
 import de.propra.chicken.domain.model.Student;
 import de.propra.chicken.domain.model.Urlaub;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -32,13 +34,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -59,10 +57,17 @@ public class ControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
+    private static final MockedStatic<Logger> LoggerMockedStatic = mockStatic(Logger.class);
     private final static LocalDate DATE = LocalDate.of(2022, 4, 1);
     private static final Clock clock = Clock.fixed(DATE.atStartOfDay(ZoneId.systemDefault()).toInstant(),ZoneId.systemDefault());
 
-
+    @BeforeAll
+    static void beforeAll() {
+        Logger logger = mock(Logger.class);
+        LoggerMockedStatic.when(() -> Logger.getLogger(anyString())).thenReturn(logger);
+        doNothing().when(logger).addHandler(any());
+        doNothing().when(logger).info(anyString());
+    }
 
     @BeforeEach
     private void loggedInUser() {

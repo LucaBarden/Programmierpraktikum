@@ -18,6 +18,7 @@ import java.util.Set;
 
 public class StudentServiceTests {
 
+
     private static final String BEGINN_PRAKTIKUM = "08:30";
     private static final String ENDE_PRAKTIKUM   = "12:30";
     private static final String STARTDATUM = LocalDate.of(2022,3,25).toString();

@@ -97,6 +97,7 @@ Webanwendung zum Buchen von Urlauben und Verwalten von Klausuren und freien Zeit
 * Wenn ein User eine Klausur storniert, dann wird der gesamte gebuchte Urlaub für diesen Tag ebenfalls storniert.
 * Es wird nicht überprüft, ob ein gebuchter Urlaub am Wochenende liegt.
 * Es wird nicht überprüft, ob eine Klausur mindestens 60 Minuten dauert.
+* Beim Ausführen von Tests wird eine weitere Log file generiert. Es wird allerdings nicht in die Datei geschrieben, sodas keine falschen Informationen dokumentiert werden
 
 <<<<
 

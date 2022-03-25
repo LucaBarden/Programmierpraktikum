@@ -6,9 +6,12 @@ import de.propra.chicken.domain.model.*;
 import de.propra.chicken.domain.service.KlausurService;
 import de.propra.chicken.domain.service.StudentService;
 import io.github.cdimascio.dotenv.Dotenv;
+import org.jsoup.Jsoup;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -17,13 +20,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import static org.mockito.Mockito.*;
 
 public class ServiceTest {
 
     private static final Dotenv dotenv = Dotenv.load();
-
+    private static final MockedStatic<Logger> LoggerMockedStatic = mockStatic(Logger.class);
     private static final String BEGINN     = dotenv.get("STARTUHRZEIT_PRAKTIKUM");
     private static final String ENDE       = dotenv.get("ENDUHRZEIT_PRAKTIKUM");
     private static final String STARTDATUM = dotenv.get("STARTDATUM_PRAKTIKUM");
@@ -44,6 +48,15 @@ public class ServiceTest {
         studentService = mock(StudentService.class);
         clock = mock(Clock.class);
         service = new Service(studentRepo, klausurRepo,studentService, klausurService, clock);
+
+    }
+
+    @BeforeAll
+    static void beforeAll() {
+        Logger logger = mock(Logger.class);
+        LoggerMockedStatic.when(() -> Logger.getLogger(anyString())).thenReturn(logger);
+        doNothing().when(logger).addHandler(any());
+        doNothing().when(logger).info(anyString());
     }
 
     @Test
